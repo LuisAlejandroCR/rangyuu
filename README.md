@@ -29,8 +29,9 @@ API real bloquean el diseño — ver `docs/plan.md`.
 1. `AGENTS.md` — cómo se trabaja y cómo se documenta aquí.
 2. `docs/plan.md` — qué está abierto y qué está cerrado hoy.
 3. `docs/perception.md` — el eje: qué se puede sensar con una cámara fija, qué no, y qué pasa cuando falla.
-4. `docs/ring-track.md` — la API de Ring, el Playground y las ideas con su riesgo.
-5. `docs/memoria.md` — qué se hizo y qué quedó sin verificar, por sesión.
+4. `docs/architecture.md` — dónde corre cada cosa: inferencia local, y la nube solo donde no hay prisa.
+5. `docs/ring-track.md` — la API de Ring, el Playground y las ideas con su riesgo.
+6. `docs/memoria.md` — qué se hizo y qué quedó sin verificar, por sesión.
 
 ## La pista, en tres líneas
 

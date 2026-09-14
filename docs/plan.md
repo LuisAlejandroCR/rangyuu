@@ -4,7 +4,7 @@
 
 # Plan — pista Ring
 
-**Última actualización:** 2026-09-14 (eje escogido: percepción de infraestructura — ver `docs/perception.md`)
+**Última actualización:** 2026-09-14 (eje: percepción de infraestructura con inferencia local — ver `docs/perception.md` y `docs/architecture.md`)
 **Cierre de submission:** 2026-10-23, 12:00 PM PT · quedan ~5 semanas de trabajo real
 
 ## Abiertos
@@ -43,10 +43,21 @@
       medido queda escrito en `docs/memoria.md` — no "funciona", sino cuántos centímetros a cuántos
       metros. Las celdas ocluidas salen como **desconocido**, nunca como libre.
 
+- [ ] **B10 · Runtime de inferencia local.** Consumir la sesión WHEP desde un proceso propio —no el
+      navegador— y correr el modelo en el equipo del sitio.
+      *Criterio:* frames decodificados fuera del navegador (WHEP es WebRTC con señalización HTTP: el
+      `POST` del SDP offer y el manejo de la `Location` hay que escribirlos, y **no se sabe cuánto
+      cuesta**), inferencia local medida en milisegundos, **cero llamadas de inferencia a terceros**,
+      y el presupuesto de `docs/architecture.md` §5 con número real por tramo. Prueba obligatoria:
+      **cortar internet con el sistema andando** y verificar que toma la acción segura en vez de
+      quedarse con la última lectura.
+
 - [ ] **B9 · Contrato de degradación.** La tabla de `docs/perception.md` §6, en código y con tests.
       *Criterio:* cada fila tiene su test — cámara offline, celda desconocida en la trayectoria,
       confianza baja, homografía derivada, evento que contradice el frame. Todas terminan en la
-      acción segura, y ninguna trata *desconocido* como *libre*.
+      acción segura, y ninguna trata *desconocido* como *libre*. Incluye la **caducidad** de
+      `docs/architecture.md` §6: una celda observada hace más de la ventana declarada vuelve a
+      desconocido, y el sistema arranca en el estado seguro, no en el permisivo.
 
 - [ ] **B5 · Verificación de la firma HMAC-SHA256 del webhook.** Se necesita igual para no aceptar
       eventos falsos, y es el candidato natural al PR upstream de B6.
@@ -58,7 +69,9 @@
       *Open Source:* PR o fork (no necesita merge) a un repo público **dentro de la ventana**, con
       URL de la contribución, repo, usuario de GitHub y descripción. Candidato: B5 hacia
       `AmazonAppDev/ring-api-helloworld`.
-      *AWS Builder:* Bedrock / AgentCore / Strands / Kiro Crew con integración documentada.
+      *AWS Builder:* Bedrock / AgentCore / Strands / Kiro Crew con integración documentada — **todo
+      en el carril asíncrono** (`docs/architecture.md` §7): redactar la alerta, entrenar o exportar el
+      modelo que corre local, transportar la mensajería. Nunca en el lazo de control.
 
 - [ ] **B7 · Video y submission.** El video tiene que ser bueno, no solo cumplir el tiempo.
       *Criterio:* enviado con margen, no el 10/23 a las 11:50.
@@ -69,12 +82,19 @@
 |---|---|
 | 09/15 | B1 y B2 en paralelo (leer doc + arrancar trámite), B3 apenas haya token |
 | 09/22 | B4 cerrado y B8 arrancado: calibración con medición real |
-| 09/29 | B8 cerrado, B9 en código, B5 |
+| 09/29 | B8 cerrado, B10 y B9 en código, B5 |
 | 10/06 | Integración de punta a punta y B6 |
 | 10/13 | Congelar alcance, B7 |
 | 10/20 | Margen. Enviar |
 
 ## Cerrados
+
+- [x] **2026-09-14 — Frontera de nube y local.** `docs/architecture.md`: tres carriles (crítico en
+      el sitio, contexto de nube degradable, asíncrono sin voto), el presupuesto de latencia por
+      tramo, la caducidad de la ocupación y el arranque en estado seguro. Queda escrito que el frame
+      de Ring ya pasó por su nube por construcción, así que "local" acota a dos propiedades —ningún
+      frame va a un tercero a inferir, ninguna decisión espera a la red— y no a la independencia del
+      sensor.
 
 - [x] **2026-09-14 — Eje del proyecto escogido.** Cámaras Ring como capa de percepción de
       infraestructura, el escalón anterior al LIDAR: `docs/perception.md`. Incluye lo que la API da
