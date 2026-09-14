@@ -11,9 +11,10 @@ bitácora.
 
 ## Estado — 2026-09-14
 
-**Todavía no hay código.** Pista escogida: Ring. Idea recomendada pero **no confirmada**: el motor de
-políticas en la puerta (`docs/ring-track.md` §4A). Cinco incógnitas siguen abiertas contra la doc
-oficial y bloquean el arranque — ver `docs/plan.md`.
+**Todavía no hay código.** Pista escogida: Ring. **Eje escogido:** usar las cámaras como capa de
+percepción de infraestructura — el sensor que ya está instalado, el escalón anterior a montar LIDAR
+(`docs/perception.md`). Falta decidir qué se mueve al final del cable, y seis mediciones contra la
+API real bloquean el diseño — ver `docs/plan.md`.
 
 ## Fechas
 
@@ -27,8 +28,9 @@ oficial y bloquean el arranque — ver `docs/plan.md`.
 
 1. `AGENTS.md` — cómo se trabaja y cómo se documenta aquí.
 2. `docs/plan.md` — qué está abierto y qué está cerrado hoy.
-3. `docs/ring-track.md` — la API de Ring, el Playground y las cuatro ideas con su riesgo.
-4. `docs/memoria.md` — qué se hizo y qué quedó sin verificar, por sesión.
+3. `docs/perception.md` — el eje: qué se puede sensar con una cámara fija, qué no, y qué pasa cuando falla.
+4. `docs/ring-track.md` — la API de Ring, el Playground y las ideas con su riesgo.
+5. `docs/memoria.md` — qué se hizo y qué quedó sin verificar, por sesión.
 
 ## La pista, en tres líneas
 
