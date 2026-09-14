@@ -4,6 +4,26 @@
 
 # Memoria
 
+## 2026-09-14 — Producción del video y montaje USB-C
+
+**Qué se hizo**
+
+- ElevenLabs MCP quedó escogido como herramienta de producción para narración, audio y recursos del
+  video, sin dependencia en el runtime de Rangyuu.
+- Se documentó un guion de demo de menos de tres minutos en `docs/video.md`, con Ring visible en la
+  integración y los estados `PROCEED`, `CUIDADO`, `PARA` y `UNKNOWN`.
+- Se documentó en `docs/test-rig.md` el montaje base iPhone USB-C → portátil y la opción de
+  capturadora HDMI-UVC para grabar la demo.
+- Se dejó explícito que la depuración nativa con Xcode requiere Mac; en Windows el camino inicial es
+  MP4, web o build remoto.
+
+**Qué NO se verificó, y por qué**
+
+- No se creó todavía el video ni se probó la conexión USB-C con un modelo concreto de iPhone,
+  adaptador o capturadora. Queda pendiente en B7 y B11 de `docs/plan.md`.
+- No se ha autenticado ElevenLabs MCP ni se ha generado un artefacto. La cuenta, permisos y costos
+  quedan fuera del repositorio y deben validarse antes de producir.
+
 ## 2026-09-14 — Alcance de producto y fuentes de video
 
 **Qué se hizo**

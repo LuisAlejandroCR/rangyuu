@@ -82,8 +82,10 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       en el carril asíncrono** (`docs/architecture.md` §7): redactar la alerta, entrenar o exportar el
       modelo que corre local, transportar la mensajería. Nunca en el lazo de control.
 
-- [ ] **B7 · Video y submission.** El video tiene que ser bueno, no solo cumplir el tiempo.
-      *Criterio:* enviado con margen, no el 10/23 a las 11:50.
+- [ ] **B7 · Video y submission.** Producir el video en inglés, menor de tres minutos, usando
+      ElevenLabs MCP solo como herramienta de narración/producción y documentando su feedback.
+      *Criterio:* Ring aparece funcionando en código y pantalla; el video se envía con margen, no el
+      10/23 a las 11:50. Guion y montaje: `docs/video.md` y `docs/test-rig.md`.
 
 ## Reparto por semana
 
