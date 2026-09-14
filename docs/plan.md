@@ -35,7 +35,7 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       pesa— **si el live view simulado entrega video sintético o un clip enlatado**. Si es enlatado,
       B8 necesita dispositivo físico o un clip propio, y eso cambia el plan completo.
 
-- [x] **2026-09-14 — B4 · Alcance del demo escogido.** Rang no será un producto fijo para un garaje
+- [x] **2026-09-14 — B4 · Alcance del demo escogido.** Rangyuu no será un producto fijo para un garaje
       ni una solución CCTV. Será una capa espacial reutilizable para robots y dispositivos autónomos.
       Ring es la fuente de infraestructura; un video del iPhone puede representar el sensor a bordo;
       el consumidor visible será un rover digital. Hardware físico queda como extensión opcional.
