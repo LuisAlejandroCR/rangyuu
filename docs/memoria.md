@@ -24,6 +24,22 @@
 - No se ha autenticado ElevenLabs MCP ni se ha generado un artefacto. La cuenta, permisos y costos
   quedan fuera del repositorio y deben validarse antes de producir.
 
+## 2026-09-14 — Challenge 3 de ElevenLabs
+
+**Qué se hizo**
+
+- Se incorporó al plan la posibilidad de presentar el video de Rangyuu al Challenge 3: MCP de
+  ElevenLabs, separado de la submission de Amazon.
+- Quedó registrada la regla operativa: para esa entrada, todo elemento generado debe provenir de
+  ElevenLabs; no se mezclará otra IA generativa en la cadena creativa.
+- `docs/video.md` ahora contiene el tag de publicación, la cita del anuncio y la separación entre
+  herramienta creativa y runtime del producto.
+
+**Qué NO se verificó, y por qué**
+
+- No se verificaron los canales concretos de Discord/X ni se creó todavía la publicación. Se hará al
+  producir el artefacto, siguiendo el anuncio del reto suministrado en esta sesión.
+
 ## 2026-09-14 — Alcance de producto y fuentes de video
 
 **Qué se hizo**

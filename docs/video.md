@@ -6,6 +6,15 @@
 del video de demostración. No forma parte del runtime de Rangyuu ni del motor de riesgo. El producto
 debe funcionar sin ElevenLabs.
 
+## Entrada al Challenge 3
+
+Se puede presentar el mismo video, o una pieza derivada, al **Challenge 3: MCP** de ElevenLabs. Para
+cumplir sus reglas, cada elemento generado de esa pieza —video, imagen, voz, música, efectos y
+lipsync— debe salir de ElevenLabs. No se usará otra herramienta de IA en esa cadena. La publicación
+debe llevar el tag `Challenge 3: MCP` en el canal indicado y citar el anuncio oficial en X. Esta entrada
+es independiente de la submission de Amazon: ElevenLabs es herramienta creativa, no requisito de
+runtime Ring.
+
 La integración oficial es el MCP alojado en `https://api.elevenlabs.io/v1/mcp`, con autenticación OAuth;
 no se debe guardar una API key en este repositorio. El MCP puede gestionar agentes y generar voz,
 música, imágenes y video desde un asistente. Fuente: https://elevenlabs.io/mcp (consultada 2026-09-14).
