@@ -33,6 +33,7 @@ están en `docs/plan.md`.
 4. `docs/architecture.md` — dónde corre cada cosa: inferencia local, y la nube solo donde no hay prisa.
 5. `docs/ring-track.md` — la API de Ring, el Playground y las ideas con su riesgo.
 6. `docs/memoria.md` — qué se hizo y qué quedó sin verificar, por sesión.
+7. `docs/video.md` y `docs/test-rig.md` — producción del video y montaje de pruebas sin hardware.
 
 ## La pista, en tres líneas
 
