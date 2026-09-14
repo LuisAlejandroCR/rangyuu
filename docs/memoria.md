@@ -8,7 +8,7 @@
 
 **Qué se hizo**
 
-- Se fijó Rang como una capa de contexto espacial general para robots y dispositivos autónomos,
+- Se fijó Rangyuu como una capa de contexto espacial general para robots y dispositivos autónomos,
   no como una automatización específica de garaje.
 - Ring queda como sensor de infraestructura. El iPhone queda definido como fuente opcional de cámara
   a bordo; un rover digital será el consumidor de demostración.

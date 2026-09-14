@@ -2,7 +2,7 @@
      El análisis vive en docs/ring-track.md; el checklist accionable en docs/plan.md;
      el qué-se-hizo/qué-no-se-verificó en docs/memoria.md. -->
 
-# rang
+# rangyuu
 
 Repo de trabajo para **Build, Ship, Shape: Amazon Developer Hackathon** (2026), **pista Ring**.
 
@@ -11,7 +11,7 @@ con licencia open source, instrucciones reproducibles y una demostración funcio
 
 ## Estado — 2026-09-14
 
-**Todavía no hay código.** Pista escogida: Ring. Rang será una **capa de contexto espacial para
+**Todavía no hay código.** Pista escogida: Ring. Rangyuu será una **capa de contexto espacial para
 agentes y dispositivos autónomos**: Ring aporta percepción desde la infraestructura, el iPhone puede
 representar la cámara a bordo y un rover digital consume decisiones `PROCEED`, `HOLD` o `UNKNOWN`.
 No se usará CCTV y no se dependerá de hardware físico para la demo. El alcance y las puertas técnicas
@@ -44,7 +44,7 @@ accessibility, caretaking. Encima de la pista se puede apilar **un** mini challe
 
 ## Producto en una frase
 
-**Rang convierte observaciones de cámaras Ring en un mapa espacial con ocupación, confianza y
+**Rangyuu convierte observaciones de cámaras Ring en un mapa espacial con ocupación, confianza y
 caducidad, para que cualquier dispositivo pueda consultar si una trayectoria es transitable.**
 
 El producto es general; el rover digital es solamente el consumidor visible de la demostración. El

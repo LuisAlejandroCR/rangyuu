@@ -10,10 +10,10 @@
 
 ## Decisión de producto — 2026-09-14
 
-La línea elegida es **Rang como capa de contexto espacial para dispositivos autónomos**. No es una
+La línea elegida es **Rangyuu como capa de contexto espacial para dispositivos autónomos**. No es una
 automatización fija de garaje ni una solución CCTV. Ring aporta observaciones desde la infraestructura;
 una cámara de iPhone puede representar el punto de vista a bordo; el consumidor de la demo será un
-rover digital. Rang publica ocupación, confianza y cobertura, y responde si una trayectoria es
+rover digital. Rangyuu publica ocupación, confianza y cobertura, y responde si una trayectoria es
 `PROCEED`, `HOLD` o `UNKNOWN` con evidencia anclada.
 
 El alcance inicial no requiere comprar hardware. Los videos del iPhone se tratarán primero como
