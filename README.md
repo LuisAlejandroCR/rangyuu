@@ -6,15 +6,16 @@
 
 Repo de trabajo para **Build, Ship, Shape: Amazon Developer Hackathon** (2026), **pista Ring**.
 
-Privado. Si sale un repo público de submission, será otro — aquí viven el análisis, el plan y la
-bitácora.
+El repositorio de trabajo es privado mientras se desarrolla. La entrega final tendrá que ser pública,
+con licencia open source, instrucciones reproducibles y una demostración funcional.
 
 ## Estado — 2026-09-14
 
-**Todavía no hay código.** Pista escogida: Ring. **Eje escogido:** usar las cámaras como capa de
-percepción de infraestructura — el sensor que ya está instalado, el escalón anterior a montar LIDAR
-(`docs/perception.md`). Falta decidir qué se mueve al final del cable, y seis mediciones contra la
-API real bloquean el diseño — ver `docs/plan.md`.
+**Todavía no hay código.** Pista escogida: Ring. Rang será una **capa de contexto espacial para
+agentes y dispositivos autónomos**: Ring aporta percepción desde la infraestructura, el iPhone puede
+representar la cámara a bordo y un rover digital consume decisiones `PROCEED`, `HOLD` o `UNKNOWN`.
+No se usará CCTV y no se dependerá de hardware físico para la demo. El alcance y las puertas técnicas
+están en `docs/plan.md`.
 
 ## Fechas
 
@@ -40,3 +41,12 @@ Se construye contra las **Ring APIs**; **no hace falta un dispositivo físico** 
 WebRTC/WHEP. Categorías prioritarias: access control, business systems, IoT home automation,
 accessibility, caretaking. Encima de la pista se puede apilar **un** mini challenge
 (Open Source **o** AWS Builder).
+
+## Producto en una frase
+
+**Rang convierte observaciones de cámaras Ring en un mapa espacial con ocupación, confianza y
+caducidad, para que cualquier dispositivo pueda consultar si una trayectoria es transitable.**
+
+El producto es general; el rover digital es solamente el consumidor visible de la demostración. El
+iPhone, si se usa, representa el sensor a bordo del rover. Los videos grabados son fixtures de prueba,
+no sustituyen la integración real con Ring.

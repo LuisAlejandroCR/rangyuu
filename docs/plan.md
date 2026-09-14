@@ -4,10 +4,16 @@
 
 # Plan — pista Ring
 
-**Última actualización:** 2026-09-14 (eje: percepción de infraestructura con inferencia local — ver `docs/perception.md` y `docs/architecture.md`)
+**Última actualización:** 2026-09-14 (alcance: capa espacial general; Ring como infraestructura,
+iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV excluido)
 **Cierre de submission:** 2026-10-23, 12:00 PM PT · quedan ~5 semanas de trabajo real
 
 ## Abiertos
+
+- [ ] **B0 · Producto y contrato de salida.** Implementar el flujo mínimo
+      `Ring/fixture → Observation → mapa espacial → can-traverse() → rover digital`. El contrato
+      debe devolver `PROCEED`, `HOLD` o `UNKNOWN`, una razón legible y evidencia (`device_id`,
+      timestamp y celdas afectadas). Ningún estado desconocido puede autorizar tránsito.
 
 - [ ] **B1 · Cerrar las cinco incógnitas contra la doc oficial.** `developer.amazon.com/docs/ring`
       no se pudo leer desde el entorno donde se escribió `docs/ring-track.md`.
@@ -29,12 +35,10 @@
       pesa— **si el live view simulado entrega video sintético o un clip enlatado**. Si es enlatado,
       B8 necesita dispositivo físico o un clip propio, y eso cambia el plan completo.
 
-- [ ] **B4 · Fijar el alcance del demo.** El eje ya está escogido (`docs/perception.md`): percepción
-      de infraestructura + contrato de degradación. Falta decidir **qué se mueve** al final del
-      cable — móvil simulado en pantalla, rover barato, o solo una señal avanzar/esperar/detener
-      hacia un tercero — y en qué categoría prioritaria se presenta (IoT home automation y access
-      control son las naturales; accessibility o caretaking si el móvil asiste a una persona).
-      *Criterio:* decisión escogida con fecha aquí, y la rebanada partida en entregas semanales.
+- [x] **2026-09-14 — B4 · Alcance del demo escogido.** Rang no será un producto fijo para un garaje
+      ni una solución CCTV. Será una capa espacial reutilizable para robots y dispositivos autónomos.
+      Ring es la fuente de infraestructura; un video del iPhone puede representar el sensor a bordo;
+      el consumidor visible será un rover digital. Hardware físico queda como extensión opcional.
 
 - [ ] **B8 · Calibración y mapa de ocupación.** Homografía al plano del suelo desde cuatro
       correspondencias medidas, y rejilla 2D con **incertidumbre por celda** alimentada por el
@@ -51,6 +55,11 @@
       y el presupuesto de `docs/architecture.md` §5 con número real por tramo. Prueba obligatoria:
       **cortar internet con el sistema andando** y verificar que toma la acción segura en vez de
       quedarse con la última lectura.
+
+- [ ] **B11 · Adaptador de cámara a bordo (iPhone, opcional en vivo).** Primero soportar MP4 como
+      fixture reproducible en `fixtures/iphone/`; después, si queda tiempo, añadir captura WebRTC
+      desde Safari. El iPhone nunca reemplaza la llamada real a Ring y se etiqueta como
+      `IPHONE_ONBOARD`.
 
 - [ ] **B9 · Contrato de degradación.** La tabla de `docs/perception.md` §6, en código y con tests.
       *Criterio:* cada fila tiene su test — cámara offline, celda desconocida en la trayectoria,
@@ -80,12 +89,12 @@
 
 | Semana | Foco |
 |---|---|
-| 09/15 | B1 y B2 en paralelo (leer doc + arrancar trámite), B3 apenas haya token |
-| 09/22 | B4 cerrado y B8 arrancado: calibración con medición real |
-| 09/29 | B8 cerrado, B10 y B9 en código, B5 |
-| 10/06 | Integración de punta a punta y B6 |
-| 10/13 | Congelar alcance, B7 |
-| 10/20 | Margen. Enviar |
+| 09/15 | B1/B2/B3: API, Playground, duración, fuentes y primer frame |
+| 09/22 | B0 cerrado; B8 monocámara y mapa espacial |
+| 09/29 | B8 multicámara/fixtures, B9 degradación, B10 runtime local, B5 HMAC |
+| 10/06 | B0 integrado con rover digital; B11 iPhone grabado y, si procede, WebRTC |
+| 10/13 | UX, mediciones, documentación, friction log y video |
+| 10/20 | Margen; enviar antes del 21/10 |
 
 ## Cerrados
 
