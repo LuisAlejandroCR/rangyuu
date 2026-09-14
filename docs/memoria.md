@@ -4,6 +4,28 @@
 
 # Memoria
 
+## 2026-09-14 — Alcance de producto y fuentes de video
+
+**Qué se hizo**
+
+- Se fijó Rang como una capa de contexto espacial general para robots y dispositivos autónomos,
+  no como una automatización específica de garaje.
+- Ring queda como sensor de infraestructura. El iPhone queda definido como fuente opcional de cámara
+  a bordo; un rover digital será el consumidor de demostración.
+- CCTV fue excluido del alcance y no será necesario comprar hardware físico.
+- El contrato de producto queda reducido a `PROCEED`, `HOLD` y `UNKNOWN`, con razón y evidencia
+  anclada a dispositivo, timestamp y celdas afectadas.
+- Se añadió B0 para la rebanada vertical y B11 para MP4/WebRTC desde iPhone sin sustituir Ring.
+
+**Qué NO se verificó, y por qué**
+
+- No se verificó todavía que el Playground entregue suficientes dispositivos simultáneos para una
+  demo multicámara. Mientras tanto, la segunda fuente se modelará como fixture explícito.
+- No se verificó captura WebRTC desde Safari ni recepción fuera del navegador. El camino inicial será
+  MP4 reproducible.
+- No se ha escrito código ni se ha medido una trayectoria real. El pendiente queda en B0, B3, B8,
+  B10 y B11 de `docs/plan.md`.
+
 ## 2026-09-14 — Frontera entre nube y local
 
 **Qué se hizo**

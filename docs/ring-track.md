@@ -8,6 +8,18 @@
 
 **Fecha:** 2026-09-14 · Cierre de submission: **2026-10-23, 12:00 PM PT**
 
+## Decisión de producto — 2026-09-14
+
+La línea elegida es **Rang como capa de contexto espacial para dispositivos autónomos**. No es una
+automatización fija de garaje ni una solución CCTV. Ring aporta observaciones desde la infraestructura;
+una cámara de iPhone puede representar el punto de vista a bordo; el consumidor de la demo será un
+rover digital. Rang publica ocupación, confianza y cobertura, y responde si una trayectoria es
+`PROCEED`, `HOLD` o `UNKNOWN` con evidencia anclada.
+
+El alcance inicial no requiere comprar hardware. Los videos del iPhone se tratarán primero como
+fixtures MP4 reproducibles; la captura WebRTC en vivo es una extensión. Ningún fixture sustituye la
+integración real con Ring exigida por la pista. CCTV queda fuera del producto y del plan.
+
 ---
 
 ## 1. Lo que pide la pista
