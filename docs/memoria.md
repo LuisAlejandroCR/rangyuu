@@ -4,6 +4,37 @@
 
 # Memoria
 
+## 2026-09-14 — Frontera entre nube y local
+
+**Qué se hizo**
+
+- `docs/architecture.md`: decisión escogida de que la inferencia corre local y la nube queda para
+  GPS, mensajería y alertas. La regla operativa quedó enunciada como "nada en el camino crítico
+  espera a la red".
+- Queda documentada la contradicción que esa decisión enfrenta: **el frame de Ring ya viajó por la
+  nube de Amazon antes de llegar**, porque la sesión de live view se negocia contra
+  `api.amazonvision.com` y los webhooks los entrega su backend. En consecuencia "local" se acota a
+  dos propiedades sostenibles —ningún frame sale hacia un tercero a inferir, y ninguna decisión
+  espera respuesta remota— y **no** a que el sensor sea independiente de la nube.
+- Definidos los tres carriles con sus dos reglas duras: el carril de contexto nunca autoriza por sí
+  solo y su ausencia se lee como desconocido; el carril asíncrono no tiene voto.
+- Presupuesto de latencia partido en seis tramos, de los cuales cuatro son controlables.
+- Modo sin nube: caducidad por celda y arranque en el estado seguro.
+- `docs/plan.md`: entra B10 (runtime de inferencia local, con la prueba de cortar internet con el
+  sistema andando); B9 absorbe la caducidad; B6 acota AWS al carril asíncrono.
+
+**Qué NO se verificó, y por qué**
+
+- **Si un dispositivo Ring expone RTSP u ONVIF local.** Se asume que no. Si lo hiciera, la §2 entera
+  cambia de tono. → B1.
+- **Si se puede sostener una sesión WHEP fuera del navegador**, y a qué costo. `aiortc` sostiene
+  WebRTC, pero el `POST` del SDP offer y el manejo de la `Location` hay que escribirlos y no se
+  probó nada. Es el riesgo técnico mayor del carril crítico. → B10.
+- **Todos los números del presupuesto de latencia.** No hay un solo tramo medido. → B3, B10.
+- **Qué equipo del sitio alcanza** para el modelo escogido. No se escogió modelo ni equipo. → B10.
+
+**Dónde quedan los pendientes:** B1, B3, B9 y B10 de `docs/plan.md`.
+
 ## 2026-09-14 — Eje del proyecto
 
 **Qué se hizo**
