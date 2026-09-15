@@ -67,6 +67,8 @@ python -m rangyuu    # demo sobre fixture: libre → ocupado → duplicado recha
 | `rangyuu/spatial.py` | Estado espacial por dispositivo: celdas, confianza, caducidad, oclusión y deduplicación. |
 | `rangyuu/policy.py` | El contrato de salida: sin evidencia explícita no hay `PROCEED`. |
 | `rangyuu/ring.py` | Firma HMAC-SHA256 del webhook y conversión de evento Ring a `Observation`. |
+| `rangyuu/ring_client.py` | Cliente de solo lectura de la API de Ring: token, refresco y descubrimiento de dispositivos. |
+| `rangyuu/config.py` | Configuración: entorno primero, `.env.local` después. |
 | `rangyuu/api.py` | El borde HTTP: `POST /api/webhook/ring` y `POST /api/rover/can-traverse`. |
 | `rangyuu/__main__.py` | La demo offline que reproduce `tests/fixtures/b0_events.json`. |
 
