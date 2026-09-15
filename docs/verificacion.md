@@ -9,7 +9,14 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa del núcleo, 74 pruebas | `python -m pytest -q` → `74 passed` | ✅ | 2026-09-15 |
+| Suite completa del núcleo, 77 pruebas | `python -m pytest -q` → `77 passed` | ✅ | 2026-09-15 |
+| **Media H264 decodificada fuera del navegador**: 1172 frames en 39,9 s | `rangyuu/live.py` con `aiortc 1.15.0`, contra el `Playground Device` | ✅ | 2026-09-15 |
+| **Resolución efectiva 1280x720**, por debajo del `max_resolution: 1080` que declara `/capabilities` | Misma corrida | ✅ | 2026-09-15 |
+| **~29 fps**; primer frame a **~1,4 s** de abrir la sesión | Misma corrida | ✅ | 2026-09-15 |
+| **La media dura ~40 s y se corta**: 1172 frames exactos, luego nada. No es un stream continuo | Dos sesiones consecutivas, idéntico corte | ✅ | 2026-09-15 |
+| **El live view simulado es un clip enlatado**: dos sesiones distintas entregan el mismo contenido frame a frame (diferencia media 0,1–2,2 por píxel, atribuible al recodificado y al reloj sobreimpreso) | Comparación perceptual de siete frames muestreados en dos sesiones | ✅ | 2026-09-15 |
+| **El clip es un comedero de pájaros en la nieve**, no una entrada ni un garaje | `fixtures/ring/playground_frame_120.png` | ✅ | 2026-09-15 |
+| El token del Playground caduca: emitido ~13:13, muerto a las 13:58 con `401` | Reintento de `GET /v1/devices` | ✅ | 2026-09-15 |
 | **Sesión WHEP abierta desde un proceso Python, sin navegador.** `POST …/media/streaming/whep/sessions` con SDP offer → `201`, SDP answer y `Location` de sesión; `DELETE` la cierra y responde 2xx | `rangyuu/whep.py`, probado contra el `Playground Device` el 2026-09-15 | ✅ | 2026-09-15 |
 | El `Location` es una URL absoluta del propio dispositivo con un parámetro `?location=<token>` | Misma prueba | ✅ | 2026-09-15 |
 | El answer ofrece **solo video H264** (payload 96, `sendonly`, `rtcp-mux`), sin línea de audio | Misma prueba | ✅ | 2026-09-15 |
@@ -43,8 +50,7 @@
 |---|---|---|
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
 | Error métrico de la homografía en centímetros a una distancia dada | Requiere cuatro correspondencias medidas contra una escena real | B8 |
-| Tres de las seis mediciones de `docs/perception.md` §7: fps y resolución efectiva, latencia glass-to-glass y duración máxima de sesión | Exigen **decodificar** la media, no solo señalizar; hace falta un cliente WebRTC (`aiortc`, no instalado) | B3, B10 |
-| **Si el live view simulado entrega video sintético o un clip enlatado** | Requiere abrir la sesión WHEP; es la medición que decide si B8 necesita hardware | B3 |
+| Latencia glass-to-glass real | El clip es enlatado y trae su propio reloj sobreimpreso; contra una grabación no hay glass-to-glass que medir. Necesita dispositivo físico | B10 |
 | La ruta real del endpoint de token OAuth | No está en el sample ni se pudo leer la doc oficial; queda en `RANGYUU_TOKEN_URL`, configurable, sin valor por defecto | B1, B2 |
 | Sesión WHEP fuera del navegador | Nada escrito todavía; es el riesgo técnico mayor | B10 |
 | Oclusión derivada del frame | `mark_occluded` existe y tiene pruebas, pero hoy la oclusión se declara desde fuera, no se detecta | B8 |

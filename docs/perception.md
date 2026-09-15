@@ -118,15 +118,21 @@ algo que alguien podría encender.
 
 Ninguna de estas cifras está en la documentación pública, y todas cambian el diseño:
 
-- **Resolución y fps reales** del stream WHEP. Define el tamaño mínimo detectable a X metros.
+- ~~Resolución y fps reales del stream WHEP~~ — **medido el 2026-09-15: 1280x720 a ~29 fps**, por
+  debajo del `max_resolution: 1080` que declara `/capabilities`. Primer frame a ~1,4 s.
 - **Latencia glass-to-glass.** Define a qué velocidad puede moverse lo que gobiernas.
-- **Duración máxima de sesión** y si se puede reabrir sin fricción.
+- ~~Duración máxima de sesión~~ — **medido: la media dura ~40 s** (1172 frames exactos) y se corta;
+  no es un stream continuo. Reabrir es inmediato y entrega el mismo clip desde el principio.
 - ~~Cuántas sesiones simultáneas permite una cuenta~~ — **medido el 2026-09-15: al menos cuatro**
   sobre el mismo dispositivo del Playground, ninguna rechazada, ~0,7 s de señalización cada una. No
   se buscó el techo. El multi-cámara de §4 no está bloqueado por este límite.
-- **Si el live view simulado del Playground entrega video sintético o un clip enlatado.** **Es la
-  medición que más pesa:** si es enlatado, la calibración contra él no es real y el demo necesita un
-  dispositivo físico o un clip propio grabado. Todo §4 depende de esto.
+- ~~Si el live view simulado entrega video sintético o un clip enlatado~~ — **medido el 2026-09-15:
+  es un clip enlatado.** Dos sesiones distintas entregan el mismo contenido frame a frame, y la
+  escena es **un comedero de pájaros en la nieve**, no una entrada ni un garaje
+  (`fixtures/ring/playground_frame_120.png`). **Consecuencia asumida:** contra ese clip no hay plano
+  de suelo ni geometría conocida, así que **no se puede medir el error de una homografía con él**. La
+  calibración de B8 necesita metraje propio —el iPhone de B11— o un dispositivo físico. El Playground
+  sirve para la integración con Ring, no para la métrica.
 - ~~Si los intrínsecos de la cámara se exponen en `/capabilities`~~ — **medido el 2026-09-15: no se
   exponen.** `/capabilities` da códecs (`AVC`), relación `16:9`, `max_resolution: 1080` y las
   configuraciones de `motion_zones` y `privacy_zones`; ni distancia focal ni distorsión. La
