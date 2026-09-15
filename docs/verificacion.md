@@ -10,7 +10,8 @@
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
 | Suite completa del núcleo, 98 pruebas | `python -m pytest -q` → `98 passed` | ✅ | 2026-09-15 |
-| **Presupuesto medido a 1280x720**, la resolución real del WHEP: decodificación 13,63 ms, **inferencia local 0,66 ms**, decisión 0,14 ms → 14,44 ms por frame, ~69 fps de capacidad | 200 frames por `LocalRuntime.on_frame`; a 1024x576 da 7,67 ms | ✅ | 2026-09-15 |
+| **El lazo completo corrió contra una sesión WHEP viva**: 400 frames a 1280x720, 1779 detecciones; decodificación 7,48 ms, inferencia 0,58 ms, decisión 0,10 ms → 8,16 ms por frame (~122 fps de capacidad contra 29 fps que entrega la cámara). Con el feed vivo el veredicto es `PROCEED`; al cortarlo pasa a `HOLD` por `feed stale` | `LocalRuntime` alimentado desde `rangyuu/live.py` con `RANGYUU_ACCESS_TOKEN` cargado | ✅ | 2026-09-15 |
+| Presupuesto sobre archivo local, como control: 14,44 ms por frame a 1280x720 y 7,67 ms a 1024x576 | 200 y 486 frames por `LocalRuntime.on_frame` | ✅ | 2026-09-15 |
 | **La inferencia no abre un socket**: se envenena `socket.socket` y `socket.create_connection` mientras se procesa un frame y el lazo sigue funcionando | `python -m pytest tests/test_runtime.py::test_inference_opens_no_socket` | ✅ | 2026-09-15 |
 | **Corte de red con el sistema andando**: con la celda observada libre el veredicto es `PROCEED`; cuando dejan de llegar frames pasa a `UNKNOWN` por `feed stale`, sin que cambie nada más | `python -m pytest tests/test_runtime.py::test_the_network_cut_stops_authorizing_instead_of_holding_the_last_reading` | ✅ | 2026-09-15 |
 | La calibración reporta **error en centímetros** por punto, y un punto fuera del ajuste se comprueba aparte | `python -m pytest tests/test_calibrate.py` | ✅ | 2026-09-15 |

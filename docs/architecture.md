@@ -70,18 +70,19 @@ es exactamente el lazo en el que después entra el LIDAR, por el mismo puerto.
 ## 5. Presupuesto de latencia, por tramo
 
 De estos seis tramos **solo controlas los últimos cuatro**. Tres están medidos desde el 2026-09-15
-sobre frames reales a 1280x720 —la resolución que entrega el WHEP— con el detector local de
+sobre 400 frames de una **sesión WHEP viva** a 1280x720, con el detector local de
 `rangyuu/detect.py`; la evidencia y el comando están en [verificacion.md](verificacion.md):
 
 ```text
 cámara → nube de Ring        no controlado
 nube de Ring → tu LAN        no controlado, variable
-decodificación del frame     13,63 ms   medido 2026-09-15, 1280x720
-inferencia local              0,66 ms   medido  ← lo que la nube cobraría en ida y vuelta
-decisión (mapa + política)    0,14 ms   medido
-actuación por LAN            sin medir  → falta el consumidor real
+decodificación del frame      7,48 ms   medido sobre 400 frames de una sesión WHEP viva
+inferencia local              0,58 ms   medido  ← lo que la nube cobraría en ida y vuelta
+decisión (mapa + política)    0,10 ms   medido
+actuación por LAN            sin medir  → falta el consumidor fuera del proceso
                              ────────
-suma controlada              14,44 ms por frame, ~69 fps de capacidad
+suma controlada               8,16 ms por frame, ~122 fps de capacidad, contra 29 fps que entrega
+                                        la cámara: sobra margen de un factor 4
 ```
 
 El argumento de la inferencia local es este: los dos primeros tramos ya se pagaron y no se pueden

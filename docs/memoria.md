@@ -29,8 +29,10 @@
 
 - **El tramo de actuación por LAN**: el rover es digital y vive en el mismo proceso, así que no hay
   salto de red que medir. → B10.
-- **El lazo contra una sesión WHEP viva**: se intentó y el token del Playground había caducado otra
-  vez. Lo medido usa un archivo local, que para latencia de cómputo es equivalente.
+- ~~El lazo contra una sesión WHEP viva~~ — **hecho más tarde el mismo día, con token nuevo**: 400
+  frames a 1280x720, 1779 detecciones, y el presupuesto real quedó en **8,16 ms por frame**
+  (decodificación 7,48, inferencia 0,58, decisión 0,10), ~122 fps de capacidad contra los 29 fps que
+  entrega la cámara. Con el feed vivo el veredicto es `PROCEED`; al cortarlo, `HOLD` por `feed stale`.
 - **La calidad del detector**: sobre video de cámara en mano marca movimiento en casi todo el cuadro
   —1907 detecciones en 486 frames—, porque el fondo se mueve con la cámara. Sirve con cámara fija,
   que es el caso de Ring; no sirve para una cámara a bordo en movimiento. → B11.
