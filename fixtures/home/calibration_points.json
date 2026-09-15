@@ -1,0 +1,18 @@
+{
+  "source": "test_home_image.jpeg (960x1280), foto fija tomada el 2026-09-15. La imagen no se versiona.",
+  "marks": {
+    "note": "Cuatro marcas de cinta negra en las esquinas de un rectangulo medido con cinta metrica.",
+    "rectangle_m": {"width": 0.90, "depth": 1.50},
+    "points": [
+      {"label": "NL", "pixel": [95.0, 818.0], "floor_m": [0.0, 0.0]},
+      {"label": "NR", "pixel": [697.5, 841.6], "floor_m": [0.9, 0.0]},
+      {"label": "FR", "pixel": [631.0, 222.0], "floor_m": [0.9, 1.5]},
+      {"label": "FL", "pixel": [247.0, 208.0], "floor_m": [0.0, 1.5]}
+    ]
+  },
+  "held_out": {
+    "note": "Tres cruces de junta sobre la misma linea vertical de baldosa. No entran en el ajuste: son la comprobacion independiente.",
+    "tile_side_m": 0.305,
+    "pixels": [[488.0, 402.0], [491.0, 522.0], [494.0, 662.0]]
+  }
+}
