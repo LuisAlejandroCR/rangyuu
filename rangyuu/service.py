@@ -1,6 +1,7 @@
-import os,hmac,hashlib,json
+import os,hmac,hashlib,json,logging
 from http.server import BaseHTTPRequestHandler,HTTPServer
 def handler_class(secret=""):
+ log=logging.getLogger("rangyuu.http")
  class Handler(BaseHTTPRequestHandler):
   def _send(self,status,data):
    raw=json.dumps(data).encode(); self.send_response(status); self.send_header("Content-Type","application/json"); self.end_headers(); self.wfile.write(raw)
@@ -15,10 +16,12 @@ def handler_class(secret=""):
    except ValueError: self._send(400,{"error":"invalid content length"}); return
    if length<0: self._send(411,{"error":"content length required"}); return
    if length>1_000_000: self._send(413,{"error":"payload too large"}); return
-   body=self.rfile.read(length); sig=self.headers.get("X-Signature","")
+   body=self.rfile.read(length)
+   if len(body)!=length: self._send(400,{"error":"truncated body"}); return
+   sig=self.headers.get("X-Signature","")
    expected=hmac.new(secret.encode(),body,hashlib.sha256).hexdigest()
    if secret and not hmac.compare_digest(sig.removeprefix("sha256="),expected): self._send(401,{"error":"invalid signature"}); return
-   try: payload=json.loads(body); self._send(200,{"accepted":True,"objective":payload.get("objective","")[:2000]})
+   try: payload=json.loads(body); log.info("request accepted path=%s bytes=%d",self.path,length); self._send(200,{"accepted":True,"objective":payload.get("objective","")[:2000]})
    except json.JSONDecodeError: self._send(400,{"error":"invalid json"})
   def log_message(self,*args): pass
  return Handler
