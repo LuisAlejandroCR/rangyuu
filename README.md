@@ -70,6 +70,8 @@ python -m rangyuu    # demo sobre fixture: libre → ocupado → duplicado recha
 | `rangyuu/ring_client.py` | Cliente de solo lectura de la API de Ring: token, refresco y descubrimiento de dispositivos. |
 | `rangyuu/config.py` | Configuración: entorno primero, `.env.local` después. |
 | `rangyuu/calibrate.py` | Correspondencias medidas → homografía **y error en centímetros** (medido: 0,9 cm sobre 61 cm). |
+| `rangyuu/detect.py` | Detección de movimiento local, sin red: nunca sale un frame a inferir. |
+| `rangyuu/runtime.py` | El lazo del sitio con presupuesto por tramo y el perro guardián del feed. |
 | `rangyuu/live.py` | Recibe y decodifica la media H264 fuera del navegador (requiere `aiortc`). |
 | `rangyuu/whep.py` | Señalización WHEP: abre y cierra la sesión de live view sin navegador. |
 | `rangyuu/api.py` | El borde HTTP: `POST /api/webhook/ring` y `POST /api/rover/can-traverse`. |
