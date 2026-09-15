@@ -1,0 +1,35 @@
+[
+  {
+    "event_id": "evt-free-001",
+    "device_id": "ring-camera-1",
+    "timestamp": "2026-09-14T21:00:00Z",
+    "type": "motion_detected",
+    "data": {
+      "confidence": 0.98,
+      "bounding_box": [10, 20, 30, 50],
+      "occupancy": "free"
+    }
+  },
+  {
+    "event_id": "evt-occupied-001",
+    "device_id": "ring-camera-1",
+    "timestamp": "2026-09-14T21:00:01Z",
+    "type": "person_detected",
+    "data": {
+      "confidence": 0.97,
+      "bounding_box": [10, 20, 30, 50],
+      "occupancy": "occupied"
+    }
+  },
+  {
+    "event_id": "evt-occupied-001",
+    "device_id": "ring-camera-1",
+    "timestamp": "2026-09-14T21:00:01Z",
+    "type": "person_detected",
+    "data": {
+      "confidence": 0.97,
+      "bounding_box": [10, 20, 30, 50],
+      "occupancy": "occupied"
+    }
+  }
+]
