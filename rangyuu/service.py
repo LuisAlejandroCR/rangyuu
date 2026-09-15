@@ -21,7 +21,10 @@ def handler_class(secret=""):
    sig=self.headers.get("X-Signature","")
    expected=hmac.new(secret.encode(),body,hashlib.sha256).hexdigest()
    if secret and not hmac.compare_digest(sig.removeprefix("sha256="),expected): self._send(401,{"error":"invalid signature"}); return
-   try: payload=json.loads(body); log.info("request accepted path=%s bytes=%d",self.path,length); self._send(200,{"accepted":True,"objective":payload.get("objective","")[:2000]})
+   try:
+    payload=json.loads(body)
+    if not isinstance(payload,dict): self._send(400,{"error":"json object required"}); return
+    log.info("request accepted path=%s bytes=%d",self.path,length); self._send(200,{"accepted":True,"objective":payload.get("objective","")[:2000]})
    except json.JSONDecodeError: self._send(400,{"error":"invalid json"})
   def log_message(self,*args): pass
  return Handler

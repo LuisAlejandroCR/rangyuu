@@ -19,6 +19,7 @@ class HttpProvider(ProviderAdapter):
         if not self.base_url: return
         u=urlparse(self.base_url)
         if u.scheme != "https": raise ValueError("provider URL must use HTTPS")
+        if not u.hostname: raise ValueError("provider URL requires hostname")
         try:
             ip=ipaddress.ip_address(u.hostname)
             if ip.is_private or ip.is_loopback or ip.is_link_local: raise ValueError("private provider address")
