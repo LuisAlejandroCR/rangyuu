@@ -1,5 +1,6 @@
 """Small, dependency-free planar calibration utilities."""
 from math import hypot
+import numpy as np
 def _normalize(points):
     cx=sum(x for x,y in points)/len(points); cy=sum(y for x,y in points)/len(points)
     d=sum(hypot(x-cx,y-cy) for x,y in points)/len(points)
@@ -23,16 +24,12 @@ def homography_dlt(src, dst):
     if len(src)<4 or len(src)!=len(dst): raise ValueError("need four matching points")
     # Fix h33 only when numerically safe; this is the 8-parameter DLT solution.
     ns,ts=_normalize(src); nd,td=_normalize(dst)
-    a=[]; b=[]
+    a=[]
     for (x,y),(u,v) in zip(ns,nd):
-        a += [[x,y,1,0,0,0,-u*x,-u*y],[0,0,0,x,y,1,-v*x,-v*y]]
-        b += [u,v]
-    if len(a)>8:
-        ata=[[sum(row[i]*row[j] for row in a) for j in range(8)] for i in range(8)]
-        atb=[sum(row[i]*z for row,z in zip(a,b)) for i in range(8)]
-        h=_solve(ata,atb)
-    else: h=_solve(a,b)
-    H=[h[:3],h[3:6],[h[6],h[7],1.0]]
+        a += [[-x,-y,-1,0,0,0,u*x,u*y,u],[0,0,0,-x,-y,-1,v*x,v*y,v]]
+    _,s,vh=np.linalg.svd(np.asarray(a,float));
+    if s[-1] < 1e-14 or s[-2]/s[-1] < 1e-8: raise ValueError("degenerate correspondences")
+    H=vh[-1].reshape(3,3)
     s=ts[0][0]; tx=ts[0][2]; ty=ts[1][2]; q=td[0][0]; ux=td[0][2]; uy=td[1][2]
     inv=((1/q,0,-ux/q),(0,1/q,-uy/q),(0,0,1))
     out=_mm(inv,_mm(H,ts)); z=out[2][2]
