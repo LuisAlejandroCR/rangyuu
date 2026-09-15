@@ -1,5 +1,6 @@
 import hashlib,hmac
 from rangyuu import *
+from rangyuu.policy import cell_is_stale
 def test_homography():
  h=homography_dlt([(0,0),(1,0),(1,1),(0,1)],[(2,3),(4,3),(4,5),(2,5)])
  assert all(abs(a-b)<1e-9 for a,b in zip(project_point(h,(.5,.5)),(3.0,4.0)))
@@ -18,3 +19,6 @@ def test_degradation_rows():
  assert decide(coverage=False)==Decision.HOLD
  assert decide(confidence=.2)==Decision.UNKNOWN
  assert decide(contradiction=True)==Decision.HOLD
+def test_initial_state_and_expiry():
+ assert cell_is_stale(None,100,30) and cell_is_stale(50,100,30)
+ assert not cell_is_stale(80,100,30)
