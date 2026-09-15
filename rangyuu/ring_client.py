@@ -1,6 +1,7 @@
 # ring_client.py: read-only client for the Ring API. Resolves the bearer token (Playground
 # access token, or refresh-token exchange when the app is registered) and exposes device
-# discovery. It never logs a credential and never falls back to plaintext HTTP.
+# discovery. Ring answers in JSON:API, so resources are unwrapped into flat dicts here.
+# It never logs a credential and never falls back to plaintext HTTP.
 
 import json
 import time
@@ -100,18 +101,20 @@ class RingClient:
     # --- read-only endpoints ---------------------------------------------
 
     def devices(self) -> list:
-        found = self._get("/v1/devices")
-        items = found.get("devices", found) if isinstance(found, dict) else found
-        return items if isinstance(items, list) else []
+        """Every device the token can see, flattened to {id, type, ...attributes}."""
+        return [resource(item) for item in _data(self._get("/v1/devices"), as_list=True)]
 
     def device_status(self, device_id: str) -> dict:
-        return self._get(f"/v1/devices/{_device(device_id)}/status")
+        return resource(_data(self._get(f"/v1/devices/{_device(device_id)}/status")))
 
     def capabilities(self, device_id: str) -> dict:
-        return self._get(f"/v1/devices/{_device(device_id)}/capabilities")
+        return resource(_data(self._get(f"/v1/devices/{_device(device_id)}/capabilities")))
+
+    def location(self, device_id: str) -> dict:
+        return resource(_data(self._get(f"/v1/devices/{_device(device_id)}/location")))
 
     def me(self) -> dict:
-        return self._get("/v1/users/me")
+        return resource(_data(self._get("/v1/users/me")))
 
     # --- transport --------------------------------------------------------
 
@@ -142,6 +145,26 @@ class RingClient:
         except (UnicodeDecodeError, json.JSONDecodeError):
             raise RingError("ring returned invalid json") from None
         return value if isinstance(value, (dict, list)) else {}
+
+
+def _data(body, *, as_list: bool = False):
+    """Unwrap a JSON:API envelope. A missing or mistyped `data` yields an empty value, not a guess."""
+    found = body.get("data") if isinstance(body, dict) else body
+    if as_list:
+        return found if isinstance(found, list) else []
+    return found if isinstance(found, dict) else {}
+
+
+def resource(item) -> dict:
+    """Flatten one JSON:API resource: attributes at the top level, `id` and `type` preserved."""
+    if not isinstance(item, dict):
+        return {}
+    attributes = item.get("attributes")
+    flat = dict(attributes) if isinstance(attributes, dict) else {}
+    for key in ("id", "type"):
+        if key in item:
+            flat[key] = item[key]
+    return flat
 
 
 def _device(device_id: str) -> str:

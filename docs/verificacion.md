@@ -9,7 +9,12 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa del núcleo, 57 pruebas | `python -m pytest -q` → `57 passed` | ✅ | 2026-09-15 |
+| Suite completa del núcleo, 63 pruebas | `python -m pytest -q` → `63 passed` | ✅ | 2026-09-15 |
+| **Primer contacto real con Ring**: `GET /v1/devices` devuelve un `Playground Device` | `python -c "from rangyuu.ring_client import RingClient; print(RingClient().devices())"` con `RANGYUU_ACCESS_TOKEN` cargado | ✅ | 2026-09-15 |
+| La API responde en **JSON:API** (`{"data":[{type,id,attributes,relationships}]}`), no en objetos planos | Misma llamada; el cliente desenvuelve el sobre en `resource()` | ✅ | 2026-09-15 |
+| `/status` del dispositivo simulado: `online: true`, con `reported_at` | `RingClient().device_status(<id>)` | ✅ | 2026-09-15 |
+| `/location` devuelve **solo país y estado** (`US`, `CA`), no coordenadas | `RingClient().location(<id>)` | ✅ | 2026-09-15 |
+| **`/capabilities` NO expone intrínsecos de cámara.** Da `codecs: [AVC]`, `ratio: 16:9`, `max_resolution: 1080`, `supported_resolutions: [1080]`, y configuraciones de `motion_zones` y `privacy_zones` | `RingClient().capabilities(<id>)` | ✅ | 2026-09-15 |
 | Cliente de Ring sin red: token del Playground, intercambio de refresh, expiración y rotación | `python -m pytest tests/test_ring_client.py` | ✅ | 2026-09-15 |
 | El cliente rechaza `http://`, ids de dispositivo con `/` o `?`, y no filtra el token en el error | `python -m pytest tests/test_ring_client.py` | ✅ | 2026-09-15 |
 | Precedencia de configuración: la variable de entorno gana sobre `.env.local` | `python -m pytest tests/test_config.py` | ✅ | 2026-09-15 |
@@ -33,7 +38,8 @@
 |---|---|---|
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
 | Error métrico de la homografía en centímetros a una distancia dada | Requiere cuatro correspondencias medidas contra una escena real | B8 |
-| Las seis mediciones de `docs/perception.md` §7 | Requieren sesión WHEP viva | B3, B10 |
+| Cuatro de las seis mediciones de `docs/perception.md` §7: fps y resolución efectiva del WHEP, latencia glass-to-glass, duración máxima de sesión, sesiones simultáneas | Requieren abrir una sesión WHEP viva | B3, B10 |
+| **Si el live view simulado entrega video sintético o un clip enlatado** | Requiere abrir la sesión WHEP; es la medición que decide si B8 necesita hardware | B3 |
 | La ruta real del endpoint de token OAuth | No está en el sample ni se pudo leer la doc oficial; queda en `RANGYUU_TOKEN_URL`, configurable, sin valor por defecto | B1, B2 |
 | Sesión WHEP fuera del navegador | Nada escrito todavía; es el riesgo técnico mayor | B10 |
 | Oclusión derivada del frame | `mark_occluded` existe y tiene pruebas, pero hoy la oclusión se declara desde fuera, no se detecta | B8 |

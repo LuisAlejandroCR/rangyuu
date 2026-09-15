@@ -4,6 +4,35 @@
 
 # Memoria
 
+## 2026-09-15 — Primer contacto real con la API de Ring
+
+**Qué se hizo**
+
+- Con `RANGYUU_ACCESS_TOKEN` del Playground cargado en `.env.local`, `GET /v1/devices` devolvió un
+  dispositivo real: `Playground Device`, un Doorbell Pro simulado. Primera llamada verificada contra
+  Ring del proyecto.
+- **La API responde en JSON:API**, no en objetos planos: `{"data":[{type,id,attributes,relationships}]}`
+  con un `meta.time`. El cliente devolvía lista vacía porque buscaba una clave `devices`; ahora
+  desenvuelve el sobre en `resource()` y entrega diccionarios planos con `id` y `type`. Un sobre
+  inesperado da vacío, nunca una suposición. Seis pruebas nuevas.
+- Se añadió `location()` al cliente. Medido: `/location` devuelve solo país y estado (`US`, `CA`),
+  `/status` devuelve `online: true` con `reported_at`.
+- **`/capabilities` no expone intrínsecos de cámara**: da `codecs: [AVC]`, `ratio: 16:9`,
+  `max_resolution: 1080`, `supported_resolutions: [1080]` y configuraciones de `motion_zones` y
+  `privacy_zones`. Queda contestada una de las seis mediciones de `docs/perception.md` §7, y confirma
+  que la calibración es manual por homografía.
+- Suite en 63 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- Las otras cinco mediciones exigen abrir una sesión WHEP viva, que todavía no se escribió. La que
+  más pesa sigue abierta: **si el live view simulado entrega video sintético o un clip enlatado**.
+- Solo hay un dispositivo simulado en la cuenta, así que el multi-cámara de `docs/perception.md` §4
+  sigue sin poder probarse contra Ring.
+- No se probó ningún webhook: eso depende del `client_id` y del account linking. → B2.
+
+**Dónde quedan los pendientes:** B1, B2, B3, B8 y B10 de [plan.md](plan.md).
+
 ## 2026-09-15 — Un solo prefijo de variables: `RANGYUU_`
 
 **Qué se hizo**

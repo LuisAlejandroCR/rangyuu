@@ -47,7 +47,8 @@ Verificado leyendo `AmazonAppDev/ring-api-helloworld` (MIT), no de la documentac
 ## 3. Lo que NO da, y hay que decirlo antes de escribir código
 
 1. **Sin profundidad.** Una cámara monocular fija. No hay rango, no hay nube de puntos.
-2. **Sin parámetros intrínsecos publicados** (por confirmar, B1). Sin ellos hay que calibrar a mano.
+2. **Sin parámetros intrínsecos publicados** —confirmado contra la API el 2026-09-15, no ya un
+   supuesto—. Sin ellos hay que calibrar a mano.
 3. **Sin sincronía ni IMU.** No hay reloj común entre cámaras ni entre cámara y vehículo.
 4. **Latencia de red.** WebRTC sobre internet: cientos de milisegundos, variables. Sirve para
    "hay alguien en la rampa, no salgas"; **no** para evadir un obstáculo en movimiento.
@@ -124,7 +125,11 @@ Ninguna de estas cifras está en la documentación pública, y todas cambian el 
 - **Si el live view simulado del Playground entrega video sintético o un clip enlatado.** **Es la
   medición que más pesa:** si es enlatado, la calibración contra él no es real y el demo necesita un
   dispositivo físico o un clip propio grabado. Todo §4 depende de esto.
-- **Si los intrínsecos de la cámara se exponen** en `/capabilities`.
+- ~~Si los intrínsecos de la cámara se exponen en `/capabilities`~~ — **medido el 2026-09-15: no se
+  exponen.** `/capabilities` da códecs (`AVC`), relación `16:9`, `max_resolution: 1080` y las
+  configuraciones de `motion_zones` y `privacy_zones`; ni distancia focal ni distorsión. La
+  calibración es manual por homografía, como se asumió. Evidencia en
+  [verificacion.md](verificacion.md).
 
 ## 8. Por qué esto no se tira cuando llegue el LIDAR
 
