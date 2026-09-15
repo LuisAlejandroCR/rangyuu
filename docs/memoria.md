@@ -4,6 +4,39 @@
 
 # Memoria
 
+## 2026-09-15 — Lazo de control local, medido y con el corte de red probado
+
+**Qué se hizo**
+
+- `rangyuu/detect.py`: detección de movimiento por sustracción de fondo, en numpy y **sin ninguna
+  dependencia de red**. Es deliberadamente simple; un modelo más pesado entra detrás de la misma
+  firma `detect()`.
+- `rangyuu/runtime.py`: el lazo del sitio —frame, inferencia, estado espacial, decisión— con
+  presupuesto por tramo y un perro guardián: si no llega un frame dentro de la ventana declarada, el
+  veredicto deja de autorizar.
+- **Presupuesto medido sobre 200 frames reales a 1280x720**, que es lo que entrega el WHEP:
+  decodificación **13,63 ms**, inferencia local **0,66 ms**, decisión **0,14 ms**; total **14,44 ms**
+  por frame, ~69 fps de capacidad. A 1024x576 baja a 7,67 ms. Los tres números entraron en
+  `docs/architecture.md` §5, que hasta hoy no tenía ninguno.
+- **La prueba obligatoria de B10 pasa:** con la celda observada libre el veredicto es `PROCEED`;
+  cuando dejan de llegar frames pasa a `UNKNOWN` por `feed stale`, sin que cambie nada más en el
+  estado. Es el corte de red, y termina en la acción segura.
+- Que la inferencia no hable con terceros está probado, no afirmado: una prueba envenena
+  `socket.socket` y `socket.create_connection` mientras se procesa el frame.
+- Suite en 98 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **El tramo de actuación por LAN**: el rover es digital y vive en el mismo proceso, así que no hay
+  salto de red que medir. → B10.
+- **El lazo contra una sesión WHEP viva**: se intentó y el token del Playground había caducado otra
+  vez. Lo medido usa un archivo local, que para latencia de cómputo es equivalente.
+- **La calidad del detector**: sobre video de cámara en mano marca movimiento en casi todo el cuadro
+  —1907 detecciones en 486 frames—, porque el fondo se mueve con la cámara. Sirve con cámara fija,
+  que es el caso de Ring; no sirve para una cámara a bordo en movimiento. → B11.
+
+**Dónde quedan los pendientes:** B8, B10 y B11 de [plan.md](plan.md).
+
 ## 2026-09-15 — Homografía calibrada y medida: 0,9 cm sobre 61 cm
 
 **Qué se hizo**
