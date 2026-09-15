@@ -9,7 +9,8 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa del núcleo, 77 pruebas | `python -m pytest -q` → `77 passed` | ✅ | 2026-09-15 |
+| Suite completa del núcleo, 85 pruebas | `python -m pytest -q` → `85 passed` | ✅ | 2026-09-15 |
+| La calibración reporta **error en centímetros** por punto, y un punto fuera del ajuste se comprueba aparte | `python -m pytest tests/test_calibrate.py` | ✅ | 2026-09-15 |
 | **Media H264 decodificada fuera del navegador**: 1172 frames en 39,9 s | `rangyuu/live.py` con `aiortc 1.15.0`, contra el `Playground Device` | ✅ | 2026-09-15 |
 | **Resolución efectiva 1280x720**, por debajo del `max_resolution: 1080` que declara `/capabilities` | Misma corrida | ✅ | 2026-09-15 |
 | **~29 fps**; primer frame a **~1,4 s** de abrir la sesión | Misma corrida | ✅ | 2026-09-15 |
@@ -49,7 +50,7 @@
 | Qué | Por qué no se pudo | Bloque |
 |---|---|---|
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
-| Error métrico de la homografía en centímetros a una distancia dada | Requiere cuatro correspondencias medidas contra una escena real | B8 |
+| Error métrico de la homografía en centímetros | La maquinaria está escrita y probada (`rangyuu/calibrate.py`), pero falta la entrada: un frame **con cámara quieta** donde se vean las cuatro esquinas del recuadro medido. El video del 2026-09-15 es de cámara en mano y en movimiento | B8, B11 |
 | Latencia glass-to-glass real | El clip es enlatado y trae su propio reloj sobreimpreso; contra una grabación no hay glass-to-glass que medir. Necesita dispositivo físico | B10 |
 | La ruta real del endpoint de token OAuth | No está en el sample ni se pudo leer la doc oficial; queda en `RANGYUU_TOKEN_URL`, configurable, sin valor por defecto | B1, B2 |
 | Sesión WHEP fuera del navegador | Nada escrito todavía; es el riesgo técnico mayor | B10 |
