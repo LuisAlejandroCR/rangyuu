@@ -4,6 +4,40 @@
 
 # Memoria
 
+## 2026-09-15 — La app: seis pantallas sobre el núcleo real
+
+**Qué se hizo**
+
+- `docs/app.md` fija el producto: Ring responde *qué pasa en casa*, Rangyuu responde *¿puedo avanzar
+  por este espacio?*. De ahí salen las cinco pantallas —Ahora, Caminata, Espacio, Fuentes,
+  Configurar— más Evidencia, que muestra **decisiones, no clips**.
+- **Los cuatro estados de pantalla no son un contrato nuevo.** `rangyuu/ui.py` los deriva de las tres
+  decisiones del núcleo con una regla explícita: `CUIDADO` es un `PROCEED` con margen escaso
+  —confianza cerca del umbral, observación por caducar, u ocupado adyacente al camino— y **nunca
+  asciende un rechazo**. Diez pruebas lo fijan.
+- `rangyuu/site.py` reúne runtime, zonas nombradas, calibración y una bitácora corta de decisiones,
+  registrando solo las transiciones. `rangyuu/webapp.py` expone seis lecturas y cuatro escrituras y
+  sirve `web/`. `rangyuu/serve.py` arranca todo **sin credenciales ni hardware**.
+- La interfaz (`web/`) no tiene build ni dependencias: HTML, CSS y JS que piden JSON al proceso
+  local. Un color por estado, el rojo solo en `PARA`, y `SIN CERTEZA` en violeta apagado porque es
+  una ausencia, no una alarma. El video no aparece por defecto en ninguna pantalla.
+- Verificado en el navegador: `AVANZA · camino libre` con el mapa y la trayectoria dibujados, y la
+  pantalla de Fuentes mostrando el **error medido de 0,9 cm**, no el 0,0 cm del ajuste —que no prueba
+  nada— tras corregirlo al detectarlo.
+- Suite en 120 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **El modo caminata en un iPhone real.** Safari solo da cámara en HTTPS o `localhost`, así que
+  probarlo en el teléfono exige certificado o túnel. En el navegador de escritorio la pantalla
+  funciona; con cámara del teléfono, sin probar. → B12, B11.
+- **La app alimentada por una sesión WHEP viva.** Hoy el suelo se siembra como observado y un hilo lo
+  refresca; el lazo real existe (`LocalRuntime`) y está medido, pero no está conectado a la app.
+- La vista de evidencia muestra celda, fuente, edad y confianza, pero todavía **no muestra la imagen**
+  al tocar una celda.
+
+**Dónde quedan los pendientes:** B12, B11, B8 y B2 de [plan.md](plan.md).
+
 ## 2026-09-15 — B6: PR al sample oficial de Ring
 
 **Qué se hizo**
@@ -13,8 +47,9 @@
 - Identificado el hueco leyendo el repo: `scripts/` cubre los siete endpoints REST, pero **live view
   solo existe dentro del hook de React** `app/hooks/useWebRTCStream.ts`. Quien integre desde Python o
   desde un servicio sin navegador tiene que deducir la señalización del código React.
-- PR abierto dentro de la ventana:
-  <https://github.com/AmazonAppDev/ring-api-helloworld/pull/23>, rama
+- PR preparado y abierto brevemente como
+  <https://github.com/AmazonAppDev/ring-api-helloworld/pull/23>, y **cerrado el mismo día por decisión
+  escogida: se reabrirá cuando el proyecto esté terminado.** Rama
   `LuisAlejandroCR:add-whep-live-view-script`. Añade `scripts/live_view.py` en el estilo de la casa
   —`argparse`, `--token`, `--device-id` opcional con autodescubrimiento, `curl` equivalente impreso—,
   una fila en la tabla del README y `aiortc`/`av` como dependencias **opcionales y comentadas**.
@@ -24,7 +59,8 @@
 **Qué NO se verificó, y por qué**
 
 - **Si lo mergean.** El challenge no lo exige —pide la URL de la contribución dentro de la ventana—,
-  pero el repo tiene siete PRs de dependabot abiertos, así que la respuesta puede tardar.
+  pero el PR está cerrado a propósito hasta terminar el proyecto, y el repo tiene siete PRs de
+  dependabot abiertos, así que la respuesta puede tardar.
 - El script no se probó contra un **dispositivo Ring físico**, solo contra el Playground.
 
 **Dónde quedan los pendientes:** B1, B2, B8, B11 y B7 de [plan.md](plan.md).

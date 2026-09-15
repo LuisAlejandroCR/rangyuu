@@ -1,0 +1,149 @@
+/* styles.css: identidad visual de la app — navegación espacial tranquila, no alarma doméstica.
+   Un color por estado y ninguno decorativo; el rojo aparece solo en PARA. Se distingue de
+   index.html, que es la estructura, y de app.js, que trae el dato. */
+
+:root {
+  --ink: #e8ecf1;
+  --ink-dim: #8c98a8;
+  --ground: #0e1318;
+  --panel: #161d25;
+  --line: #24303c;
+
+  --avanza: #4fd1a5;
+  --cuidado: #e8b45c;
+  --para: #e5604f;
+  --incierto: #8f9bd8;
+
+  --free: #24493f;
+  --occupied: #5c2f2c;
+  --unknown: #222c36;
+  --route: #6fa8dc;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  padding-bottom: 4.5rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+.screen { padding: 1.25rem 1.25rem 2rem; max-width: 46rem; margin: 0 auto; }
+
+.bar { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.5rem; }
+.bar h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin: 0; }
+.stamp { color: var(--ink-dim); font-size: .8rem; font-variant-numeric: tabular-nums; }
+
+/* --- el estado, que es lo único grande de la pantalla --- */
+
+.verdict { margin: 2rem 0 2.5rem; }
+.verdict-state {
+  display: block; font-size: clamp(2.5rem, 12vw, 4rem); font-weight: 650;
+  letter-spacing: -.02em; line-height: 1.05; color: var(--incierto);
+}
+.verdict-reason { display: block; margin-top: .75rem; font-size: 1.1rem; color: var(--ink); }
+.verdict-detail { display: block; margin-top: .35rem; font-size: .9rem; color: var(--ink-dim); }
+
+[data-state="AVANZA"] .verdict-state, [data-state="AVANZA"] .walk-state { color: var(--avanza); }
+[data-state="CUIDADO"] .verdict-state, [data-state="CUIDADO"] .walk-state { color: var(--cuidado); }
+[data-state="PARA"] .verdict-state, [data-state="PARA"] .walk-state { color: var(--para); }
+
+/* --- mapa --- */
+
+.map { width: 100%; height: auto; aspect-ratio: 1 / 1; background: var(--panel); border-radius: 14px; }
+.map.tall { aspect-ratio: 3 / 4; }
+.map rect.cell { stroke: var(--ground); stroke-width: .4; }
+.map rect.free { fill: var(--free); }
+.map rect.occupied { fill: var(--occupied); }
+.map rect.unknown { fill: var(--unknown); }
+.map rect.route { fill: none; stroke: var(--route); stroke-width: .8; }
+.map .zone-label { fill: var(--ink-dim); font-size: 3px; }
+
+.legend { display: flex; gap: 1rem; flex-wrap: wrap; list-style: none; padding: 0; margin: .9rem 0 1.5rem;
+          color: var(--ink-dim); font-size: .8rem; }
+.legend li { display: flex; align-items: center; gap: .4rem; }
+.swatch { width: .8rem; height: .8rem; border-radius: 3px; display: inline-block; }
+.swatch.free { background: var(--free); }
+.swatch.occupied { background: var(--occupied); }
+.swatch.unknown { background: var(--unknown); }
+.swatch.route { background: none; border: 2px solid var(--route); }
+
+/* --- caminata --- */
+
+.walk { text-align: center; padding: 2.5rem 0 1.5rem; }
+.walk-state { font-size: clamp(2.2rem, 11vw, 3.4rem); font-weight: 650; color: var(--incierto); }
+.walk-reason { margin-top: .6rem; color: var(--ink); }
+.walk-note { color: var(--ink-dim); font-size: .82rem; margin-top: 1.75rem; }
+.confidence { height: 5px; background: var(--line); border-radius: 3px; margin: 1.5rem auto 0; max-width: 16rem; }
+.confidence span { display: block; height: 100%; border-radius: 3px; background: currentColor; transition: width .3s; }
+.walk-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
+
+video, canvas { width: 1px; height: 1px; opacity: 0; position: absolute; }
+
+/* --- listas y paneles --- */
+
+.sources, .zones, .decisions { list-style: none; padding: 0; margin: 0 0 1.5rem; }
+.sources li, .zones li, .decisions li {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: .9rem 1rem; margin-bottom: .6rem;
+}
+.sources li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.sources .label { font-weight: 550; }
+.sources .kind { display: block; color: var(--ink-dim); font-size: .75rem; letter-spacing: .05em; }
+.dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--ink-dim); display: inline-block; }
+.dot.on { background: var(--avanza); }
+.dot.off { background: var(--para); }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+         padding: 1rem; margin-bottom: 1rem; font-size: .9rem; }
+.panel h2 { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase;
+            color: var(--ink-dim); margin: 0 0 .6rem; }
+.panel .row { display: flex; justify-content: space-between; padding: .2rem 0; }
+.panel .row span:last-child { font-variant-numeric: tabular-nums; }
+.bad { color: var(--para); }
+.good { color: var(--avanza); }
+
+.decisions li { display: grid; gap: .2rem; }
+.decisions .state { font-weight: 600; letter-spacing: .02em; }
+.decisions .meta { color: var(--ink-dim); font-size: .78rem; font-variant-numeric: tabular-nums; }
+
+.cell-detail { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+               padding: .9rem 1rem; margin: .9rem 0 1.25rem; font-size: .88rem; }
+
+/* --- formulario de calibración --- */
+
+.hint { color: var(--ink-dim); font-size: .88rem; }
+.points { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .85rem; }
+.points th { text-align: left; color: var(--ink-dim); font-weight: 500; padding-bottom: .4rem; }
+.points td { padding: .2rem .25rem .2rem 0; }
+.points input, .field input {
+  width: 100%; background: var(--panel); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: .5rem .6rem; font: inherit; font-size: .9rem;
+}
+.field { display: block; margin: .75rem 0; color: var(--ink-dim); font-size: .82rem; }
+.field input { margin-top: .3rem; }
+
+/* --- botones --- */
+
+button { font: inherit; border-radius: 10px; border: 1px solid var(--line); cursor: pointer; }
+.primary { background: var(--route); color: #07121c; border: none; padding: .85rem 1.2rem; font-weight: 600; flex: 1; }
+.stop { background: var(--para); color: #1b0704; border: none; padding: .85rem 1.2rem; font-weight: 700; flex: 1; letter-spacing: .06em; }
+.ghost { background: transparent; color: var(--ink-dim); padding: .7rem 1rem; }
+
+/* --- navegación --- */
+
+.tabs {
+  position: fixed; bottom: 0; left: 0; right: 0; display: flex;
+  background: rgba(14, 19, 24, .94); backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom);
+}
+.tabs button {
+  flex: 1; background: none; border: none; color: var(--ink-dim);
+  padding: .9rem .2rem; font-size: .72rem; letter-spacing: .03em;
+}
+.tabs button.active { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

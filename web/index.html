@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!-- index.html: la app entera, cinco pantallas y una sexta opcional. Sin build, sin dependencias:
+     el navegador pide JSON al proceso local y dibuja. La lógica de estados vive en el núcleo
+     (rangyuu/ui.py), no aquí: esta pantalla muestra lo que el núcleo decidió. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rangyuu</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<main id="screens">
+
+  <!-- 1 · Ahora / Ruta segura -->
+  <section class="screen" data-screen="ahora">
+    <header class="bar"><h1>Ahora</h1><span class="stamp" id="ahora-stamp">—</span></header>
+    <div class="verdict" id="verdict">
+      <span class="verdict-state" id="verdict-state">SIN CERTEZA</span>
+      <span class="verdict-reason" id="verdict-reason">esperando al sitio</span>
+      <span class="verdict-detail" id="verdict-detail"></span>
+    </div>
+    <svg class="map" id="map-now" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
+         role="img" aria-label="Mapa espacial con la trayectoria propuesta"></svg>
+    <ul class="legend">
+      <li><i class="swatch free"></i>libre</li>
+      <li><i class="swatch occupied"></i>ocupado</li>
+      <li><i class="swatch unknown"></i>desconocido</li>
+      <li><i class="swatch route"></i>trayectoria</li>
+    </ul>
+    <button class="ghost" data-goto="evidencia">Ver evidencia</button>
+  </section>
+
+  <!-- 2 · Modo caminata -->
+  <section class="screen" data-screen="caminata" hidden>
+    <header class="bar"><h1>Caminata</h1><span class="stamp" id="walk-stamp">detenido</span></header>
+    <div class="walk" id="walk">
+      <div class="walk-state" id="walk-state">SIN CERTEZA</div>
+      <div class="walk-reason" id="walk-reason">la cámara está apagada</div>
+      <div class="confidence"><span id="walk-confidence" style="width:0%"></span></div>
+      <p class="walk-note">La cámara es un sensor, no una grabadora: no se guarda video.</p>
+    </div>
+    <video id="camera" playsinline muted hidden></video>
+    <canvas id="sampler" width="64" height="36" hidden></canvas>
+    <div class="walk-actions">
+      <button class="primary" id="walk-toggle">Empezar</button>
+      <button class="stop" id="walk-stop">PARAR</button>
+    </div>
+  </section>
+
+  <!-- 3 · Espacio -->
+  <section class="screen" data-screen="espacio" hidden>
+    <header class="bar"><h1>Espacio</h1><span class="stamp" id="espacio-stamp">—</span></header>
+    <svg class="map tall" id="map-space" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
+         role="img" aria-label="Mapa de ocupación del sitio"></svg>
+    <div class="cell-detail" id="cell-detail" hidden></div>
+    <ul class="zones" id="zones"></ul>
+  </section>
+
+  <!-- 4 · Fuentes -->
+  <section class="screen" data-screen="fuentes" hidden>
+    <header class="bar"><h1>Fuentes</h1><span class="stamp" id="fuentes-stamp">—</span></header>
+    <ul class="sources" id="sources"></ul>
+    <div class="panel" id="calibration"></div>
+    <div class="panel" id="budget"></div>
+  </section>
+
+  <!-- 5 · Configurar espacio -->
+  <section class="screen" data-screen="configurar" hidden>
+    <header class="bar"><h1>Configurar espacio</h1></header>
+    <p class="hint">Marcá cuatro puntos del suelo y escribí sus medidas reales. El error se muestra
+      antes de guardar; si supera el techo declarado, no se guarda.</p>
+    <table class="points" id="points"></table>
+    <label class="field">Tamaño de celda (m)<input id="cell-size" type="number" step="0.05" value="0.25"></label>
+    <label class="field">Trayectoria a probar (celdas)<input id="route-input" type="text" value="2,2 3,2"></label>
+    <div class="walk-actions">
+      <button class="primary" id="calibrate">Calibrar y medir</button>
+      <button class="ghost" id="save-route">Probar ruta</button>
+    </div>
+    <div class="panel" id="calibration-result"></div>
+  </section>
+
+  <!-- 6 · Evidencia -->
+  <section class="screen" data-screen="evidencia" hidden>
+    <header class="bar"><h1>Evidencia</h1><span class="stamp">decisiones, no clips</span></header>
+    <ol class="decisions" id="decisions"></ol>
+  </section>
+
+</main>
+
+<nav class="tabs" id="tabs">
+  <button data-goto="ahora" class="active">Ahora</button>
+  <button data-goto="caminata">Caminata</button>
+  <button data-goto="espacio">Espacio</button>
+  <button data-goto="fuentes">Fuentes</button>
+  <button data-goto="configurar">Ajustes</button>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>

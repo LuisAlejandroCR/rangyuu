@@ -57,8 +57,9 @@ no sustituyen la integración real con Ring.
 ## Código disponible
 
 ```sh
-python -m pytest     # suite completa del núcleo
-python -m rangyuu    # demo sobre fixture: libre → ocupado → duplicado rechazado → caducado
+python -m pytest        # suite completa del núcleo
+python -m rangyuu.serve # la app en http://localhost:8080, sin credenciales ni hardware
+python -m rangyuu       # demo en terminal: libre → ocupado → duplicado rechazado → caducado
 ```
 
 | Módulo | Qué hace |
@@ -70,6 +71,9 @@ python -m rangyuu    # demo sobre fixture: libre → ocupado → duplicado recha
 | `rangyuu/ring_client.py` | Cliente de solo lectura de la API de Ring: token, refresco y descubrimiento de dispositivos. |
 | `rangyuu/config.py` | Configuración: entorno primero, `.env.local` después. |
 | `rangyuu/calibrate.py` | Correspondencias medidas → homografía **y error en centímetros** (medido: 0,9 cm sobre 61 cm). |
+| `web/` + `rangyuu/webapp.py` | La app: seis pantallas servidas por el propio proceso ([app.md](docs/app.md)). |
+| `rangyuu/ui.py` | Los cuatro estados de pantalla, derivados de las tres decisiones del núcleo. |
+| `rangyuu/site.py` | Lo que un sitio sabe: zonas, calibración y bitácora de decisiones. |
 | `rangyuu/detect.py` | Detección de movimiento local, sin red: nunca sale un frame a inferir. |
 | `rangyuu/runtime.py` | El lazo del sitio con presupuesto por tramo y el perro guardián del feed. |
 | `rangyuu/live.py` | Recibe y decodifica la media H264 fuera del navegador (requiere `aiortc`). |
