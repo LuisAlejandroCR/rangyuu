@@ -20,7 +20,7 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       interno `Rangyuu` y scopes mínimos —Cameras and Doorbells, más Account and Lifecycle, que es
       automático—. Falta la mitad que desbloquea webhooks.
       *Criterio:* `client_id` y `client_secret` emitidos y cargados en `.env.local`, flujo OAuth
-      completado y un `RING_REFRESH_TOKEN` propio renovando solo contra `RING_TOKEN_URL` —cuya ruta
+      completado y un `RANGYUU_REFRESH_TOKEN` propio renovando solo contra `RANGYUU_TOKEN_URL` —cuya ruta
       exacta sigue sin verificarse y por eso es configurable, no está codificada.
 
 - [ ] **B3 · Primer contacto real con la API, con mediciones.** El cliente ya está escrito y

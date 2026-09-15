@@ -31,10 +31,10 @@
 
 | Qué | Por qué no se pudo | Bloque |
 |---|---|---|
-| Cualquier llamada a la API real de Ring | No hay `RING_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
+| Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
 | Error métrico de la homografía en centímetros a una distancia dada | Requiere cuatro correspondencias medidas contra una escena real | B8 |
 | Las seis mediciones de `docs/perception.md` §7 | Requieren sesión WHEP viva | B3, B10 |
-| La ruta real del endpoint de token OAuth | No está en el sample ni se pudo leer la doc oficial; queda en `RING_TOKEN_URL`, configurable, sin valor por defecto | B1, B2 |
+| La ruta real del endpoint de token OAuth | No está en el sample ni se pudo leer la doc oficial; queda en `RANGYUU_TOKEN_URL`, configurable, sin valor por defecto | B1, B2 |
 | Sesión WHEP fuera del navegador | Nada escrito todavía; es el riesgo técnico mayor | B10 |
 | Oclusión derivada del frame | `mark_occluded` existe y tiene pruebas, pero hoy la oclusión se declara desde fuera, no se detecta | B8 |
 | Persistencia de la deduplicación entre reinicios | El registro de eventos vive en memoria | B10 |

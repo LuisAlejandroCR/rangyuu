@@ -9,19 +9,19 @@ def _write(tmp_path, text):
 
 
 def test_env_file_is_read_when_the_variable_is_absent(tmp_path, monkeypatch):
-    _write(tmp_path, "# comentario\nRING_WEBHOOK_SECRET='s3cr3t'\nRING_CLIENT_ID=\"abc\"\n\nVACIO=\n")
-    monkeypatch.chdir(tmp_path); monkeypatch.delenv("RING_WEBHOOK_SECRET", raising=False); config.reset()
-    assert config.get("RING_WEBHOOK_SECRET") == "s3cr3t"
-    assert config.get("RING_CLIENT_ID") == "abc"
+    _write(tmp_path, "# comentario\nRANGYUU_WEBHOOK_SECRET='s3cr3t'\nRANGYUU_CLIENT_ID=\"abc\"\n\nVACIO=\n")
+    monkeypatch.chdir(tmp_path); monkeypatch.delenv("RANGYUU_WEBHOOK_SECRET", raising=False); config.reset()
+    assert config.get("RANGYUU_WEBHOOK_SECRET") == "s3cr3t"
+    assert config.get("RANGYUU_CLIENT_ID") == "abc"
     assert config.get("VACIO", "fallback") == "fallback"
 
 
 def test_real_environment_wins_over_the_file(tmp_path, monkeypatch):
-    _write(tmp_path, "RING_WEBHOOK_SECRET=from-file\n")
-    monkeypatch.chdir(tmp_path); monkeypatch.setenv("RING_WEBHOOK_SECRET", "from-env"); config.reset()
-    assert config.get("RING_WEBHOOK_SECRET") == "from-env"
+    _write(tmp_path, "RANGYUU_WEBHOOK_SECRET=from-file\n")
+    monkeypatch.chdir(tmp_path); monkeypatch.setenv("RANGYUU_WEBHOOK_SECRET", "from-env"); config.reset()
+    assert config.get("RANGYUU_WEBHOOK_SECRET") == "from-env"
 
 
 def test_missing_file_is_not_an_error(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path); monkeypatch.delenv("RING_CLIENT_SECRET", raising=False); config.reset()
-    assert config.get("RING_CLIENT_SECRET") == ""
+    monkeypatch.chdir(tmp_path); monkeypatch.delenv("RANGYUU_CLIENT_SECRET", raising=False); config.reset()
+    assert config.get("RANGYUU_CLIENT_SECRET") == ""

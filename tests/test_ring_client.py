@@ -71,7 +71,7 @@ def test_without_credentials_the_error_says_what_is_missing():
     client = RingClient(Credentials(), transport=FakeTransport())
     with pytest.raises(RingError) as error:
         client.devices()
-    assert "RING_ACCESS_TOKEN" in str(error.value)
+    assert "RANGYUU_ACCESS_TOKEN" in str(error.value)
 
 
 def test_http_errors_are_mapped_and_never_leak_the_token():
