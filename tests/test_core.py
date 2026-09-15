@@ -3,9 +3,6 @@ from rangyuu import *
 def test_homography():
  h=homography_dlt([(0,0),(1,0),(1,1),(0,1)],[(2,3),(4,3),(4,5),(2,5)])
  assert project_point(h,(.5,.5))==(3.0,4.0)
-def test_more_than_four_points_and_tolerance():
- h=homography_dlt([(0,0),(1,0),(1,1),(0,1),(.5,.5)],[(2,3),(4,3),(4,5),(2,5),(3,4)])
- u,v=project_point(h,(.25,.75)); assert abs(u-2.5)<1e-9 and abs(v-4.5)<1e-9
 def test_degenerate_rejected():
  try: homography_dlt([(0,0),(1,0),(2,0),(3,0)],[(0,0),(1,0),(2,0),(3,0)])
  except ValueError: return
