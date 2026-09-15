@@ -1,0 +1,63 @@
+name: Rangyuu agent worker
+
+on:
+  schedule:
+    # GitHub schedules use UTC; avoid the top of the hour to reduce queue delays.
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      objective:
+        description: 'Optional bounded objective for the agent'
+        required: false
+        type: string
+        default: 'Inspect the repository for the next documented TODO, implement one small safe block, and prepare a pull request.'
+
+# The workflow only invokes the orchestrator. It cannot write branches or merge.
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: rangyuu-agent-worker
+  cancel-in-progress: false
+
+jobs:
+  invoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Invoke orchestrator
+        env:
+          AGENT_PROVIDER_URL: ${{ secrets.AGENT_PROVIDER_URL }}
+          AGENT_PROVIDER_TOKEN: ${{ secrets.AGENT_PROVIDER_TOKEN }}
+          OBJECTIVE: ${{ inputs.objective || 'Inspect the repository for the next documented TODO, implement one small safe block, and prepare a pull request.' }}
+          REQUEST_ID: ${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$AGENT_PROVIDER_URL" || { echo 'AGENT_PROVIDER_URL is not configured' >&2; exit 1; }
+          case "$AGENT_PROVIDER_URL" in
+            https://*) ;;
+            *) echo 'AGENT_PROVIDER_URL must use HTTPS' >&2; exit 1 ;;
+          esac
+          command -v jq >/dev/null
+          payload="$(jq -cn \
+            --arg objective "$OBJECTIVE" \
+            --arg request_id "$REQUEST_ID" \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg sha "$GITHUB_SHA" \
+            --arg ref "$GITHUB_REF_NAME" \
+            '{objective:($objective|.[0:2000]), request_id:$request_id, repository:$repository, base_sha:$sha, base_ref:$ref, constraints:{pull_request_only:true, max_iterations:3, max_diff_lines:800, no_secrets:true}}')"
+          auth=()
+          if [[ -n "${AGENT_PROVIDER_TOKEN:-}" ]]; then
+            auth=(-H "Authorization: Bearer $AGENT_PROVIDER_TOKEN")
+          fi
+          curl --fail-with-body --silent --show-error \
+            --connect-timeout 10 --max-time 90 --retry 2 --retry-delay 3 \
+            -X POST "$AGENT_PROVIDER_URL/v1/work" \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json' \
+            -H "X-Request-ID: $REQUEST_ID" \
+            "${auth[@]}" \
+            --data-binary "$payload" \
+            | jq -e '(.status == "accepted" or .status == "completed") and (.pull_request_url // .message // true)' >/dev/null

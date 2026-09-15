@@ -2,6 +2,18 @@
 
 Esta es una especificación, no una afirmación de despliegue existente.
 
+## Workflow de GitHub Actions
+
+`.github/workflows/agent-worker.yml` invoca el orquestador cada seis horas o manualmente.
+Usa `AGENT_PROVIDER_URL` y, opcionalmente, `AGENT_PROVIDER_TOKEN` desde Secrets; nunca imprime
+el token. Rechaza URLs que no sean HTTPS, limita el objetivo a 2.000 caracteres y solicita al
+orquestador un único PR con un máximo de tres iteraciones y 800 líneas modificadas.
+
+El job tiene `contents: read` y `id-token: write`, sin permiso de escritura ni de merge en GitHub.
+La concurrencia impide dos workers simultáneos. El endpoint debe validar el token/OIDC, aplicar
+allowlist de repositorio, crear una rama efímera y abrir un PR; el merge queda fuera del worker y
+requiere branch protection y revisión humana.
+
 ## Configuración y límites
 
 - `AGENT_PROVIDER_URL`: URL HTTPS validada; `AGENT_PROVIDER_TOKEN` y `RANGYUU_WORKER_TOKEN` se
