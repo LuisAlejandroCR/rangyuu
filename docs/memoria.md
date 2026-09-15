@@ -4,6 +4,27 @@
 
 # Memoria
 
+## 2026-09-15 — Un solo prefijo de variables: `RANGYUU_`
+
+**Qué se hizo**
+
+- Todas las variables de entorno pasan a `RANGYUU_*`, vengan de Ring o sean propias:
+  `RANGYUU_ACCESS_TOKEN`, `RANGYUU_CLIENT_ID`, `RANGYUU_CLIENT_SECRET`, `RANGYUU_REFRESH_TOKEN`,
+  `RANGYUU_TOKEN_URL`, `RANGYUU_WEBHOOK_SECRET`, `RANGYUU_WEBHOOK_URL`, `RANGYUU_PROVIDER_URL` y
+  `RANGYUU_PROVIDER_TOKEN`. Decisión escogida el 2026-09-15: un único prefijo en todo el proyecto;
+  lo que cada variable contiene lo dice su nombre, no su prefijo.
+- Alcanzados por el cambio: `.env.example`, `AGENTS.md`, `rangyuu/ring_client.py`,
+  `rangyuu/service.py`, las pruebas y los cuatro documentos que citaban nombres de variables.
+- Suite en 57 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- Si hay un despliegue vivo leyendo los nombres anteriores, dejará de encontrar el secreto. No se
+  pudo comprobar desde aquí: hay que revisar las variables del servicio desplegado y los secrets del
+  repositorio en GitHub.
+
+**Dónde quedan los pendientes:** B1, B2, B3 y B8 de [plan.md](plan.md).
+
 ## 2026-09-15 — Cliente de Ring, probado sin cuenta
 
 **Qué se hizo**

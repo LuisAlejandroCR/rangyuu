@@ -25,10 +25,10 @@ es la prueba de que el sistema se vuelve conservador solo, sin que nadie lo empu
 `.env.local`, que está en `.gitignore`. `.env.example` se versiona y no lleva valores. El runtime lo
 lee por `rangyuu/config.py`, con una regla: **una variable de entorno real siempre gana** sobre el
 archivo, para que un secreto de Cloud Run no quede tapado por un `.env.local` viejo dentro de la
-imagen. Los nombres siguen una sola regla: **`RING_*` es lo que Ring emite** —`RING_CLIENT_ID`,
-`RING_CLIENT_SECRET`, `RING_WEBHOOK_SECRET`— y **`RANGYUU_*` es configuración propia** —
-`RANGYUU_PROVIDER_URL`, `RANGYUU_PROVIDER_TOKEN`—. El prefijo dice de quién es la credencial y, por
-lo tanto, quién la rota. Ningún token
+imagen. Los nombres siguen una sola regla: **todo lleva el prefijo `RANGYUU_`**, venga de Ring
+(`RANGYUU_ACCESS_TOKEN`, `RANGYUU_CLIENT_ID`, `RANGYUU_CLIENT_SECRET`, `RANGYUU_WEBHOOK_SECRET`) o
+sea configuración propia (`RANGYUU_PROVIDER_URL`, `RANGYUU_PROVIDER_TOKEN`). Un solo prefijo en todo
+el proyecto: lo que cada variable contiene lo dice su nombre, no su prefijo. Ningún token
 entra en un commit, en un `.md`, en un comentario de código ni en un mensaje de chat pegado al repo.
 Si un token se expone, se rota antes de seguir.
 
@@ -41,7 +41,7 @@ B5, y es trámite, así que arranca el mismo día.
 
 1. Entrá al Ring Developer Playground con la cuenta de Amazon Developer.
 2. Generá el **access token corto** y copiá el valor.
-3. Pegalo en `.env.local` como `RING_ACCESS_TOKEN=...`.
+3. Pegalo en `.env.local` como `RANGYUU_ACCESS_TOKEN=...`.
 4. Anotá, en el mismo momento, **a qué hora lo generaste y cuánto dice que dura**. Esa cifra hace
    falta para `docs/verificacion.md`; sin ella no se sabe si una prueba fallida es un bug o un token
    vencido.
@@ -54,9 +54,9 @@ Con eso alcanza para `GET /v1/devices` y para abrir una sesión de live view.
 1. Registrá la app en la consola de Amazon Developer y pedí acceso a las Ring APIs.
 2. Cuando emitan `client_id` y `client_secret`, pegalos en `.env.local`.
 3. Completá el flujo de OAuth de account linking con tu cuenta de Ring; guardá el
-   `RING_REFRESH_TOKEN` que salga.
-4. Configurá la URL de webhook (`RING_WEBHOOK_URL`) y guardá el secreto de firma como
-   `RING_WEBHOOK_SECRET`.
+   `RANGYUU_REFRESH_TOKEN` que salga.
+4. Configurá la URL de webhook (`RANGYUU_WEBHOOK_URL`) y guardá el secreto de firma como
+   `RANGYUU_WEBHOOK_SECRET`.
 
 ### Qué dejarme, exactamente
 

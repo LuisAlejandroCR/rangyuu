@@ -42,7 +42,7 @@ verdad pasó. Nunca asumir el estado de un archivo sin leerlo.
 
 ## Higiene del repo
 
-- Secretos jamás en el repo: `RING_ACCESS_TOKEN`, `RING_REFRESH_TOKEN`, `RING_CLIENT_ID`,
-  `RING_CLIENT_SECRET` y el secreto de webhook van en `.env.local`, con `.env.example` versionado.
+- Secretos jamás en el repo: `RANGYUU_ACCESS_TOKEN`, `RANGYUU_REFRESH_TOKEN`, `RANGYUU_CLIENT_ID`,
+  `RANGYUU_CLIENT_SECRET` y el secreto de webhook van en `.env.local`, con `.env.example` versionado.
 - Un bloque de `docs/plan.md` se marca con quién lo tomó y la fecha **antes** de empezar, y se mueve
   a Cerrados en el mismo lote en que se termina.

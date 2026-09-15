@@ -41,4 +41,4 @@ def handler_class(secret=""):
   def log_message(self,*args): pass
  return Handler
 def run():
- port=int(config.get("PORT","8080")); HTTPServer(("0.0.0.0",port),handler_class(config.get("RING_WEBHOOK_SECRET"))).serve_forever()
+ port=int(config.get("PORT","8080")); HTTPServer(("0.0.0.0",port),handler_class(config.get("RANGYUU_WEBHOOK_SECRET"))).serve_forever()

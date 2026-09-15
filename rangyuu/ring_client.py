@@ -41,11 +41,11 @@ class Credentials:
     @classmethod
     def from_env(cls) -> "Credentials":
         return cls(
-            access_token=config.get("RING_ACCESS_TOKEN"),
-            client_id=config.get("RING_CLIENT_ID"),
-            client_secret=config.get("RING_CLIENT_SECRET"),
-            refresh_token=config.get("RING_REFRESH_TOKEN"),
-            token_url=config.get("RING_TOKEN_URL"),
+            access_token=config.get("RANGYUU_ACCESS_TOKEN"),
+            client_id=config.get("RANGYUU_CLIENT_ID"),
+            client_secret=config.get("RANGYUU_CLIENT_SECRET"),
+            refresh_token=config.get("RANGYUU_REFRESH_TOKEN"),
+            token_url=config.get("RANGYUU_TOKEN_URL"),
         )
 
     @property
@@ -75,15 +75,15 @@ class RingClient:
         if not self.credentials.can_refresh:
             if self._token:
                 return self._token
-            raise RingError("no usable credentials: set RING_ACCESS_TOKEN, or the four RING_* values "
-                            "needed to refresh")
+            raise RingError("no usable credentials: set RANGYUU_ACCESS_TOKEN, or the four RANGYUU_* "
+                            "values needed to refresh")
         payload = {
             "grant_type": "refresh_token",
             "refresh_token": self.credentials.refresh_token,
             "client_id": self.credentials.client_id,
             "client_secret": self.credentials.client_secret,
         }
-        body = self._request("POST", _https(self.credentials.token_url, "RING_TOKEN_URL"), payload)
+        body = self._request("POST", _https(self.credentials.token_url, "RANGYUU_TOKEN_URL"), payload)
         token = body.get("access_token")
         expires_in = body.get("expires_in")
         if not isinstance(token, str) or not token.strip():
