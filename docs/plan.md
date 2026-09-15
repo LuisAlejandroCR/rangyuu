@@ -16,9 +16,12 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       nativo para iOS exige un Mac.
       *Hecho el 2026-09-15:* las seis pantallas existen y se alimentan del núcleo real; los cuatro
       estados de pantalla derivan de las tres decisiones con reglas probadas.
+      *Hecho también:* revisión en navegador real con Playwright y seis pruebas de extremo a extremo;
+      interfaz alineada al lenguaje visual de la app de Ring para que integrarla sea trivial.
       *Falta:* (1) probar el **modo caminata en un iPhone real**, que necesita HTTPS o túnel porque
-      Safari no da cámara en HTTP; (2) alimentar la app desde una **sesión WHEP viva** en vez del
-      sembrado inicial; y (3) la vista de evidencia con imagen al tocar una celda.
+      Safari no da cámara en HTTP; (2) **calibración a bordo del teléfono**, sin la cual la caminata
+      observa pero no escribe en el mapa; (3) alimentar la app desde una **sesión WHEP viva** en vez
+      del sembrado inicial; y (4) la vista de evidencia con imagen al tocar una celda.
 
 - [ ] **B6 · Mini challenge: Open Source — listo para enviar, sin abrir.** Escogido Open Source sobre
       AWS Builder: la contribución sale del trabajo que ya existía y no agrega superficie de nube.

@@ -55,12 +55,14 @@
     <svg class="map tall" id="map-space" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
          role="img" aria-label="Mapa de ocupación del sitio"></svg>
     <div class="cell-detail" id="cell-detail" hidden></div>
+    <p class="group-title">Zonas</p>
     <ul class="zones" id="zones"></ul>
   </section>
 
   <!-- 4 · Fuentes -->
   <section class="screen" data-screen="fuentes" hidden>
     <header class="bar"><h1>Fuentes</h1><span class="stamp" id="fuentes-stamp">—</span></header>
+    <p class="group-title">Fuentes de observación</p>
     <ul class="sources" id="sources"></ul>
     <div class="panel" id="calibration"></div>
     <div class="panel" id="budget"></div>
@@ -78,12 +80,13 @@
       <button class="primary" id="calibrate">Calibrar y medir</button>
       <button class="ghost" id="save-route">Probar ruta</button>
     </div>
-    <div class="panel" id="calibration-result"></div>
+    <div class="panel" id="calibration-result" hidden></div>
   </section>
 
   <!-- 6 · Evidencia -->
   <section class="screen" data-screen="evidencia" hidden>
     <header class="bar"><h1>Evidencia</h1><span class="stamp">decisiones, no clips</span></header>
+    <p class="group-title">Últimas decisiones</p>
     <ol class="decisions" id="decisions"></ol>
   </section>
 
