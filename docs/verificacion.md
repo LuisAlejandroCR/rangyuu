@@ -50,7 +50,7 @@
 | Qué | Por qué no se pudo | Bloque |
 |---|---|---|
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
-| Error métrico de la homografía en centímetros | La maquinaria está escrita y probada (`rangyuu/calibrate.py`), pero falta la entrada: un frame **con cámara quieta** donde se vean las cuatro esquinas del recuadro medido. El video del 2026-09-15 es de cámara en mano y en movimiento | B8, B11 |
+| Error métrico de la homografía en centímetros | La maquinaria está escrita y probada (`rangyuu/calibrate.py`); falta la entrada. Se intentó con el original `test_home_video.MOV` (3840x2160, 60 fps, 131 s, HEVC) usando las juntas de baldosa de **30,5 x 30,5 cm** como rejilla de referencia: a 1:1 las juntas tienen contraste casi nulo contra la baldosa y arrastran desenfoque de movimiento, así que **no se pueden marcar intersecciones con precisión de píxel**. Sin esa precisión, el error en centímetros que saliera sería inventado | B8, B11 |
 | Latencia glass-to-glass real | El clip es enlatado y trae su propio reloj sobreimpreso; contra una grabación no hay glass-to-glass que medir. Necesita dispositivo físico | B10 |
 | La ruta real del endpoint de token OAuth | No está en el sample ni se pudo leer la doc oficial; queda en `RANGYUU_TOKEN_URL`, configurable, sin valor por defecto | B1, B2 |
 | Sesión WHEP fuera del navegador | Nada escrito todavía; es el riesgo técnico mayor | B10 |
