@@ -1,4 +1,4 @@
-import hashlib,hmac,json
+import hashlib,hmac,json,math
 from dataclasses import dataclass
 @dataclass(frozen=True)
 class Observation:
@@ -9,4 +9,7 @@ def verify_hmac(body, signature, secret):
 def observation_from_event(event):
     data=event.get("data",event); box=data.get("bounding_box")
     bbox=tuple(box) if isinstance(box,(list,tuple)) else (tuple(box.values()) if isinstance(box,dict) else None)
-    return Observation(str(event.get("device_id",data.get("device_id","unknown"))),str(event.get("timestamp",data.get("timestamp",""))),str(event.get("type",data.get("type","unknown"))),float(data.get("confidence",0)),bbox)
+    device=event.get("device_id",data.get("device_id")); stamp=event.get("timestamp",data.get("timestamp")); kind=event.get("type",data.get("type")); conf=data.get("confidence")
+    if not device or not stamp or not kind or conf is None or not 0<=float(conf)<=1: raise ValueError('invalid observation')
+    if bbox is not None and (len(bbox)!=4 or not all(math.isfinite(float(x)) for x in bbox)): raise ValueError('invalid bbox')
+    return Observation(str(device),str(stamp),str(kind),float(conf),bbox)
