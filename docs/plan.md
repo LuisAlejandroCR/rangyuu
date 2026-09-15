@@ -36,15 +36,13 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       marca medida; (2) el mismo error **con la cámara de Ring**, no con un teléfono; y (3) la
       oclusión **derivada del frame** en vez de declararse desde fuera.
 
-- [ ] **B10 · Runtime de inferencia local.** Casi cerrado el 2026-09-15: frames H264 decodificados
-      fuera del navegador, detector local sin dependencias de red (`rangyuu/detect.py`), lazo de
-      control con presupuesto medido —decodificación 13,63 ms, **inferencia 0,66 ms**, decisión
-      0,14 ms a 1280x720— y la prueba del corte de red pasando: cuando dejan de llegar frames el
-      veredicto cae a `UNKNOWN` por `feed stale` en vez de sostener la última lectura. Que no haya
-      llamada a terceros está probado envenenando `socket`.
-      *Falta:* (1) el tramo de **actuación por LAN**, que no se puede medir sin un consumidor fuera
-      del proceso; y (2) correr el lazo contra una **sesión WHEP viva** en vez de un archivo — se
-      intentó y el token del Playground había caducado otra vez.
+- [ ] **B10 · Runtime de inferencia local.** Cerrado salvo un tramo. El lazo completo corrió contra
+      una **sesión WHEP viva**: 400 frames a 1280x720, decodificación 7,48 ms, **inferencia 0,58 ms**,
+      decisión 0,10 ms → 8,16 ms por frame, ~122 fps de capacidad contra los 29 fps que entrega la
+      cámara. Con el feed vivo autoriza; al cortarlo cae a `HOLD` por `feed stale`. Que no haya
+      inferencia de terceros está probado envenenando `socket`.
+      *Falta solo:* el tramo de **actuación por LAN**, que no se puede medir hasta que el consumidor
+      viva fuera del proceso.
 
 - [ ] **B11 · Metraje propio como fuente de calibración — prioridad alta desde el 2026-09-15.**
       Deja de ser opcional: es la única fuente con plano de suelo medible, porque el clip del
