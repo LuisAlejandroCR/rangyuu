@@ -11,8 +11,10 @@
 - `rangyuu/config.py` lee la configuración del entorno y, si falta, de `.env.local`. Una variable de
   entorno real **siempre gana** sobre el archivo, para que un secreto de Cloud Run no quede tapado por
   un `.env.local` viejo dentro de la imagen. Tres pruebas cubren la precedencia.
-- El receptor pasa a esperar `RING_WEBHOOK_SECRET`; se mantiene `RANGYUU_WEBHOOK_SECRET` como
-  respaldo para no romper un despliegue existente. `docs/cloud-run.md` queda alineado.
+- Los nombres de variables quedan bajo una sola regla en todo el proyecto: `RING_*` es lo que Ring
+  emite, `RANGYUU_*` es configuración propia. El receptor espera `RING_WEBHOOK_SECRET` sin respaldo,
+  y el worker de GitHub Actions pasa de `AGENT_PROVIDER_*` a `RANGYUU_PROVIDER_*`, que es lo que
+  `rangyuu/provider.py` ya leía. `docs/cloud-run.md` y `docs/agent-worker.md` quedan alineados.
 - La app de Ring quedó creada con el nombre interno `Rangyuu` y scopes mínimos: Cameras and
   Doorbells, más Account and Lifecycle, que es automático. Los demás grupos de sensores quedaron en
   Off por divulgación mínima.
