@@ -4,8 +4,11 @@ from dataclasses import dataclass
 class Observation:
     device_id:str; timestamp:str; kind:str; confidence:float; bbox:tuple|None
 def verify_hmac(body, signature, secret):
+    if not isinstance(secret,str) or not secret or not isinstance(signature,str): return False
+    candidate=signature.removeprefix("sha256=")
+    if len(candidate)!=64 or any(c not in "0123456789abcdefABCDEF" for c in candidate): return False
     expected=hmac.new(secret.encode(), body if isinstance(body,bytes) else body.encode(), hashlib.sha256).hexdigest()
-    return hmac.compare_digest(expected, signature.removeprefix("sha256="))
+    return hmac.compare_digest(expected, candidate.lower())
 def observation_from_event(event):
     data=event.get("data",event); box=data.get("bounding_box")
     bbox=tuple(box) if isinstance(box,(list,tuple)) else (tuple(box.values()) if isinstance(box,dict) else None)
