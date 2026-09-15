@@ -25,7 +25,10 @@ es la prueba de que el sistema se vuelve conservador solo, sin que nadie lo empu
 `.env.local`, que está en `.gitignore`. `.env.example` se versiona y no lleva valores. El runtime lo
 lee por `rangyuu/config.py`, con una regla: **una variable de entorno real siempre gana** sobre el
 archivo, para que un secreto de Cloud Run no quede tapado por un `.env.local` viejo dentro de la
-imagen. Los nombres que el código espera son los de `.env.example`, `RING_*`. Ningún token
+imagen. Los nombres siguen una sola regla: **`RING_*` es lo que Ring emite** —`RING_CLIENT_ID`,
+`RING_CLIENT_SECRET`, `RING_WEBHOOK_SECRET`— y **`RANGYUU_*` es configuración propia** —
+`RANGYUU_PROVIDER_URL`, `RANGYUU_PROVIDER_TOKEN`—. El prefijo dice de quién es la credencial y, por
+lo tanto, quién la rota. Ningún token
 entra en un commit, en un `.md`, en un comentario de código ni en un mensaje de chat pegado al repo.
 Si un token se expone, se rota antes de seguir.
 

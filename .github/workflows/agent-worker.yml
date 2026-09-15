@@ -28,17 +28,17 @@ jobs:
     steps:
       - name: Invoke orchestrator
         env:
-          AGENT_PROVIDER_URL: ${{ secrets.AGENT_PROVIDER_URL }}
-          AGENT_PROVIDER_TOKEN: ${{ secrets.AGENT_PROVIDER_TOKEN }}
+          RANGYUU_PROVIDER_URL: ${{ secrets.RANGYUU_PROVIDER_URL }}
+          RANGYUU_PROVIDER_TOKEN: ${{ secrets.RANGYUU_PROVIDER_TOKEN }}
           OBJECTIVE: ${{ inputs.objective || 'Inspect the repository for the next documented TODO, implement one small safe block, and prepare a pull request.' }}
           REQUEST_ID: ${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt }}
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$AGENT_PROVIDER_URL" || { echo 'AGENT_PROVIDER_URL is not configured' >&2; exit 1; }
-          case "$AGENT_PROVIDER_URL" in
+          test -n "$RANGYUU_PROVIDER_URL" || { echo 'RANGYUU_PROVIDER_URL is not configured' >&2; exit 1; }
+          case "$RANGYUU_PROVIDER_URL" in
             https://*) ;;
-            *) echo 'AGENT_PROVIDER_URL must use HTTPS' >&2; exit 1 ;;
+            *) echo 'RANGYUU_PROVIDER_URL must use HTTPS' >&2; exit 1 ;;
           esac
           command -v jq >/dev/null
           payload="$(jq -cn \
@@ -49,12 +49,12 @@ jobs:
             --arg ref "$GITHUB_REF_NAME" \
             '{objective:($objective|.[0:2000]), request_id:$request_id, repository:$repository, base_sha:$sha, base_ref:$ref, constraints:{pull_request_only:true, max_iterations:3, max_diff_lines:800, no_secrets:true}}')"
           auth=()
-          if [[ -n "${AGENT_PROVIDER_TOKEN:-}" ]]; then
-            auth=(-H "Authorization: Bearer $AGENT_PROVIDER_TOKEN")
+          if [[ -n "${RANGYUU_PROVIDER_TOKEN:-}" ]]; then
+            auth=(-H "Authorization: Bearer $RANGYUU_PROVIDER_TOKEN")
           fi
           curl --fail-with-body --silent --show-error \
             --connect-timeout 10 --max-time 90 --retry 2 --retry-delay 3 \
-            -X POST "$AGENT_PROVIDER_URL/v1/work" \
+            -X POST "$RANGYUU_PROVIDER_URL/v1/work" \
             -H 'Content-Type: application/json' \
             -H 'Accept: application/json' \
             -H "X-Request-ID: $REQUEST_ID" \

@@ -5,7 +5,7 @@ Esta es una especificación, no una afirmación de despliegue existente.
 ## Workflow de GitHub Actions
 
 `.github/workflows/agent-worker.yml` invoca el orquestador cada seis horas o manualmente.
-Usa `AGENT_PROVIDER_URL` y, opcionalmente, `AGENT_PROVIDER_TOKEN` desde Secrets; nunca imprime
+Usa `RANGYUU_PROVIDER_URL` y, opcionalmente, `RANGYUU_PROVIDER_TOKEN` desde Secrets; nunca imprime
 el token. Rechaza URLs que no sean HTTPS, limita el objetivo a 2.000 caracteres y solicita al
 orquestador un único PR con un máximo de tres iteraciones y 800 líneas modificadas.
 
@@ -16,7 +16,7 @@ requiere branch protection y revisión humana.
 
 ## Configuración y límites
 
-- `AGENT_PROVIDER_URL`: URL HTTPS validada; `AGENT_PROVIDER_TOKEN` y `RANGYUU_WORKER_TOKEN` se
+- `RANGYUU_PROVIDER_URL`: URL HTTPS validada; `RANGYUU_PROVIDER_TOKEN` y `RANGYUU_WORKER_TOKEN` se
   inyectan desde Secret Manager y nunca se versionan.
 - Entrada: objeto JSON con `objective` (1–2.000 caracteres) y `files` (rutas relativas, máximo 100,
   cada ruta 256 caracteres). Cuerpo máximo: 1 MiB; respuestas máximo: 1 MiB.
