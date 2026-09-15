@@ -44,6 +44,8 @@
 | Oclusión: una celda ocluida vuelve a desconocida, nunca a libre | `python -m pytest tests/test_spatial.py::test_occlusion_returns_a_cell_to_unknown_never_to_free` | ✅ | 2026-09-15 |
 | Un evento repetido no vuelve a entrar; dos dispositivos no comparten celdas | `python -m pytest tests/test_spatial.py` | ✅ | 2026-09-15 |
 
+| El script del PR upstream corre contra la API real: sin flags da `201`, `H264/90000`, 5 candidatos ICE y `DELETE → 200`; con `--frames 60` da 60 frames a 1280x720 y 23,4 fps | `python scripts/live_view.py --token <token>` en el fork | ✅ | 2026-09-15 |
+
 ## Correcciones a datos ya documentados
 
 - **2026-09-15 — `pytest` sí está instalado.** La bitácora del 2026-09-14 dice que no lo estaba y que
