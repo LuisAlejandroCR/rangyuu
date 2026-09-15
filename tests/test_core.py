@@ -26,3 +26,7 @@ def test_decision_evidence_and_unknown_never_authorizes():
  r=decision_report(device_id='d',timestamp='t',cells=[1],unknown=True,free=True,confidence=1)
  assert r['decision']=='HOLD' and r['evidence']['device_id']=='d'
  assert decision_report(device_id='d',timestamp='t',coverage=False)['decision']=='HOLD'
+def test_homography_reason_and_boundary():
+ assert decision_report(device_id='d',timestamp='t',homography_valid=False)['decision']=='HOLD'
+ assert decision_report(device_id='d',timestamp='t',contradiction=True,free=True,confidence=1)['reason']=='contradiction'
+ assert cell_is_stale(70,100,30) and not cell_is_stale(71,100,30)
