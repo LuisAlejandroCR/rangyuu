@@ -15,8 +15,12 @@ def test_identity_with_more_than_four_points():
 
 
 def test_valid_zero_h33_transform():
-    source = [(1, 0), (2, 1), (3, 1), (1, 2), (4, 3)]
-    destination = [(1, 0), (1, 0.5), (1, 1 / 3), (1, 2), (1, 0.75)]
+    source = [(1, 0), (2, 0), (1, 1), (2, 1), (3, 2), (4, 1)]
+    expected_h = [[1.0, 0.25, 2.0], [0.1, 1.0, -0.5], [0.2, 0.1, 0.0]]
+    destination = [project_point(expected_h, point) for point in source]
+    assert np.linalg.matrix_rank(
+        np.column_stack((np.asarray(destination), np.ones(len(destination))))
+    ) == 3
     h = homography_dlt(source, destination)
     assert abs(h[2][2]) < 1e-8
     assert_maps(h, source, destination)
