@@ -4,6 +4,30 @@
 
 # Memoria
 
+## 2026-09-15 — Cliente de Ring, probado sin cuenta
+
+**Qué se hizo**
+
+- `rangyuu/ring_client.py`: cliente de solo lectura contra `https://api.amazonvision.com`. Usa el
+  access token del Playground tal cual, o lo intercambia por el refresh token cuando las cuatro
+  variables están presentes, y lo renueva un minuto antes de expirar. Expone `devices()`,
+  `device_status()`, `capabilities()` y `me()`.
+- El transporte es inyectable, así que las once pruebas de `tests/test_ring_client.py` cubren
+  refresco, expiración, rotación del refresh token, error 401, JSON inválido y rechazo de `http://`
+  **sin tocar la red ni necesitar una cuenta**.
+- Higiene de credenciales verificada por prueba: el `repr` de `Credentials` no imprime ningún valor y
+  el mensaje de error no contiene el token. Un `device_id` con `/` o `?` no llega a la red.
+- La app de Ring quedó creada con nombre interno `Rangyuu` y scopes mínimos. Suite en 57 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **La ruta del endpoint de intercambio del token OAuth.** No está en el sample y la doc oficial
+  sigue sin leerse, así que no se inventó: vive en `RING_TOKEN_URL`, sin valor por defecto, y el
+  cliente falla claro si no está. → B1, B2.
+- Ninguna llamada real todavía: no hay `client_id` ni token cargados. → B2, B3.
+
+**Dónde quedan los pendientes:** B1, B2, B3 y B8 de [plan.md](plan.md).
+
 ## 2026-09-15 — Configuración por `RING_*` y carga de `.env.local`
 
 **Qué se hizo**

@@ -16,19 +16,22 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       `docs/memoria.md`, cada una con URL y fecha de lectura. La que decide el calendario:
       **si el Playground entrega webhooks o solo eventos por el flujo de live view.**
 
-- [ ] **B2 · Registro de app y account linking.** Bloquea webhooks, procesadores de video y
-      overlays, que en el sample oficial solo existen en modo refresh token.
-      *Criterio:* `client_id` y `client_secret` emitidos, flujo OAuth completado y un
-      `RING_REFRESH_TOKEN` propio renovando solo. **Arranca el mismo día que B1** — es trámite, no
-      código, y no se sabe cuánto tarda.
+- [ ] **B2 · Registro de app y account linking.** La app quedó creada el 2026-09-15 con nombre
+      interno `Rangyuu` y scopes mínimos —Cameras and Doorbells, más Account and Lifecycle, que es
+      automático—. Falta la mitad que desbloquea webhooks.
+      *Criterio:* `client_id` y `client_secret` emitidos y cargados en `.env.local`, flujo OAuth
+      completado y un `RING_REFRESH_TOKEN` propio renovando solo contra `RING_TOKEN_URL` —cuya ruta
+      exacta sigue sin verificarse y por eso es configurable, no está codificada.
 
-- [ ] **B3 · Primer contacto real con la API, con mediciones.** Token del Playground →
-      `GET /v1/devices` propio y un evento simulado (Package, Vehicle o Motion) de punta a punta.
-      *Criterio:* salida real pegada en `docs/memoria.md`, más las seis mediciones de
-      `docs/perception.md` §7: resolución y fps del WHEP, latencia glass-to-glass, duración máxima de
-      sesión, sesiones simultáneas por cuenta, si `/capabilities` expone intrínsecos, y —la que más
-      pesa— **si el live view simulado entrega video sintético o un clip enlatado**. Si es enlatado,
-      B8 necesita dispositivo físico o un clip propio, y eso cambia el plan completo.
+- [ ] **B3 · Primer contacto real con la API, con mediciones.** El cliente ya está escrito y
+      probado sin red (`rangyuu/ring_client.py`): resuelve el token del Playground o lo intercambia
+      por refresh, refresca antes de expirar, rechaza `http://` y no filtra credenciales en el error.
+      Falta ejecutarlo contra Ring.
+      *Criterio:* salida real de `GET /v1/devices` y de un evento simulado pegada en
+      `docs/verificacion.md`, más las seis mediciones de `docs/perception.md` §7: resolución y fps del
+      WHEP, latencia glass-to-glass, duración máxima de sesión, sesiones simultáneas por cuenta, si
+      `/capabilities` expone intrínsecos, y —la que más pesa— **si el live view simulado entrega video
+      sintético o un clip enlatado**. Si es enlatado, B8 necesita dispositivo físico o un clip propio.
 
 - [x] **2026-09-14 — B4 · Alcance del demo escogido.** Rangyuu no será un producto fijo para un garaje
       ni una solución CCTV. Será una capa espacial reutilizable para robots y dispositivos autónomos.
