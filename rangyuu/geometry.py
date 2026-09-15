@@ -5,6 +5,7 @@ def _normalize(points):
     d=sum(hypot(x-cx,y-cy) for x,y in points)/len(points)
     s=2**.5/d if d>1e-12 else 1
     return [((x-cx)*s,(y-cy)*s) for x,y in points], ((s,0,-s*cx),(0,s,-s*cy),(0,0,1))
+def _mm(a,b): return [[sum(a[i][k]*b[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
 
 def _solve(a, b):
     n=len(b); m=[list(map(float,a[i]))+[float(b[i])] for i in range(n)]
@@ -32,9 +33,10 @@ def homography_dlt(src, dst):
         h=_solve(ata,atb)
     else: h=_solve(a,b)
     H=[h[:3],h[3:6],[h[6],h[7],1.0]]
-    # denormalize: inverse target transform times normalized H times source transform
-    s,_,tx=ts[0]; _,_,ty=ts[1]; q,_,ux=td[0]; _,_,uy=td[1]
-    return [[(H[0][0]*s+H[0][2]*0)/q,(H[0][1]*s)/q,(H[0][2]-H[0][0]*tx-H[0][1]*ty)/q+ux],[(H[1][0]*s)/q,(H[1][1]*s)/q,(H[1][2]-H[1][0]*tx-H[1][1]*ty)/q+uy],[H[2][0]*s,H[2][1]*s,H[2][2]-H[2][0]*tx-H[2][1]*ty]]
+    s=ts[0][0]; tx=ts[0][2]; ty=ts[1][2]; q=td[0][0]; ux=td[0][2]; uy=td[1][2]
+    inv=((1/q,0,-ux/q),(0,1/q,-uy/q),(0,0,1))
+    out=_mm(inv,_mm(H,ts)); z=out[2][2]
+    return [[v/z for v in row] for row in out]
 
 def project_point(h, p):
     x,y=p; q=h[2][0]*x+h[2][1]*y+h[2][2]
