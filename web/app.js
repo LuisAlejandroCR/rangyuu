@@ -1,3 +1,5 @@
+import { announce, channels, reset as resetHaptics, setEnabled, unlock } from "./haptics.js";
+
 // app.js: trae el dato del proceso local y lo dibuja. No decide nada: el estado y la razón
 // vienen resueltos del núcleo (rangyuu/ui.py). Se distingue de styles.css, que es la identidad
 // visual, y de index.html, que es la estructura de las pantallas.
@@ -24,6 +26,7 @@ function show(name) {
   refresh(name);
 }
 document.addEventListener("click", (event) => {
+  unlock();                                   // el audio del navegador necesita un gesto
   const target = event.target.closest("[data-goto]");
   if (target) show(target.dataset.goto);
 });
@@ -38,6 +41,7 @@ function paintVerdict(data) {
   $("verdict-detail").textContent = data.detail || "";
   $("ahora-stamp").textContent = clock(data.at);
   drawMap($("map-now"), data.cells || [], data.route || [], []);
+  announce(data.state);
 }
 
 // --- mapa ---------------------------------------------------------------------
@@ -138,6 +142,15 @@ async function loadSources() {
        <div class="row"><span>total · ${b.frames} frames</span><span>${b.total_ms} ms</span></div>`
     : `<div class="row"><span>todavía no llegó ningún frame</span><span>—</span></div>`) +
     `<div class="row"><span>cobertura</span><span>${data.coverage.cells_known}/${data.coverage.cells_seen} celdas</span></div>`;
+
+  const h = channels();
+  $("haptics").innerHTML = `<h2>Aviso sin mirar la pantalla</h2>
+    <div class="row"><span>vibración</span><span class="${h.vibrate ? "good" : "bad"}">${h.vibrate ? "disponible" : "no disponible"}</span></div>
+    <div class="row"><span>tono</span><span class="${h.tone ? "good" : "bad"}">${h.tone ? "disponible" : "no disponible"}</span></div>
+    <div class="row"><span>voz</span><span class="${h.speech ? "good" : "bad"}">${h.speech ? "disponible" : "no disponible"}</span></div>` +
+    (h.note ? `<div class="row"><span>${h.note}</span><span></span></div>` : "") +
+    `<div class="row"><span>avisos</span><span><button class="ghost" id="haptics-toggle" style="width:auto;padding:.35rem .7rem">Probar</button></span></div>`;
+  $("haptics-toggle").addEventListener("click", () => { unlock(); resetHaptics(); announce($("verdict-state").textContent, { force: true }); });
 }
 
 // --- 5 · Configurar ----------------------------------------------------------
@@ -209,7 +222,7 @@ async function loadDecisions() {
 
 // --- 2 · Caminata ------------------------------------------------------------
 
-let stream = null, walking = false, lastSpoken = "";
+let stream = null, walking = false;
 
 async function startWalk() {
   const video = $("camera"), canvas = $("sampler");
@@ -245,6 +258,7 @@ function stopWalk(message) {
   walking = false;
   document.querySelector('[data-screen="caminata"]').classList.remove("walking");
   if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
+  resetHaptics();
   $("walk-toggle").textContent = "Empezar";
   $("walk-stamp").textContent = message || "detenido";
 }
@@ -257,18 +271,6 @@ function paintWalk(data) {
   const confidence = data.state === "AVANZA" ? 100 : data.state === "CUIDADO" ? 55 : 15;
   $("walk-confidence").style.width = `${confidence}%`;
   announce(data.state);
-}
-
-function announce(state) {
-  if (state === lastSpoken) return;
-  lastSpoken = state;
-  if (navigator.vibrate) navigator.vibrate(state === "AVANZA" ? 40 : state === "CUIDADO" ? [60, 60] : [120, 80, 120]);
-  if (window.speechSynthesis) {
-    const utterance = new SpeechSynthesisUtterance(state === "SIN CERTEZA" ? "sin certeza" : state.toLowerCase());
-    utterance.lang = "es-ES";
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
-  }
 }
 
 $("walk-toggle").addEventListener("click", () => {
