@@ -29,9 +29,12 @@ def test_decision_evidence_and_unknown_never_authorizes():
  r=decision_report(device_id='d',timestamp='t',cells=[1],unknown=True,free=True,confidence=1)
  assert r['decision']=='HOLD' and r['evidence']['device_id']=='d'
  assert decision_report(device_id='d',timestamp='t',coverage=False)['decision']=='HOLD'
- ok=decision_report(device_id='d',timestamp='t',coverage=True,session_active=True,
+ ok=decision_report(device_id='d',timestamp='t',cells=[1],coverage=True,session_active=True,
                     homography_valid=True,confidence=1,free=True,unknown=False)
  assert ok['decision']=='PROCEED' and ok['action']=='TRAVERSE'
+ missing=decision_report(device_id='',timestamp='',cells=[],coverage=True,session_active=True,
+                         homography_valid=True,confidence=1,free=True,unknown=False)
+ assert missing['decision']=='HOLD' and missing['reason']=='evidence missing'
 def test_homography_reason_and_boundary():
  assert decision_report(device_id='d',timestamp='t',homography_valid=False)['decision']=='HOLD'
  assert decision_report(device_id='d',timestamp='t',contradiction=True,free=True,confidence=1)['reason']=='contradiction'
