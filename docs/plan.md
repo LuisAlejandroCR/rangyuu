@@ -52,15 +52,6 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       real, y el error de B8 calculado contra ellas. Se etiqueta `IPHONE_ONBOARD` y nunca reemplaza la
       llamada real a Ring.
 
-- [ ] **B6 · Mini challenge — escoger uno.** Un proyecto gana como máximo un premio de pista y uno de
-      mini challenge.
-      *Open Source:* PR o fork (no necesita merge) a un repo público **dentro de la ventana**, con
-      URL de la contribución, repo, usuario de GitHub y descripción. Candidato: B5 hacia
-      `AmazonAppDev/ring-api-helloworld`.
-      *AWS Builder:* Bedrock / AgentCore / Strands / Kiro Crew con integración documentada — **todo
-      en el carril asíncrono** (`docs/architecture.md` §7): redactar la alerta, entrenar o exportar el
-      modelo que corre local, transportar la mensajería. Nunca en el lazo de control.
-
 - [ ] **B7 · Video y submission.** Producir el video en inglés, menor de tres minutos, usando
       ElevenLabs MCP solo como herramienta de narración/producción y documentando su feedback.
       *Criterio:* Ring aparece funcionando en código y pantalla; el video se envía con margen, no el
@@ -78,6 +69,14 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
 | 10/20 | Margen; enviar antes del 21/10 |
 
 ## Cerrados
+
+- [x] **2026-09-15 — B6 · Mini challenge: Open Source.** Escogido Open Source sobre AWS Builder: la
+      contribución sale del trabajo que ya existía y no agrega superficie de nube al proyecto.
+      PR abierto dentro de la ventana:
+      <https://github.com/AmazonAppDev/ring-api-helloworld/pull/23> — `scripts/live_view.py`, que
+      abre una sesión WHEP desde la terminal sin navegador y, con `--frames`, mide resolución y fps
+      reales. Usuario: `LuisAlejandroCR`. Repo: `AmazonAppDev/ring-api-helloworld`. No requiere merge
+      para calificar.
 
 - [x] **2026-09-15 — B3 · Primer contacto real con la API, con mediciones.** `GET /v1/devices`,
       `/status`, `/location` y `/capabilities` respondidos contra Ring; sesión WHEP abierta y cerrada

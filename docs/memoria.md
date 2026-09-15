@@ -4,6 +4,31 @@
 
 # Memoria
 
+## 2026-09-15 — B6: PR al sample oficial de Ring
+
+**Qué se hizo**
+
+- Escogido **Open Source** como mini challenge, sobre AWS Builder: la contribución sale del trabajo
+  que ya existía —la señalización WHEP desde Python— y no agrega superficie de nube al producto.
+- Identificado el hueco leyendo el repo: `scripts/` cubre los siete endpoints REST, pero **live view
+  solo existe dentro del hook de React** `app/hooks/useWebRTCStream.ts`. Quien integre desde Python o
+  desde un servicio sin navegador tiene que deducir la señalización del código React.
+- PR abierto dentro de la ventana:
+  <https://github.com/AmazonAppDev/ring-api-helloworld/pull/23>, rama
+  `LuisAlejandroCR:add-whep-live-view-script`. Añade `scripts/live_view.py` en el estilo de la casa
+  —`argparse`, `--token`, `--device-id` opcional con autodescubrimiento, `curl` equivalente impreso—,
+  una fila en la tabla del README y `aiortc`/`av` como dependencias **opcionales y comentadas**.
+- Probado contra la API real antes de enviarlo: `201`, `H264/90000`, cinco candidatos ICE y
+  `DELETE → 200`; con `--frames 60`, 60 frames a 1280x720 y 23,4 fps.
+
+**Qué NO se verificó, y por qué**
+
+- **Si lo mergean.** El challenge no lo exige —pide la URL de la contribución dentro de la ventana—,
+  pero el repo tiene siete PRs de dependabot abiertos, así que la respuesta puede tardar.
+- El script no se probó contra un **dispositivo Ring físico**, solo contra el Playground.
+
+**Dónde quedan los pendientes:** B1, B2, B8, B11 y B7 de [plan.md](plan.md).
+
 ## 2026-09-15 — Lazo de control local, medido y con el corte de red probado
 
 **Qué se hizo**
