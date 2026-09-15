@@ -4,6 +4,34 @@
 
 # Memoria
 
+## 2026-09-15 — El live view del Playground es un clip enlatado
+
+**Qué se hizo**
+
+- `rangyuu/live.py` recibe la media de la sesión WHEP con `aiortc 1.15.0` y mide lo que un fixture no
+  puede: resolución, fps, tiempo al primer frame, duración y cuántos frames distintos llegaron.
+- Medido contra el `Playground Device`: **1280x720 a ~29 fps**, primer frame a **~1,4 s**, y la media
+  **se corta a los ~40 s** tras 1172 frames exactos. No es un stream continuo. La resolución efectiva
+  está por debajo del `max_resolution: 1080` que declara `/capabilities`.
+- **El live view simulado es un clip enlatado, no video sintético ni una cámara viva.** Dos sesiones
+  consecutivas entregan el mismo contenido frame a frame —diferencia media de 0,1 a 2,2 por píxel,
+  atribuible al recodificado y al reloj sobreimpreso—, con idéntico corte a los 1172 frames.
+- La escena es **un comedero de pájaros en la nieve** (`fixtures/ring/playground_frame_120.png`), no
+  una entrada ni un garaje. **Consecuencia asumida:** ese clip no tiene plano de suelo ni geometría
+  conocida, así que **no se puede medir contra él el error de una homografía**. B8 pasa a depender de
+  metraje propio y B11 deja de ser opcional.
+- El token del Playground se confirmó de vida corta: emitido ~13:13, muerto a las 13:58 con `401`.
+- Suite en 77 pruebas. B3 queda cerrado.
+
+**Qué NO se verificó, y por qué**
+
+- **La latencia glass-to-glass no se puede medir contra una grabación**: el clip trae su propio reloj
+  sobreimpreso y no hay un instante físico contra el que compararlo. Necesita dispositivo real. → B10.
+- No se buscó el techo de sesiones simultáneas; cuatro funcionaron.
+- El parámetro `?location=<token>` del `Location` de sesión sigue sin investigarse.
+
+**Dónde quedan los pendientes:** B1, B2, B8, B10 y B11 de [plan.md](plan.md).
+
 ## 2026-09-15 — Sesión WHEP real, desde Python y sin navegador
 
 **Qué se hizo**

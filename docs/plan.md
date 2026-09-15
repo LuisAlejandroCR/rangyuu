@@ -23,28 +23,18 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       completado y un `RANGYUU_REFRESH_TOKEN` propio renovando solo contra `RANGYUU_TOKEN_URL` —cuya ruta
       exacta sigue sin verificarse y por eso es configurable, no está codificada.
 
-- [ ] **B3 · Primer contacto real con la API, con mediciones.** El cliente ya está escrito y
-      probado sin red (`rangyuu/ring_client.py`): resuelve el token del Playground o lo intercambia
-      por refresh, refresca antes de expirar, rechaza `http://` y no filtra credenciales en el error.
-      Falta ejecutarlo contra Ring.
-      *Criterio:* salida real de `GET /v1/devices` y de un evento simulado pegada en
-      `docs/verificacion.md`, más las seis mediciones de `docs/perception.md` §7: resolución y fps del
-      WHEP, latencia glass-to-glass, duración máxima de sesión, sesiones simultáneas por cuenta, si
-      `/capabilities` expone intrínsecos, y —la que más pesa— **si el live view simulado entrega video
-      sintético o un clip enlatado**. Si es enlatado, B8 necesita dispositivo físico o un clip propio.
-
 - [x] **2026-09-14 — B4 · Alcance del demo escogido.** Rangyuu no será un producto fijo para un garaje
       ni una solución CCTV. Será una capa espacial reutilizable para robots y dispositivos autónomos.
       Ring es la fuente de infraestructura; un video del iPhone puede representar el sensor a bordo;
       el consumidor visible será un rover digital. Hardware físico queda como extensión opcional.
 
-- [ ] **B8 · Calibración medida y oclusión derivada del frame.** La rejilla ya está hecha:
-      `rangyuu/spatial.py` mantiene celda, confianza, caducidad y deduplicación desde el
-      `bounding_box`, y `mark_occluded` devuelve una celda ocluida a **desconocido**, nunca a libre
-      (con pruebas). Falta lo que no se puede escribir sin escena real.
-      *Criterio:* (1) homografía calibrada con cuatro correspondencias **medidas**, con el error
-      escrito en `docs/verificacion.md` en centímetros a una distancia dada —no "funciona"—; y (2) la
-      oclusión se **deriva del frame** en vez de declararse desde fuera.
+- [ ] **B8 · Calibración medida sobre metraje propio.** La rejilla está hecha y probada. Lo que
+      cambió el 2026-09-15: **el clip del Playground es un comedero de pájaros en la nieve**, sin
+      plano de suelo ni geometría conocida, así que **no sirve para medir el error de una
+      homografía**. La calibración depende ahora de B11.
+      *Criterio:* cuatro correspondencias **medidas** sobre metraje propio, con el error en
+      centímetros a una distancia dada escrito en `docs/verificacion.md`, y la oclusión **derivada
+      del frame** en vez de declararse desde fuera.
 
 - [ ] **B10 · Runtime de inferencia local.** La señalización WHEP ya está resuelta y probada contra
       Ring (`rangyuu/whep.py`, 2026-09-15): abrir y cerrar sesión desde un proceso Python no requiere
@@ -55,10 +45,13 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       tramo. Prueba obligatoria: **cortar internet con el sistema andando** y verificar que toma la
       acción segura en vez de quedarse con la última lectura.
 
-- [ ] **B11 · Adaptador de cámara a bordo (iPhone, opcional en vivo).** Primero soportar MP4 como
-      fixture reproducible en `fixtures/iphone/`; después, si queda tiempo, añadir captura WebRTC
-      desde Safari. El iPhone nunca reemplaza la llamada real a Ring y se etiqueta como
-      `IPHONE_ONBOARD`.
+- [ ] **B11 · Metraje propio como fuente de calibración — prioridad alta desde el 2026-09-15.**
+      Deja de ser opcional: es la única fuente con plano de suelo medible, porque el clip del
+      Playground no lo tiene. Grabar con el iPhone una escena con cuatro puntos **medidos con cinta**,
+      guardarla en `fixtures/iphone/` y calibrar contra ella.
+      *Criterio:* MP4 reproducible en el repo, las cuatro correspondencias anotadas con su medición
+      real, y el error de B8 calculado contra ellas. Se etiqueta `IPHONE_ONBOARD` y nunca reemplaza la
+      llamada real a Ring.
 
 - [ ] **B6 · Mini challenge — escoger uno.** Un proyecto gana como máximo un premio de pista y uno de
       mini challenge.
@@ -86,6 +79,12 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
 | 10/20 | Margen; enviar antes del 21/10 |
 
 ## Cerrados
+
+- [x] **2026-09-15 — B3 · Primer contacto real con la API, con mediciones.** `GET /v1/devices`,
+      `/status`, `/location` y `/capabilities` respondidos contra Ring; sesión WHEP abierta y cerrada
+      desde Python; media H264 decodificada fuera del navegador. Las seis mediciones de
+      `docs/perception.md` §7 quedan respondidas salvo la latencia glass-to-glass, que no existe
+      contra un clip enlatado y se mueve a B10. Evidencia en [verificacion.md](verificacion.md).
 
 - [x] **2026-09-15 — B0 · Producto y contrato de salida.** El fixture Ring pasa por validación de
       firma HMAC, `Observation`, homografía/calibración server-side, rejilla de ocupación y
