@@ -46,14 +46,14 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       escrito en `docs/verificacion.md` en centímetros a una distancia dada —no "funciona"—; y (2) la
       oclusión se **deriva del frame** en vez de declararse desde fuera.
 
-- [ ] **B10 · Runtime de inferencia local.** Consumir la sesión WHEP desde un proceso propio —no el
-      navegador— y correr el modelo en el equipo del sitio.
-      *Criterio:* frames decodificados fuera del navegador (WHEP es WebRTC con señalización HTTP: el
-      `POST` del SDP offer y el manejo de la `Location` hay que escribirlos, y **no se sabe cuánto
-      cuesta**), inferencia local medida en milisegundos, **cero llamadas de inferencia a terceros**,
-      y el presupuesto de `docs/architecture.md` §5 con número real por tramo. Prueba obligatoria:
-      **cortar internet con el sistema andando** y verificar que toma la acción segura en vez de
-      quedarse con la última lectura.
+- [ ] **B10 · Runtime de inferencia local.** La señalización WHEP ya está resuelta y probada contra
+      Ring (`rangyuu/whep.py`, 2026-09-15): abrir y cerrar sesión desde un proceso Python no requiere
+      navegador. Falta el tramo de media.
+      *Criterio:* frames H264 **decodificados** fuera del navegador con un cliente WebRTC —`aiortc`
+      todavía no está instalado—, inferencia local medida en milisegundos, **cero llamadas de
+      inferencia a terceros**, y el presupuesto de `docs/architecture.md` §5 con número real por
+      tramo. Prueba obligatoria: **cortar internet con el sistema andando** y verificar que toma la
+      acción segura en vez de quedarse con la última lectura.
 
 - [ ] **B11 · Adaptador de cámara a bordo (iPhone, opcional en vivo).** Primero soportar MP4 como
       fixture reproducible en `fixtures/iphone/`; después, si queda tiempo, añadir captura WebRTC

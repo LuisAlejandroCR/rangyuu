@@ -121,7 +121,9 @@ Ninguna de estas cifras está en la documentación pública, y todas cambian el 
 - **Resolución y fps reales** del stream WHEP. Define el tamaño mínimo detectable a X metros.
 - **Latencia glass-to-glass.** Define a qué velocidad puede moverse lo que gobiernas.
 - **Duración máxima de sesión** y si se puede reabrir sin fricción.
-- **Cuántas sesiones simultáneas** permite una cuenta — decide si el multi-cámara de §4 es viable.
+- ~~Cuántas sesiones simultáneas permite una cuenta~~ — **medido el 2026-09-15: al menos cuatro**
+  sobre el mismo dispositivo del Playground, ninguna rechazada, ~0,7 s de señalización cada una. No
+  se buscó el techo. El multi-cámara de §4 no está bloqueado por este límite.
 - **Si el live view simulado del Playground entrega video sintético o un clip enlatado.** **Es la
   medición que más pesa:** si es enlatado, la calibración contra él no es real y el demo necesita un
   dispositivo físico o un clip propio grabado. Todo §4 depende de esto.
