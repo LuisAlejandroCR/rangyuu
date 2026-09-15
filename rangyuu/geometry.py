@@ -1,41 +1,111 @@
-"""Small, dependency-free planar calibration utilities."""
-from math import hypot
+"""Planar calibration utilities based on normalized homogeneous DLT."""
+
+from __future__ import annotations
+
+from math import hypot, isfinite
+from typing import Sequence
+
 import numpy as np
-def _normalize(points):
-    cx=sum(x for x,y in points)/len(points); cy=sum(y for x,y in points)/len(points)
-    d=sum(hypot(x-cx,y-cy) for x,y in points)/len(points)
-    s=2**.5/d if d>1e-12 else 1
-    return [((x-cx)*s,(y-cy)*s) for x,y in points], ((s,0,-s*cx),(0,s,-s*cy),(0,0,1))
-def _mm(a,b): return [[sum(a[i][k]*b[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
 
-def _solve(a, b):
-    n=len(b); m=[list(map(float,a[i]))+[float(b[i])] for i in range(n)]
-    for c in range(n):
-        p=max(range(c,n), key=lambda i: abs(m[i][c]))
-        if abs(m[p][c]) < 1e-12: raise ValueError("degenerate correspondences")
-        m[c],m[p]=m[p],m[c]
-        q=m[c][c]; m[c]=[x/q for x in m[c]]
-        for i in range(n):
-            if i!=c:
-                q=m[i][c]; m[i]=[x-q*y for x,y in zip(m[i],m[c])]
-    return [m[i][-1] for i in range(n)]
 
-def homography_dlt(src, dst):
-    if len(src)<4 or len(src)!=len(dst): raise ValueError("need four matching points")
-    # Fix h33 only when numerically safe; this is the 8-parameter DLT solution.
-    ns,ts=_normalize(src); nd,td=_normalize(dst)
-    a=[]
-    for (x,y),(u,v) in zip(ns,nd):
-        a += [[-x,-y,-1,0,0,0,u*x,u*y,u],[0,0,0,-x,-y,-1,v*x,v*y,v]]
-    _,s,vh=np.linalg.svd(np.asarray(a,float));
-    if len(s)<8 or s[-2] < s[0]*1e-12: raise ValueError("degenerate correspondences")
-    H=vh[-1].reshape(3,3)
-    s=ts[0][0]; tx=ts[0][2]; ty=ts[1][2]; q=td[0][0]; ux=td[0][2]; uy=td[1][2]
-    inv=((1/q,0,-ux/q),(0,1/q,-uy/q),(0,0,1))
-    out=_mm(inv,_mm(H,ts)); z=out[2][2]
-    return [[v/z for v in row] for row in out]
+Point = tuple[float, float]
+Matrix3 = list[list[float]]
 
-def project_point(h, p):
-    x,y=p; q=h[2][0]*x+h[2][1]*y+h[2][2]
-    if abs(q)<1e-12: raise ValueError("point projects to infinity")
-    return ((h[0][0]*x+h[0][1]*y+h[0][2])/q,(h[1][0]*x+h[1][1]*y+h[1][2])/q)
+
+def _as_points(points: Sequence[Sequence[float]], name: str) -> list[Point]:
+    """Convert point pairs to finite floats and reject malformed inputs."""
+    result: list[Point] = []
+    for point in points:
+        if len(point) != 2:
+            raise ValueError(f"{name} points must be pairs")
+        x, y = float(point[0]), float(point[1])
+        if not (isfinite(x) and isfinite(y)):
+            raise ValueError(f"{name} points must be finite")
+        result.append((x, y))
+    return result
+
+
+def _normalize(points: Sequence[Point]) -> tuple[list[Point], Matrix3]:
+    """Apply Hartley similarity normalization and return its transform."""
+    cx = sum(x for x, _ in points) / len(points)
+    cy = sum(y for _, y in points) / len(points)
+    mean_distance = sum(hypot(x - cx, y - cy) for x, y in points) / len(points)
+    if mean_distance <= 1e-15:
+        raise ValueError("degenerate correspondences")
+    scale = 2.0**0.5 / mean_distance
+    transform: Matrix3 = [
+        [scale, 0.0, -scale * cx],
+        [0.0, scale, -scale * cy],
+        [0.0, 0.0, 1.0],
+    ]
+    normalized = [((x - cx) * scale, (y - cy) * scale) for x, y in points]
+    return normalized, transform
+
+
+def _homogeneous_scale(matrix: np.ndarray) -> Matrix3:
+    """Choose a stable, deterministic scale without assuming h33 is nonzero."""
+    norm = float(np.linalg.norm(matrix))
+    if not isfinite(norm) or norm <= np.finfo(float).eps:
+        raise ValueError("degenerate homography")
+    scaled = matrix / norm
+    # The sign of a homogeneous solution is arbitrary. Stabilize it for callers.
+    first = next((float(value) for value in scaled.flat if abs(float(value)) > 1e-14), 1.0)
+    if first < 0:
+        scaled = -scaled
+    return [[float(value) for value in row] for row in scaled]
+
+
+def homography_dlt(src: Sequence[Sequence[float]], dst: Sequence[Sequence[float]]) -> Matrix3:
+    """Estimate a 3x3 projective transform from matching planar points.
+
+    The solution is the right null vector of the homogeneous DLT matrix, found by
+    SVD after Hartley normalization. It therefore also supports valid transforms
+    whose bottom-right coefficient ``h33`` is zero.
+    """
+    source = _as_points(src, "source")
+    target = _as_points(dst, "destination")
+    if len(source) < 4 or len(source) != len(target):
+        raise ValueError("need at least four matching points")
+
+    normalized_source, source_transform = _normalize(source)
+    normalized_target, target_transform = _normalize(target)
+    rows: list[list[float]] = []
+    for (x, y), (u, v) in zip(normalized_source, normalized_target):
+        rows.append([-x, -y, -1.0, 0.0, 0.0, 0.0, u * x, u * y, u])
+        rows.append([0.0, 0.0, 0.0, -x, -y, -1.0, v * x, v * y, v])
+
+    design = np.asarray(rows, dtype=float)
+    _, singular_values, vh = np.linalg.svd(design, full_matrices=True)
+    # A non-degenerate planar calibration has rank 8. With exactly four pairs
+    # there are only eight singular values, so s[-1] is the rank witness. With
+    # more pairs the last value is the homogeneous null direction and s[-2]
+    # measures whether rank 8 is present.
+    threshold = np.finfo(float).eps * max(design.shape) * singular_values[0]
+    rank_witness = singular_values[-1] if design.shape[0] == 8 else singular_values[-2]
+    if rank_witness <= threshold:
+        raise ValueError("degenerate correspondences")
+
+    normalized_h = vh[-1].reshape(3, 3)
+    source_transform_array = np.asarray(source_transform, dtype=float)
+    target_inverse = np.linalg.inv(np.asarray(target_transform, dtype=float))
+    denormalized = target_inverse @ normalized_h @ source_transform_array
+    return _homogeneous_scale(denormalized)
+
+
+def project_point(h: Sequence[Sequence[float]], p: Sequence[float]) -> Point:
+    """Project a finite point through a homography."""
+    if len(p) != 2:
+        raise ValueError("point must be a pair")
+    x, y = float(p[0]), float(p[1])
+    if not (isfinite(x) and isfinite(y)):
+        raise ValueError("point must be finite")
+    matrix = np.asarray(h, dtype=float)
+    if matrix.shape != (3, 3) or not np.isfinite(matrix).all():
+        raise ValueError("homography must be a finite 3x3 matrix")
+    denominator = float(matrix[2, 0] * x + matrix[2, 1] * y + matrix[2, 2])
+    if abs(denominator) <= 1e-12:
+        raise ValueError("point projects to infinity")
+    return (
+        float((matrix[0, 0] * x + matrix[0, 1] * y + matrix[0, 2]) / denominator),
+        float((matrix[1, 0] * x + matrix[1, 1] * y + matrix[1, 2]) / denominator),
+    )
