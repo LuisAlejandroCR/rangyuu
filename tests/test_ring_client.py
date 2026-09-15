@@ -29,15 +29,15 @@ def refreshable(**changes):
 
 
 def test_access_token_is_used_as_is_and_never_refreshed():
-    transport = FakeTransport((200, {"devices": [{"id": "d1"}]}))
+    transport = FakeTransport((200, {"data": [{"id": "d1", "type": "devices"}]}))
     client = RingClient(Credentials(access_token="playground"), transport=transport)
-    assert client.devices() == [{"id": "d1"}]
+    assert client.devices() == [{"id": "d1", "type": "devices"}]
     assert transport.calls[0]["headers"]["Authorization"] == "Bearer playground"
 
 
 def test_refresh_token_is_exchanged_and_reused_until_it_nears_expiry():
-    transport = FakeTransport((200, {"access_token": "t1", "expires_in": 1800}), (200, {"devices": []}),
-                              (200, {"devices": []}))
+    transport = FakeTransport((200, {"access_token": "t1", "expires_in": 1800}), (200, {"data": []}),
+                              (200, {"data": []}))
     now = [1_000.0]
     client = RingClient(refreshable(), transport=transport, clock=lambda: now[0])
     client.devices()
@@ -48,8 +48,8 @@ def test_refresh_token_is_exchanged_and_reused_until_it_nears_expiry():
 
 
 def test_token_is_refreshed_again_once_it_expires():
-    transport = FakeTransport((200, {"access_token": "t1", "expires_in": 120}), (200, {"devices": []}),
-                              (200, {"access_token": "t2", "expires_in": 120}), (200, {"devices": []}))
+    transport = FakeTransport((200, {"access_token": "t1", "expires_in": 120}), (200, {"data": []}),
+                              (200, {"access_token": "t2", "expires_in": 120}), (200, {"data": []}))
     now = [1_000.0]
     client = RingClient(refreshable(), transport=transport, clock=lambda: now[0])
     client.devices()
@@ -61,7 +61,7 @@ def test_token_is_refreshed_again_once_it_expires():
 
 def test_a_rotated_refresh_token_is_kept():
     transport = FakeTransport((200, {"access_token": "t1", "expires_in": 60, "refresh_token": "r2"}),
-                              (200, {"devices": []}))
+                              (200, {"data": []}))
     client = RingClient(refreshable(), transport=transport)
     client.devices()
     assert client.credentials.refresh_token == "r2"
@@ -112,3 +112,27 @@ def test_invalid_json_is_reported_as_such():
     client = RingClient(Credentials(access_token="t"), transport=Broken())
     with pytest.raises(RingError):
         client.me()
+
+
+JSONAPI_DEVICES = {"data": [{"type": "devices", "id": "dev-1",
+                             "attributes": {"name": "Playground Device"},
+                             "relationships": {"status": {"links": {"related": "/v1/devices/dev-1/status"}}}}],
+                   "meta": {"time": "2026-09-15T18:14:35Z"}}
+
+
+def test_jsonapi_devices_are_flattened_to_id_type_and_attributes():
+    client = RingClient(Credentials(access_token="t"), transport=FakeTransport((200, JSONAPI_DEVICES)))
+    assert client.devices() == [{"name": "Playground Device", "id": "dev-1", "type": "devices"}]
+
+
+def test_jsonapi_single_resource_is_flattened_too():
+    body = {"data": {"type": "device-status", "id": "st-1", "attributes": {"online": True, "state": None}}}
+    client = RingClient(Credentials(access_token="t"), transport=FakeTransport((200, body)))
+    assert client.device_status("dev-1") == {"online": True, "state": None, "id": "st-1", "type": "device-status"}
+
+
+@pytest.mark.parametrize("body", [{"data": {}}, {"data": "nope"}, {}, {"data": None}])
+def test_an_unexpected_envelope_yields_empty_never_a_guess(body):
+    client = RingClient(Credentials(access_token="t"), transport=FakeTransport((200, body), (200, body)))
+    assert client.devices() == []
+    assert client.me() == {}
