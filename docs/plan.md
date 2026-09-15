@@ -35,12 +35,13 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       Ring es la fuente de infraestructura; un video del iPhone puede representar el sensor a bordo;
       el consumidor visible será un rover digital. Hardware físico queda como extensión opcional.
 
-- [ ] **B8 · Calibración y mapa de ocupación.** Homografía al plano del suelo desde cuatro
-      correspondencias medidas, y rejilla 2D con **incertidumbre por celda** alimentada por el
-      `bounding_box` de los eventos.
-      *Criterio:* un objeto en una posición conocida cae dentro de la tolerancia declarada; el error
-      medido queda escrito en `docs/memoria.md` — no "funciona", sino cuántos centímetros a cuántos
-      metros. Las celdas ocluidas salen como **desconocido**, nunca como libre.
+- [ ] **B8 · Calibración medida y oclusión derivada del frame.** La rejilla ya está hecha:
+      `rangyuu/spatial.py` mantiene celda, confianza, caducidad y deduplicación desde el
+      `bounding_box`, y `mark_occluded` devuelve una celda ocluida a **desconocido**, nunca a libre
+      (con pruebas). Falta lo que no se puede escribir sin escena real.
+      *Criterio:* (1) homografía calibrada con cuatro correspondencias **medidas**, con el error
+      escrito en `docs/verificacion.md` en centímetros a una distancia dada —no "funciona"—; y (2) la
+      oclusión se **deriva del frame** en vez de declararse desde fuera.
 
 - [ ] **B10 · Runtime de inferencia local.** Consumir la sesión WHEP desde un proceso propio —no el
       navegador— y correr el modelo en el equipo del sitio.

@@ -32,8 +32,10 @@ están en `docs/plan.md`.
 3. `docs/perception.md` — el eje: qué se puede sensar con una cámara fija, qué no, y qué pasa cuando falla.
 4. `docs/architecture.md` — dónde corre cada cosa: inferencia local, y la nube solo donde no hay prisa.
 5. `docs/ring-track.md` — la API de Ring, el Playground y las ideas con su riesgo.
-6. `docs/memoria.md` — qué se hizo y qué quedó sin verificar, por sesión.
-7. `docs/video.md` y `docs/test-rig.md` — producción del video y montaje de pruebas sin hardware.
+6. `docs/setup-dev.md` — cómo correr el núcleo y cómo entregar las credenciales de Ring.
+7. `docs/verificacion.md` — qué está comprobado, con qué comando, y qué sigue pendiente.
+8. `docs/memoria.md` — qué se hizo y qué quedó sin verificar, por sesión.
+9. `docs/video.md` y `docs/test-rig.md` — producción del video y montaje de pruebas sin hardware.
 
 ## La pista, en tres líneas
 
@@ -54,5 +56,19 @@ no sustituyen la integración real con Ring.
 
 ## Código disponible
 
-El núcleo inicial está en `rangyuu/` y las pruebas en `tests/`. La suite formal se ejecuta con
-`python -m pytest` cuando está instalada la dependencia `pytest`.
+```sh
+python -m pytest     # suite completa del núcleo
+python -m rangyuu    # demo sobre fixture: libre → ocupado → duplicado rechazado → caducado
+```
+
+| Módulo | Qué hace |
+|---|---|
+| `rangyuu/geometry.py` | DLT normalizado con SVD: lleva píxeles al plano del suelo en metros. |
+| `rangyuu/spatial.py` | Estado espacial por dispositivo: celdas, confianza, caducidad, oclusión y deduplicación. |
+| `rangyuu/policy.py` | El contrato de salida: sin evidencia explícita no hay `PROCEED`. |
+| `rangyuu/ring.py` | Firma HMAC-SHA256 del webhook y conversión de evento Ring a `Observation`. |
+| `rangyuu/api.py` | El borde HTTP: `POST /api/webhook/ring` y `POST /api/rover/can-traverse`. |
+| `rangyuu/__main__.py` | La demo offline que reproduce `tests/fixtures/b0_events.json`. |
+
+Las credenciales y el entorno están en [docs/setup-dev.md](docs/setup-dev.md); la evidencia
+repetible, en [docs/verificacion.md](docs/verificacion.md).

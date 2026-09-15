@@ -42,6 +42,17 @@ class SpatialState:
   elif previous is None or timestamp>previous.observed_at:self.contradictions.discard(key)
   if previous is None or timestamp>=previous.observed_at:self.cells[key]=CellObservation(cell,timestamp,confidence,free,source,device)
   self.events.add(eid); return True
+ def mark_occluded(self,device_id,cells,timestamp):
+  """Occlusion erases belief: an occluded cell goes back to unknown, never to free."""
+  now=_number(timestamp,"timestamp")
+  if now<0 or not isinstance(device_id,str) or not device_id.strip(): raise ValueError("invalid occlusion context")
+  if not isinstance(cells,(list,tuple)) or len(cells)>64: raise ValueError("invalid occlusion area")
+  cleared=0
+  for cell in cells:
+   if not isinstance(cell,(list,tuple)) or len(cell)!=2 or any(isinstance(v,bool) or not isinstance(v,int) for v in cell): raise ValueError("cells must be integer pairs")
+   key=(device_id,tuple(cell)); previous=self.cells.get(key)
+   if previous is not None and previous.observed_at<=now: del self.cells[key]; self.contradictions.discard(key); cleared+=1
+  return cleared
  def evaluate_trajectory(self,device_id,timestamp,trajectory):
   now=_number(timestamp,"timestamp")
   if now<0 or not isinstance(device_id,str) or not device_id.strip(): raise ValueError("invalid evaluation context")
