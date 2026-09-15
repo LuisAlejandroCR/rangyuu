@@ -10,6 +10,25 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
 
 ## Abiertos
 
+- [ ] **B12 · La app.** Cinco pantallas y una sexta opcional, especificadas en
+      [app.md](app.md): Ahora, Caminata, Espacio, Fuentes, Configurar espacio y Evidencia. Corre
+      como web app servida por el propio proceso (`python -m rangyuu.serve`), porque compilar
+      nativo para iOS exige un Mac.
+      *Hecho el 2026-09-15:* las seis pantallas existen y se alimentan del núcleo real; los cuatro
+      estados de pantalla derivan de las tres decisiones con reglas probadas.
+      *Falta:* (1) probar el **modo caminata en un iPhone real**, que necesita HTTPS o túnel porque
+      Safari no da cámara en HTTP; (2) alimentar la app desde una **sesión WHEP viva** en vez del
+      sembrado inicial; y (3) la vista de evidencia con imagen al tocar una celda.
+
+- [ ] **B6 · Mini challenge: Open Source — listo para enviar, sin abrir.** Escogido Open Source sobre
+      AWS Builder: la contribución sale del trabajo que ya existía y no agrega superficie de nube.
+      El trabajo está hecho y probado contra la API real: fork `LuisAlejandroCR/ring-api-helloworld`,
+      rama `add-whep-live-view-script`, commit `ed293da` — `scripts/live_view.py` abre una sesión WHEP
+      desde la terminal y con `--frames` mide resolución y fps reales.
+      *Criterio:* abrir el PR **cuando el proyecto esté terminado**, no antes. Se abrió el 2026-09-15
+      como <https://github.com/AmazonAppDev/ring-api-helloworld/pull/23> y se cerró el mismo día por
+      decisión escogida; reabrirlo es un clic y conserva la URL.
+
 - [ ] **B1 · Cerrar las cinco incógnitas contra la doc oficial.** `developer.amazon.com/docs/ring`
       no se pudo leer desde el entorno donde se escribió `docs/ring-track.md`.
       *Criterio de aceptación:* las cinco preguntas de `docs/ring-track.md` §6 respondidas en
@@ -69,14 +88,6 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
 | 10/20 | Margen; enviar antes del 21/10 |
 
 ## Cerrados
-
-- [x] **2026-09-15 — B6 · Mini challenge: Open Source.** Escogido Open Source sobre AWS Builder: la
-      contribución sale del trabajo que ya existía y no agrega superficie de nube al proyecto.
-      PR abierto dentro de la ventana:
-      <https://github.com/AmazonAppDev/ring-api-helloworld/pull/23> — `scripts/live_view.py`, que
-      abre una sesión WHEP desde la terminal sin navegador y, con `--frames`, mide resolución y fps
-      reales. Usuario: `LuisAlejandroCR`. Repo: `AmazonAppDev/ring-api-helloworld`. No requiere merge
-      para calificar.
 
 - [x] **2026-09-15 — B3 · Primer contacto real con la API, con mediciones.** `GET /v1/devices`,
       `/status`, `/location` y `/capabilities` respondidos contra Ring; sesión WHEP abierta y cerrada

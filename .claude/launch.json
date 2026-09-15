@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rangyuu",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "rangyuu.serve", "8099"],
+      "port": 8099
+    }
+  ]
+}

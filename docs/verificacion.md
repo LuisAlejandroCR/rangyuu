@@ -9,7 +9,11 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa del núcleo, 98 pruebas | `python -m pytest -q` → `98 passed` | ✅ | 2026-09-15 |
+| Suite completa del núcleo, 120 pruebas | `python -m pytest -q` → `120 passed` | ✅ | 2026-09-15 |
+| **La app arranca sin credenciales y responde**: `AVANZA · camino libre` con la ruta sembrada, y cae a `SIN CERTEZA · hace rato que no llega imagen` cuando el feed envejece | `python -m rangyuu.serve` y `curl localhost:8080/api/space/now` | ✅ | 2026-09-15 |
+| Los cuatro estados de pantalla derivan de las tres decisiones del núcleo, y **CUIDADO nunca suaviza un rechazo** | `python -m pytest tests/test_ui.py` | ✅ | 2026-09-15 |
+| El borde HTTP de la app: seis lecturas, cuatro escrituras, 422 ante calibración incompleta o frame mal formado, 404 fuera de `web/` | `python -m pytest tests/test_webapp.py` | ✅ | 2026-09-15 |
+| La pantalla de Fuentes muestra el **error medido contra puntos ajenos al ajuste (0,9 cm)**, no el error del ajuste (0,0 cm) | `curl localhost:8080/api/sources` | ✅ | 2026-09-15 |
 | **El lazo completo corrió contra una sesión WHEP viva**: 400 frames a 1280x720, 1779 detecciones; decodificación 7,48 ms, inferencia 0,58 ms, decisión 0,10 ms → 8,16 ms por frame (~122 fps de capacidad contra 29 fps que entrega la cámara). Con el feed vivo el veredicto es `PROCEED`; al cortarlo pasa a `HOLD` por `feed stale` | `LocalRuntime` alimentado desde `rangyuu/live.py` con `RANGYUU_ACCESS_TOKEN` cargado | ✅ | 2026-09-15 |
 | Presupuesto sobre archivo local, como control: 14,44 ms por frame a 1280x720 y 7,67 ms a 1024x576 | 200 y 486 frames por `LocalRuntime.on_frame` | ✅ | 2026-09-15 |
 | **La inferencia no abre un socket**: se envenena `socket.socket` y `socket.create_connection` mientras se procesa un frame y el lazo sigue funcionando | `python -m pytest tests/test_runtime.py::test_inference_opens_no_socket` | ✅ | 2026-09-15 |
