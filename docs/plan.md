@@ -4,16 +4,11 @@
 
 # Plan — pista Ring
 
-**Última actualización:** 2026-09-14 (alcance: capa espacial general; Ring como infraestructura,
+**Última actualización:** 2026-09-15 (alcance: capa espacial general; Ring como infraestructura,
 iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV excluido)
 **Cierre de submission:** 2026-10-23, 12:00 PM PT · quedan ~5 semanas de trabajo real
 
 ## Abiertos
-
-- [ ] **B0 · Producto y contrato de salida.** Implementar el flujo mínimo
-      `Ring/fixture → Observation → mapa espacial → can-traverse() → rover digital`. El contrato
-      debe devolver `PROCEED`, `HOLD` o `UNKNOWN`, una razón legible y evidencia (`device_id`,
-      timestamp y celdas afectadas). Ningún estado desconocido puede autorizar tránsito.
 
 - [ ] **B1 · Cerrar las cinco incógnitas contra la doc oficial.** `developer.amazon.com/docs/ring`
       no se pudo leer desde el entorno donde se escribió `docs/ring-track.md`.
@@ -61,18 +56,6 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       desde Safari. El iPhone nunca reemplaza la llamada real a Ring y se etiqueta como
       `IPHONE_ONBOARD`.
 
-- [ ] **B9 · Contrato de degradación.** La tabla de `docs/perception.md` §6, en código y con tests.
-      *Criterio:* cada fila tiene su test — cámara offline, celda desconocida en la trayectoria,
-      confianza baja, homografía derivada, evento que contradice el frame. Todas terminan en la
-      acción segura, y ninguna trata *desconocido* como *libre*. Incluye la **caducidad** de
-      `docs/architecture.md` §6: una celda observada hace más de la ventana declarada vuelve a
-      desconocido, y el sistema arranca en el estado seguro, no en el permisivo.
-
-- [ ] **B5 · Verificación de la firma HMAC-SHA256 del webhook.** Se necesita igual para no aceptar
-      eventos falsos, y es el candidato natural al PR upstream de B6.
-      *Criterio:* un evento con firma válida se acepta, uno con firma alterada se rechaza, y ambos
-      casos quedan en tests.
-
 - [ ] **B6 · Mini challenge — escoger uno.** Un proyecto gana como máximo un premio de pista y uno de
       mini challenge.
       *Open Source:* PR o fork (no necesita merge) a un repo público **dentro de la ventana**, con
@@ -99,6 +82,21 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
 | 10/20 | Margen; enviar antes del 21/10 |
 
 ## Cerrados
+
+- [x] **2026-09-15 — B0 · Producto y contrato de salida.** El fixture Ring pasa por validación de
+      firma HMAC, `Observation`, homografía/calibración server-side, rejilla de ocupación y
+      `POST /api/rover/can-traverse`. La decisión incluye razón, evidencia y `authorizes`; solo
+      `PROCEED` autoriza tránsito. Verificado con 34 tests. No se verificó contra la API real de
+      Ring; eso sigue en B3.
+
+- [x] **2026-09-15 — B9 · Contrato de degradación.** Estado inicial seguro, caducidad, cámara/sesión
+      no disponibles, homografía inválida, trayectorias desconocidas, baja confianza y contradicción
+      terminan en `HOLD`/`WAIT` o `UNKNOWN` sin autorización. Las decisiones de avance exigen
+      evidencia anclada a dispositivo, timestamp y celdas.
+
+- [x] **2026-09-15 — B5 · Verificación HMAC-SHA256.** El receptor verifica los bytes originales del
+      cuerpo antes de parsear JSON, usa comparación constante y rechaza firma ausente, alterada o
+      con formato inválido. Casos cubiertos por tests HTTP.
 
 - [x] **2026-09-14 — Frontera de nube y local.** `docs/architecture.md`: tres carriles (crítico en
       el sitio, contexto de nube degradable, asíncrono sin voto), el presupuesto de latencia por
