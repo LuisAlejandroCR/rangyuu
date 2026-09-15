@@ -4,6 +4,30 @@
 
 # Memoria
 
+## 2026-09-15 — Maquinaria de calibración, y por qué el primer video no sirve
+
+**Qué se hizo**
+
+- `rangyuu/calibrate.py`: convierte correspondencias medidas en homografía **y en un error en
+  centímetros**, por punto y en agregado. `check_point()` mide un punto que no entró en el ajuste,
+  que es la única comprobación honesta: los cuatro puntos del ajuste siempre dan error ~0 y no
+  prueban nada. Ocho pruebas.
+- Se revisó `test_home_video.mp4` (44,8 s, 464x832, ~40 fps, 1819 frames) suministrado el 2026-09-15,
+  junto con las medidas: mueble de vidrios 110x80x28 cm y recuadro de hilo en el piso de 1,50 x 0,90 m.
+
+**Qué NO se verificó, y por qué**
+
+- **No se calibró nada con ese video, y no se escribió ningún error en centímetros.** Dos razones,
+  ambas verificadas sobre los frames: la cámara va **en mano y en movimiento** —el desplazamiento
+  medio entre frames muestreados va de 2,8 a 36,4 niveles de gris—, así que cada frame tendría su
+  propia homografía; y en ningún frame revisado se ven **las cuatro esquinas** del recuadro de hilo a
+  la vez. Una homografía exige cámara fija y los cuatro puntos visibles en el mismo frame.
+- El archivo está a 464x832, resolución baja para marcar esquinas con precisión de píxel; el error de
+  clic se traduce directo en error en centímetros.
+
+**Dónde quedan los pendientes:** B8 y B11 de [plan.md](plan.md), a la espera de una toma con cámara
+apoyada y el recuadro entero en cuadro.
+
 ## 2026-09-15 — El live view del Playground es un clip enlatado
 
 **Qué se hizo**
