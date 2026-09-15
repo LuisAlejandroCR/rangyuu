@@ -19,3 +19,16 @@ def test_calibration_is_invertible():
  with pytest.raises(ValueError):SpatialState().calibrate("d",[[1,0,0],[0,0,0],[0,0,1]])
 def test_older_event_does_not_overwrite():
  s=SpatialState(); s.calibrate("d",IDENTITY); s.ingest(event(event_id="new",timestamp=200)); s.ingest(event(event_id="old",timestamp=100,kind="person")); assert s.evaluate_trajectory("d",200,[(0,1)])["decision"]=="PROCEED"
+def test_occlusion_returns_a_cell_to_unknown_never_to_free():
+ s=SpatialState(); s.calibrate("d",IDENTITY); s.ingest(event())
+ assert s.evaluate_trajectory("d",100,[(0,1)])["decision"]=="PROCEED"
+ assert s.mark_occluded("d",[(0,1)],100)==1
+ assert s.evaluate_trajectory("d",100,[(0,1)])["reason"]=="trajectory unknown"
+def test_occlusion_older_than_the_observation_is_ignored():
+ s=SpatialState(); s.calibrate("d",IDENTITY); s.ingest(event(timestamp=200))
+ assert s.mark_occluded("d",[(0,1)],100)==0
+ assert s.evaluate_trajectory("d",200,[(0,1)])["decision"]=="PROCEED"
+@pytest.mark.parametrize("cells",[[(0,)],[("0","1")],[[0,True]],"xy"])
+def test_invalid_occlusion_area(cells):
+ s=SpatialState(); s.calibrate("d",IDENTITY)
+ with pytest.raises(ValueError):s.mark_occluded("d",cells,100)

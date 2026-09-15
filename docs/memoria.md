@@ -4,6 +4,29 @@
 
 # Memoria
 
+## 2026-09-15 — Reconciliación de ramas y oclusión
+
+**Qué se hizo**
+
+- Se descartó la implementación paralela de la rama `codex/rangyuu-rebuild` (rejilla propia, pipeline
+  y contrato con `Verdict`) por duplicar lo que ya estaba en `main` con más validación. De esa rama
+  se conservó solo lo que `main` no tenía.
+- `SpatialState.mark_occluded` entra en `rangyuu/spatial.py`: una celda ocluida se borra y vuelve a
+  desconocida; una oclusión anterior a la última observación se ignora. Tres pruebas nuevas.
+- `python -m rangyuu` reproduce el fixture por el mismo normalizador y el mismo estado que usa el
+  receptor HTTP, e imprime libre → ocupado → duplicado rechazado → `cell stale`.
+- Entran `docs/verificacion.md` con ocho filas repetibles, `docs/setup-dev.md` con el paso a paso
+  para entregar las credenciales de Ring, y `.env.example` versionado sin valores.
+- La suite quedó en 40 pruebas pasando.
+
+**Qué NO se verificó, y por qué**
+
+- La oclusión se declara desde fuera; todavía no se deriva del frame. Queda en B8.
+- Sigue sin haber una sola llamada contra la API real de Ring ni un error de homografía medido en
+  centímetros.
+
+**Dónde quedan los pendientes:** B1, B2, B3, B8 y B10 de [plan.md](plan.md).
+
 ## 2026-09-15 — Núcleo espacial, degradación y API del rover
 
 **Qué se hizo**
