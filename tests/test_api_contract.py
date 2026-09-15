@@ -24,7 +24,8 @@ def _events():
 
 
 def _start_server(secret="test-secret"):
-    server = HTTPServer(("127.0.0.1", 0), make_handler(RingApiState(secret)))
+    state = RingApiState(secret, calibrations={"ring-camera-1": [[0.1, 0, 0], [0, 0.1, 0], [0, 0, 1]]})
+    server = HTTPServer(("127.0.0.1", 0), make_handler(state))
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     return server, f"http://127.0.0.1:{server.server_port}"
@@ -108,5 +109,20 @@ def test_duplicate_webhook_is_idempotent():
         # A replay must not be applied as a second observation.  200/204 are
         # both acceptable idempotent acknowledgements.
         assert _signed_post(f"{base}/api/webhook/ring", event)[0] in (200, 204)
+    finally:
+        server.shutdown()
+
+
+def test_rover_uses_mapped_cells_and_never_authorizes_unknown():
+    server, base = _start_server()
+    try:
+        free = _events()[0]
+        assert _signed_post(f"{base}/api/webhook/ring", free)[0] == 202
+        payload = {"device_id": "ring-camera-1", "timestamp": free["timestamp"], "trajectory": [[2, 5]]}
+        status, report = _signed_post(f"{base}/api/rover/can-traverse", payload)
+        assert status == 200 and report["decision"] == "PROCEED" and report["authorizes"] is True
+        payload["trajectory"] = [[99, 99]]
+        status, report = _signed_post(f"{base}/api/rover/can-traverse", payload)
+        assert status == 200 and report["decision"] == "HOLD" and report["authorizes"] is False
     finally:
         server.shutdown()
