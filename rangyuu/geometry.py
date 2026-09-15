@@ -1,5 +1,10 @@
 """Small, dependency-free planar calibration utilities."""
 from math import hypot
+def _normalize(points):
+    cx=sum(x for x,y in points)/len(points); cy=sum(y for x,y in points)/len(points)
+    d=sum(hypot(x-cx,y-cy) for x,y in points)/len(points)
+    s=2**.5/d if d>1e-12 else 1
+    return [((x-cx)*s,(y-cy)*s) for x,y in points], ((s,0,-s*cx),(0,s,-s*cy),(0,0,1))
 
 def _solve(a, b):
     n=len(b); m=[list(map(float,a[i]))+[float(b[i])] for i in range(n)]
@@ -16,11 +21,18 @@ def _solve(a, b):
 def homography_dlt(src, dst):
     if len(src)<4 or len(src)!=len(dst): raise ValueError("need four matching points")
     # Fix h33 only when numerically safe; this is the 8-parameter DLT solution.
+    ns,ts=_normalize(src); nd,td=_normalize(dst)
     a=[]; b=[]
-    for (x,y),(u,v) in zip(src,dst):
+    for (x,y),(u,v) in zip(ns,nd):
         a += [[x,y,1,0,0,0,-u*x,-u*y],[0,0,0,x,y,1,-v*x,-v*y]]
         b += [u,v]
-    h=_solve(a,b); return [h[:3],h[3:6],[h[6],h[7],1.0]]
+    if len(a)>8:
+        ata=[[sum(row[i]*row[j] for row in a) for j in range(8)] for i in range(8)]
+        atb=[sum(row[i]*z for row,z in zip(a,b)) for i in range(8)]
+        h=_solve(ata,atb)
+    else: h=_solve(a,b)
+    H=[h[:3],h[3:6],[h[6],h[7],1.0]]
+    return H
 
 def project_point(h, p):
     x,y=p; q=h[2][0]*x+h[2][1]*y+h[2][2]
