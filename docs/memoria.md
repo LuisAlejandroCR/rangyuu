@@ -4,6 +4,28 @@
 
 # Memoria
 
+## 2026-09-15 — Configuración por `RING_*` y carga de `.env.local`
+
+**Qué se hizo**
+
+- `rangyuu/config.py` lee la configuración del entorno y, si falta, de `.env.local`. Una variable de
+  entorno real **siempre gana** sobre el archivo, para que un secreto de Cloud Run no quede tapado por
+  un `.env.local` viejo dentro de la imagen. Tres pruebas cubren la precedencia.
+- El receptor pasa a esperar `RING_WEBHOOK_SECRET`; se mantiene `RANGYUU_WEBHOOK_SECRET` como
+  respaldo para no romper un despliegue existente. `docs/cloud-run.md` queda alineado.
+- La app de Ring quedó creada con el nombre interno `Rangyuu` y scopes mínimos: Cameras and
+  Doorbells, más Account and Lifecycle, que es automático. Los demás grupos de sensores quedaron en
+  Off por divulgación mínima.
+- Suite en 43 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- Todavía no hay `client_id`, `client_secret` ni secreto de webhook cargados; nada se probó contra
+  Ring. El `Ring Appstore Schedule` no contiene las reglas de datos: están en *Program Requirements*
+  y *Content Policy*, que siguen sin leerse y condicionan B6 y `docs/architecture.md` §1.
+
+**Dónde quedan los pendientes:** B1, B2, B3, B6 y B8 de [plan.md](plan.md).
+
 ## 2026-09-15 — Reconciliación de ramas y oclusión
 
 **Qué se hizo**

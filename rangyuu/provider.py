@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 import os, urllib.request, json, ipaddress
 from urllib.parse import urlparse
+from . import config
 @dataclass(frozen=True)
 class Plan:
     objective:str; files:tuple[str,...]; max_tokens:int=4000
@@ -11,8 +12,8 @@ class ProviderAdapter:
     def review(self, patch): raise NotImplementedError
 class HttpProvider(ProviderAdapter):
     def __init__(self, base_url=None, token=None, max_bytes=1_000_000):
-        self.base_url=(base_url or os.getenv("RANGYUU_PROVIDER_URL","" )).rstrip("/")
-        self.token=token or os.getenv("RANGYUU_PROVIDER_TOKEN")
+        self.base_url=(base_url or config.get("RANGYUU_PROVIDER_URL")).rstrip("/")
+        self.token=token or config.get("RANGYUU_PROVIDER_TOKEN") or None
         self.max_bytes=max_bytes
         self._validate_url()
     def _validate_url(self):

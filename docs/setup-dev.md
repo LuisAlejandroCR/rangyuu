@@ -14,7 +14,7 @@ python -m rangyuu
 python -m rangyuu tests/fixtures/b0_events.json
 ```
 
-`python -m pytest -q` debe terminar en `40 passed`. `python -m rangyuu` reproduce el fixture por el
+`python -m pytest -q` debe terminar en `43 passed`. `python -m rangyuu` reproduce el fixture por el
 mismo normalizador y el mismo estado espacial que usa el receptor HTTP, e imprime un informe por
 paso: `PROCEED` con la celda observada libre, `HOLD` cuando la persona la ocupa, el evento repetido
 rechazado por deduplicación, y `HOLD` por `cell stale` cuando la observación caduca. Ese último paso
@@ -22,7 +22,10 @@ es la prueba de que el sistema se vuelve conservador solo, sin que nadie lo empu
 
 ## 2. Dónde van los secretos
 
-`.env.local`, que está en `.gitignore`. `.env.example` se versiona y no lleva valores. Ningún token
+`.env.local`, que está en `.gitignore`. `.env.example` se versiona y no lleva valores. El runtime lo
+lee por `rangyuu/config.py`, con una regla: **una variable de entorno real siempre gana** sobre el
+archivo, para que un secreto de Cloud Run no quede tapado por un `.env.local` viejo dentro de la
+imagen. Los nombres que el código espera son los de `.env.example`, `RING_*`. Ningún token
 entra en un commit, en un `.md`, en un comentario de código ni en un mensaje de chat pegado al repo.
 Si un token se expone, se rota antes de seguir.
 

@@ -1,4 +1,5 @@
 import os,hmac,hashlib,json,logging,time,threading
+from . import config
 from http.server import BaseHTTPRequestHandler,HTTPServer
 def handler_class(secret=""):
  log=logging.getLogger("rangyuu.http")
@@ -40,4 +41,4 @@ def handler_class(secret=""):
   def log_message(self,*args): pass
  return Handler
 def run():
- port=int(os.getenv("PORT","8080")); HTTPServer(("0.0.0.0",port),handler_class(os.getenv("RANGYUU_WEBHOOK_SECRET",""))).serve_forever()
+ port=int(config.get("PORT","8080")); HTTPServer(("0.0.0.0",port),handler_class(config.get("RING_WEBHOOK_SECRET") or config.get("RANGYUU_WEBHOOK_SECRET",""))).serve_forever()
