@@ -152,3 +152,19 @@
 - **Ninguna idea se prototipó.** No se escribió una línea contra la API real. → B3, B4.
 
 **Dónde quedan los pendientes:** bloques B1 a B7 de `docs/plan.md`.
+
+## 2026-09-14 — Núcleo inicial verificable
+
+**Qué se hizo**
+
+- Se implementaron homografía planar, proyección, verificación HMAC-SHA256, ingesta de eventos y
+  decisiones `PROCEED`/`HOLD`/`UNKNOWN` en `rangyuu/`.
+- Se añadieron pruebas de núcleo en `tests/test_core.py`.
+
+**Qué NO se verificó, y por qué**
+
+- No hay integración contra Ring real ni receptor HTTP todavía.
+- `pytest` no está instalado en el entorno; la compilación y la ejecución directa de todas las
+  funciones de prueba pasaron.
+
+**Dónde quedan los pendientes:** B0, B1, B2, B3, B8, B9, B10 y B11.

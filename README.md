@@ -51,3 +51,8 @@ caducidad, para que cualquier dispositivo pueda consultar si una trayectoria es 
 El producto es general; el rover digital es solamente el consumidor visible de la demostración. El
 iPhone, si se usa, representa el sensor a bordo del rover. Los videos grabados son fixtures de prueba,
 no sustituyen la integración real con Ring.
+
+## Código disponible
+
+El núcleo inicial está en `rangyuu/` y las pruebas en `tests/`. La suite formal se ejecuta con
+`python -m pytest` cuando está instalada la dependencia `pytest`.
