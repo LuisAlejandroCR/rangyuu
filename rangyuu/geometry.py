@@ -28,7 +28,7 @@ def homography_dlt(src, dst):
     for (x,y),(u,v) in zip(ns,nd):
         a += [[-x,-y,-1,0,0,0,u*x,u*y,u],[0,0,0,-x,-y,-1,v*x,v*y,v]]
     _,s,vh=np.linalg.svd(np.asarray(a,float));
-    if s[-1] < 1e-14 or s[-2]/s[-1] < 1e-8: raise ValueError("degenerate correspondences")
+    if len(s)<8 or s[-2] < s[0]*1e-12: raise ValueError("degenerate correspondences")
     H=vh[-1].reshape(3,3)
     s=ts[0][0]; tx=ts[0][2]; ty=ts[1][2]; q=td[0][0]; ux=td[0][2]; uy=td[1][2]
     inv=((1/q,0,-ux/q),(0,1/q,-uy/q),(0,0,1))
