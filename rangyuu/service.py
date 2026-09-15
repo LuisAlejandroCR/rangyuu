@@ -9,7 +9,11 @@ def handler_class(secret=""):
    else: self._send(404,{"error":"not found"})
   def do_POST(self):
    if self.path!="/orchestrate": self._send(404,{"error":"not found"}); return
-   length=int(self.headers.get("Content-Length","0"));
+   if not secret: self._send(503,{"error":"authentication not configured"}); return
+   if self.headers.get("Content-Type","").split(";")[0].lower()!="application/json": self._send(415,{"error":"json required"}); return
+   try: length=int(self.headers.get("Content-Length","-1"))
+   except ValueError: self._send(400,{"error":"invalid content length"}); return
+   if length<0: self._send(411,{"error":"content length required"}); return
    if length>1_000_000: self._send(413,{"error":"payload too large"}); return
    body=self.rfile.read(length); sig=self.headers.get("X-Signature","")
    expected=hmac.new(secret.encode(),body,hashlib.sha256).hexdigest()
