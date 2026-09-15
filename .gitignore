@@ -8,3 +8,8 @@ __pycache__/
 *.pyc
 .venv/
 .DS_Store
+
+# Video de casa: material de calibración, nunca se versiona.
+*.mp4
+*.MOV
+*.mov

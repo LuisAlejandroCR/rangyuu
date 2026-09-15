@@ -25,8 +25,16 @@
 - El archivo está a 464x832, resolución baja para marcar esquinas con precisión de píxel; el error de
   clic se traduce directo en error en centímetros.
 
+- Se recibió después el original `test_home_video.MOV`: 3840x2160, 60 fps, 131 s, HEVC —muy superior
+  al MP4 de 464x832— y la medida de la baldosa, **30,5 x 30,5 cm**. Se intentó usar la rejilla de
+  juntas como referencia métrica, que es grande y está en el plano del suelo.
+- **Tampoco alcanzó, y la razón está medida:** a escala 1:1 las juntas tienen contraste casi nulo
+  contra la baldosa y arrastran desenfoque de movimiento por cámara en mano con poca luz. No se
+  pueden marcar intersecciones con precisión de píxel, y sin eso el error en centímetros sería
+  inventado. No se escribió ninguna cifra.
+
 **Dónde quedan los pendientes:** B8 y B11 de [plan.md](plan.md), a la espera de una toma con cámara
-apoyada y el recuadro entero en cuadro.
+apoyada, cuatro marcas de **alto contraste** en posiciones medidas, y las cuatro en el mismo frame.
 
 ## 2026-09-15 — El live view del Playground es un clip enlatado
 
