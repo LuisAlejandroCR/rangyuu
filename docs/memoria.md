@@ -4,6 +4,28 @@
 
 # Memoria
 
+## 2026-09-15 — Núcleo espacial, degradación y API del rover
+
+**Qué se hizo**
+
+- Se implementó DLT homogéneo con normalización Hartley, SVD y escala que no asume `h33 != 0`.
+- Se añadió una rejilla espacial por dispositivo: calibración server-side, proyección del punto
+  inferior central del bounding box, caducidad, deduplicación y ocupación derivada del tipo de evento.
+- El receptor `POST /api/webhook/ring` valida HMAC sobre bytes originales, tamaño y JSON; el rover
+  consulta `POST /api/rover/can-traverse` y recibe una decisión anclada a evidencia.
+- El contrato de degradación exige evidencia explícita para `PROCEED`; las rutas desconocidas,
+  obsoletas, ocupadas o contradictorias nunca autorizan tránsito.
+- La suite local terminó con 34 pruebas pasando, más compilación Python y revisión de diff.
+
+**Qué NO se verificó, y por qué**
+
+- No se conectó una cuenta, webhook ni stream real de Ring. Las pruebas usan fixtures deterministas;
+  el contacto real y las mediciones siguen en B1/B2/B3.
+- La tolerancia geométrica está validada en casos sintéticos; todavía no hay un error medido en un
+  sitio físico, por lo que B8 permanece abierto.
+- La deduplicación vive en memoria y no persiste entre reinicios; es suficiente para el demo, no para
+  un despliegue productivo. Queda como trabajo de endurecimiento antes de producción.
+
 ## 2026-09-14 — Producción del video y montaje USB-C
 
 **Qué se hizo**
