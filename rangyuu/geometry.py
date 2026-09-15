@@ -32,7 +32,9 @@ def homography_dlt(src, dst):
         h=_solve(ata,atb)
     else: h=_solve(a,b)
     H=[h[:3],h[3:6],[h[6],h[7],1.0]]
-    return H
+    # denormalize: inverse target transform times normalized H times source transform
+    s,_,tx=ts[0]; _,_,ty=ts[1]; q,_,ux=td[0]; _,_,uy=td[1]
+    return [[(H[0][0]*s+H[0][2]*0)/q,(H[0][1]*s)/q,(H[0][2]-H[0][0]*tx-H[0][1]*ty)/q+ux],[(H[1][0]*s)/q,(H[1][1]*s)/q,(H[1][2]-H[1][0]*tx-H[1][1]*ty)/q+uy],[H[2][0]*s,H[2][1]*s,H[2][2]-H[2][0]*tx-H[2][1]*ty]]
 
 def project_point(h, p):
     x,y=p; q=h[2][0]*x+h[2][1]*y+h[2][2]
