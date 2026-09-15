@@ -13,3 +13,9 @@ __pycache__/
 *.mp4
 *.MOV
 *.mov
+
+# Fotos de casa usadas para calibrar: los puntos se versionan, la imagen no.
+*.jpeg
+*.jpg
+*.png
+!fixtures/ring/playground_frame_120.png

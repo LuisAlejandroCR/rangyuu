@@ -9,8 +9,9 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa del núcleo, 85 pruebas | `python -m pytest -q` → `85 passed` | ✅ | 2026-09-15 |
+| Suite completa del núcleo, 88 pruebas | `python -m pytest -q` → `88 passed` | ✅ | 2026-09-15 |
 | La calibración reporta **error en centímetros** por punto, y un punto fuera del ajuste se comprueba aparte | `python -m pytest tests/test_calibrate.py` | ✅ | 2026-09-15 |
+| **Error métrico medido: 0,9 cm sobre 61 cm (1,6 %) a ~0,3–0,9 m del borde cercano.** Ajuste con cuatro marcas de cinta en un rectángulo de 0,90 x 1,50 m medido con cinta métrica; comprobación con tres cruces de junta de baldosa (0,305 m) **que no entraron en el ajuste**. Por tramo: 0,0 cm y 1,0 cm | `python -m pytest tests/test_calibration_home.py`, sobre `fixtures/home/calibration_points.json` | ✅ | 2026-09-15 |
 | **Media H264 decodificada fuera del navegador**: 1172 frames en 39,9 s | `rangyuu/live.py` con `aiortc 1.15.0`, contra el `Playground Device` | ✅ | 2026-09-15 |
 | **Resolución efectiva 1280x720**, por debajo del `max_resolution: 1080` que declara `/capabilities` | Misma corrida | ✅ | 2026-09-15 |
 | **~29 fps**; primer frame a **~1,4 s** de abrir la sesión | Misma corrida | ✅ | 2026-09-15 |
@@ -50,7 +51,8 @@
 | Qué | Por qué no se pudo | Bloque |
 |---|---|---|
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
-| Error métrico de la homografía en centímetros | La maquinaria está escrita y probada (`rangyuu/calibrate.py`); falta la entrada. Se intentó con el original `test_home_video.MOV` (3840x2160, 60 fps, 131 s, HEVC) usando las juntas de baldosa de **30,5 x 30,5 cm** como rejilla de referencia: a 1:1 las juntas tienen contraste casi nulo contra la baldosa y arrastran desenfoque de movimiento, así que **no se pueden marcar intersecciones con precisión de píxel**. Sin esa precisión, el error en centímetros que saliera sería inventado | B8, B11 |
+| El error a distancias mayores que 1,5 m, y con la cámara de Ring en vez de un teléfono | La foto medida cubre hasta 1,50 m de profundidad; más allá no hay marca medida. Dos intentos previos en video fallaron: cámara en mano, desenfoque de movimiento y las cuatro marcas nunca en el mismo frame | B8, B11 |
+| Oclusión derivada del frame | `mark_occluded` existe y tiene pruebas, pero la oclusión se declara desde fuera | B8 |
 | Latencia glass-to-glass real | El clip es enlatado y trae su propio reloj sobreimpreso; contra una grabación no hay glass-to-glass que medir. Necesita dispositivo físico | B10 |
 | La ruta real del endpoint de token OAuth | No está en el sample ni se pudo leer la doc oficial; queda en `RANGYUU_TOKEN_URL`, configurable, sin valor por defecto | B1, B2 |
 | Sesión WHEP fuera del navegador | Nada escrito todavía; es el riesgo técnico mayor | B10 |

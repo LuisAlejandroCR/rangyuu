@@ -28,13 +28,13 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       Ring es la fuente de infraestructura; un video del iPhone puede representar el sensor a bordo;
       el consumidor visible será un rover digital. Hardware físico queda como extensión opcional.
 
-- [ ] **B8 · Calibración medida sobre metraje propio.** La rejilla está hecha y probada. Lo que
-      cambió el 2026-09-15: **el clip del Playground es un comedero de pájaros en la nieve**, sin
-      plano de suelo ni geometría conocida, así que **no sirve para medir el error de una
-      homografía**. La calibración depende ahora de B11.
-      *Criterio:* cuatro correspondencias **medidas** sobre metraje propio, con el error en
-      centímetros a una distancia dada escrito en `docs/verificacion.md`, y la oclusión **derivada
-      del frame** en vez de declararse desde fuera.
+- [ ] **B8 · Calibración medida y oclusión derivada del frame.** La mitad métrica está cerrada el
+      2026-09-15: homografía ajustada sobre cuatro marcas en un rectángulo de 0,90 x 1,50 m medido
+      con cinta, y **error de 0,9 cm sobre 61 cm (1,6 %)** contra juntas de baldosa que no entraron en
+      el ajuste, con prueba de regresión en `tests/test_calibration_home.py`.
+      *Falta:* (1) el error **más allá de 1,50 m**, que es donde la homografía se degrada y hoy no hay
+      marca medida; (2) el mismo error **con la cámara de Ring**, no con un teléfono; y (3) la
+      oclusión **derivada del frame** en vez de declararse desde fuera.
 
 - [ ] **B10 · Runtime de inferencia local.** La señalización WHEP ya está resuelta y probada contra
       Ring (`rangyuu/whep.py`, 2026-09-15): abrir y cerrar sesión desde un proceso Python no requiere

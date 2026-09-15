@@ -4,6 +4,37 @@
 
 # Memoria
 
+## 2026-09-15 — Homografía calibrada y medida: 0,9 cm sobre 61 cm
+
+**Qué se hizo**
+
+- Con una **foto fija** (960x1280) de un pasillo, cuatro marcas de cinta negra en las esquinas de un
+  rectángulo de **0,90 x 1,50 m medido con cinta métrica**, se ajustó la homografía al plano del
+  suelo. Los centros de las marcas se leyeron a ~±2 px sobre recortes ampliados.
+- **La comprobación es independiente**: tres cruces de junta de baldosa —lado **0,305 m** medido—
+  sobre una misma línea del piso, que **no entraron en el ajuste**. Proyectadas dan 0,601 m contra
+  0,610 m reales: **0,9 cm de error sobre 61 cm, 1,6 %**, a 0,3–0,9 m del borde cercano. Por tramo:
+  0,0 cm y 1,0 cm. Las tres caen en una recta con 1,9 cm de deriva lateral, así que el ajuste no está
+  torcido.
+- Los puntos quedan versionados en `fixtures/home/calibration_points.json` y
+  `tests/test_calibration_home.py` los convierte en prueba de regresión con techo declarado de
+  1,5 cm: si alguien toca la geometría, la cifra deja de sostenerse y la suite falla.
+- **La imagen no se versiona.** `.gitignore` ahora excluye `*.jpeg`, `*.jpg` y `*.png` salvo el frame
+  del Playground. Solo entran las coordenadas.
+- Suite en 88 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **El error más allá de 1,50 m de profundidad**: no hay marca medida más lejos, y es justo donde la
+  homografía se degrada más rápido. → B8, B11.
+- **El error con la cámara de Ring**, que tiene otra óptica y otra altura. Lo medido vale para esta
+  foto y esta pose. → B8.
+- Dos intentos previos en video fallaron y quedó escrito por qué: cámara en mano, desenfoque de
+  movimiento, y las cuatro marcas nunca en el mismo frame.
+
+**Dónde quedan los pendientes:** B8 —oclusión derivada del frame y error a más distancia— y B11 de
+[plan.md](plan.md).
+
 ## 2026-09-15 — Maquinaria de calibración, y por qué el primer video no sirve
 
 **Qué se hizo**
