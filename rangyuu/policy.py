@@ -14,7 +14,9 @@ def decision_report(*,device_id,timestamp,cells=(),**kwargs):
     elif kwargs.get('stale'): reason='cell stale'
     elif kwargs.get('confidence',1)<.5: reason='low confidence'
     else: reason='clear high-confidence path'
-    d=Decision.UNKNOWN if reason=='low confidence' else decide(**kwargs)
+    allowed={k:v for k,v in kwargs.items() if k in ('coverage','confidence','free','unknown','stale','contradiction')}
+    if kwargs.get('homography_valid') is False: allowed['coverage']=False
+    d=Decision.UNKNOWN if reason=='low confidence' else decide(**allowed)
     return {"decision":d.value,"action":"WAIT" if d!=Decision.PROCEED else "TRAVERSE","reason":reason,"evidence":{"device_id":device_id,"timestamp":timestamp,"cells":list(cells)}}
 def decide(*,coverage=True,confidence=1.0,free=True,unknown=False,stale=False,contradiction=False):
     if not coverage or unknown or stale or contradiction: return Decision.HOLD
