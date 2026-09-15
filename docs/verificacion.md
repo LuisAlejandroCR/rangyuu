@@ -9,7 +9,9 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa, 127 pruebas, seis de ellas en navegador real | `python -m pytest -q` → `127 passed` | ✅ | 2026-09-15 |
+| Suite completa, 132 pruebas, once de ellas en navegador real | `python -m pytest -q` → `132 passed` | ✅ | 2026-09-15 |
+| **Cada estado tiene su patrón háptico** y solo avisa al cambiar: `AVANZA [35]`, `PARA [140,80,140]`; el mismo estado repetido no vuelve a vibrar | `python -m pytest tests/test_haptics_e2e.py` (se instrumenta `navigator.vibrate`) | ✅ | 2026-09-15 |
+| Fuentes declara qué canales de aviso existen en el dispositivo, en vez de prometerlos | `python -m pytest tests/test_haptics_e2e.py::test_the_sources_screen_declares_which_channels_exist` | ✅ | 2026-09-15 |
 | **El momento de la demo, probado en navegador**: una celda ocupada sobre la trayectoria deja la pantalla en `PARA` con la razón visible | `python -m pytest tests/test_app_e2e.py::test_an_occupied_cell_on_the_route_shows_para` | ✅ | 2026-09-15 |
 | Las cinco pantallas renderizan sin errores de consola, sin scroll horizontal y con los cuatro estados válidos | `python -m pytest tests/test_app_e2e.py` (Playwright, 390x844) | ✅ | 2026-09-15 |
 | **Un frame del teléfono sin calibrar observa pero no escribe celdas** | `python -m pytest tests/test_app_e2e.py::test_an_uncalibrated_phone_observes_but_never_writes_to_the_map` | ✅ | 2026-09-15 |
@@ -69,6 +71,7 @@
 | Qué | Por qué no se pudo | Bloque |
 |---|---|---|
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
+| **La vibración en un iPhone real.** Safari en iOS no expone la API de vibración; lo probado corre en Chromium, donde sí existe. En iPhone el aviso queda en tono y voz, y así lo declara la app | Requiere el teléfono con HTTPS o túnel | B12 |
 | El error a distancias mayores que 1,5 m, y con la cámara de Ring en vez de un teléfono | La foto medida cubre hasta 1,50 m de profundidad; más allá no hay marca medida. Dos intentos previos en video fallaron: cámara en mano, desenfoque de movimiento y las cuatro marcas nunca en el mismo frame | B8, B11 |
 | Oclusión derivada del frame | `mark_occluded` existe y tiene pruebas, pero la oclusión se declara desde fuera | B8 |
 | El tramo de actuación por LAN | No hay consumidor real todavía: el rover es digital y vive en el mismo proceso | B10 |

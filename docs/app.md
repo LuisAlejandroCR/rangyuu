@@ -57,8 +57,23 @@ La cámara del iPhone como sensor a bordo. **No es una app de grabación:** no h
 galería, ni vista previa grande. Indicador de dirección, nivel de confianza, aviso háptico o por voz,
 y un botón de parar que ocupa el pulgar.
 
-Es también la pantalla de accesibilidad: el estado se anuncia por voz y se siente por vibración, sin
-mirar la pantalla.
+Es también la pantalla de accesibilidad: el estado se anuncia **sin mirar la pantalla**, por tres
+canales con un patrón propio cada uno (`web/haptics.js`):
+
+| Estado | Vibración | Tono | Voz |
+|---|---|---|---|
+| **AVANZA** | un toque corto | 660 Hz, 0,08 s | "avanza" |
+| **CUIDADO** | dos toques | 440 Hz, 0,12 s | "cuidado" |
+| **PARA** | dos golpes largos | 220 Hz, 0,25 s | "para" |
+| **SIN CERTEZA** | tres toques espaciados | 330 Hz, 0,18 s | "sin certeza" |
+
+Solo avisa **cuando el estado cambia**: un aviso que se repite deja de leerse como aviso. El aviso
+también corre en la pantalla principal, no solo en caminata.
+
+**Límite dicho de frente:** Safari en iOS **no expone la API de vibración**, así que en iPhone el
+aviso es tono y voz. Por eso hay tres canales y no uno, y por eso Fuentes muestra cuáles existen de
+verdad en el dispositivo que se está usando en vez de prometerlos. El tono necesita un gesto previo
+del usuario para que el navegador habilite audio; el primer toque en cualquier parte sirve.
 
 Vive de: la cámara local del navegador + `POST /api/space/observe` + `GET /api/space/now`.
 

@@ -4,6 +4,31 @@
 
 # Memoria
 
+## 2026-09-15 — Aviso háptico por estado, con su límite dicho
+
+**Qué se hizo**
+
+- `web/haptics.js`: un patrón propio por estado en tres canales —vibración, tono y voz—, con
+  detección de cada canal antes de usarlo. `AVANZA` es un toque corto, `PARA` dos golpes largos,
+  `CUIDADO` dos toques y `SIN CERTEZA` tres espaciados.
+- **Solo avisa cuando el estado cambia.** Un aviso que se repite cada dos segundos deja de leerse
+  como aviso; hay una prueba que lo fija.
+- El aviso dejó de vivir solo en la pantalla de caminata: la principal también avisa, porque el
+  cambio a `PARA` no debería exigir estar mirando.
+- Fuentes muestra **qué canales existen de verdad** en el dispositivo, con un botón para probarlos.
+- Cinco pruebas nuevas en navegador real, instrumentando `navigator.vibrate` antes de cargar la
+  página. Suite en 132 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **La vibración en un iPhone.** Safari en iOS **no expone la API de vibración**: lo probado corre en
+  Chromium, donde sí existe. En iPhone el aviso queda en tono y voz, y la app lo declara en vez de
+  prometer algo que no puede dar. Es la razón de que haya tres canales y no uno. → B12.
+- El tono exige un gesto previo del usuario para que el navegador habilite audio. Se desbloquea con
+  el primer toque, pero no se probó el caso de una pantalla que arranca sin que nadie la toque.
+
+**Dónde quedan los pendientes:** B12 y B11 de [plan.md](plan.md).
+
 ## 2026-09-15 — Revisión con Playwright y estilo de Ring
 
 **Qué se hizo**
