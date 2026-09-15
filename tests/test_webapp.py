@@ -83,6 +83,17 @@ def test_an_onboard_frame_is_accepted_and_answers_with_the_new_state(base_url):
     assert status == 422
 
 
+def test_changing_the_cell_size_rebuilds_the_grid_and_says_what_it_discarded(base_url):
+    status, payload = post(base_url, "/api/space/config", {"cell_size_m": 0.5})
+    assert status == 200 and payload["cell_size_m"] == 0.5 and payload["cleared"] >= 0
+
+    _, after = get(base_url, "/api/space/map")
+    assert after["cell_size_m"] == 0.5 and after["cells"] == []
+
+    status, payload = post(base_url, "/api/space/config", {"cell_size_m": 99})
+    assert status == 422 and "tamaño de celda" in payload["error"]
+
+
 def test_unknown_paths_are_not_found_and_the_app_shell_is_served(base_url):
     with pytest.raises(urllib.error.HTTPError) as error:
         get(base_url, "/api/nope")

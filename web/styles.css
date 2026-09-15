@@ -1,23 +1,28 @@
-/* styles.css: identidad visual de la app — navegación espacial tranquila, no alarma doméstica.
-   Un color por estado y ninguno decorativo; el rojo aparece solo en PARA. Se distingue de
-   index.html, que es la estructura, y de app.js, que trae el dato. */
+/* styles.css: lenguaje visual de la app Ring — fondo claro, tarjetas blancas con secciones
+   agrupadas, azul de acento y "Online" en verde — para que integrarla sea trivial del lado de
+   ellos. Lo que NO se copia es el centro: ahí va el mapa y la decisión, no una cuadrícula de
+   cámaras. Se distingue de index.html (estructura) y de app.js (dato). */
 
 :root {
-  --ink: #e8ecf1;
-  --ink-dim: #8c98a8;
-  --ground: #0e1318;
-  --panel: #161d25;
-  --line: #24303c;
+  --ink: #16191d;
+  --ink-2: #5a6472;
+  --ink-3: #8b95a3;
+  --ground: #f2f4f7;
+  --card: #ffffff;
+  --line: #e3e7ed;
 
-  --avanza: #4fd1a5;
-  --cuidado: #e8b45c;
-  --para: #e5604f;
-  --incierto: #8f9bd8;
+  --blue: #1a8cff;          /* el azul de Ring: acciones y selección */
+  --online: #2e9e3e;        /* el verde de "Online" */
 
-  --free: #24493f;
-  --occupied: #5c2f2c;
-  --unknown: #222c36;
-  --route: #6fa8dc;
+  --avanza: #1f8a4c;
+  --cuidado: #b26a00;
+  --para: #c8372d;
+  --incierto: #4a6fa5;
+
+  --free: #dff0e4;
+  --occupied: #f7dcd9;
+  --unknown: #e7eaef;
+  --route: #1a8cff;
 }
 
 * { box-sizing: border-box; }
@@ -26,26 +31,30 @@ body {
   margin: 0;
   background: var(--ground);
   color: var(--ink);
-  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  padding-bottom: 4.5rem;
+  font: 16px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  padding-bottom: 4.75rem;
   -webkit-font-smoothing: antialiased;
 }
 
-.screen { padding: 1.25rem 1.25rem 2rem; max-width: 46rem; margin: 0 auto; }
+.screen { padding: .75rem 1rem 2rem; max-width: 46rem; margin: 0 auto; }
 
-.bar { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.5rem; }
-.bar h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin: 0; }
-.stamp { color: var(--ink-dim); font-size: .8rem; font-variant-numeric: tabular-nums; }
-
-/* --- el estado, que es lo único grande de la pantalla --- */
-
-.verdict { margin: 2rem 0 2.5rem; }
-.verdict-state {
-  display: block; font-size: clamp(2.5rem, 12vw, 4rem); font-weight: 650;
-  letter-spacing: -.02em; line-height: 1.05; color: var(--incierto);
+/* Barra de título al estilo iOS: título centrado, pequeño y neutro. */
+.bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .35rem 0 .9rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem;
 }
-.verdict-reason { display: block; margin-top: .75rem; font-size: 1.1rem; color: var(--ink); }
-.verdict-detail { display: block; margin-top: .35rem; font-size: .9rem; color: var(--ink-dim); }
+.bar h1 { font-size: 1.0625rem; font-weight: 600; letter-spacing: -.01em; margin: 0; text-transform: none; }
+.stamp { color: var(--ink-3); font-size: .8125rem; font-variant-numeric: tabular-nums; }
+
+/* --- el estado: lo único grande, porque es la razón de ser de la app --- */
+
+.verdict { background: var(--card); border-radius: 14px; padding: 1.5rem 1.25rem; margin-bottom: 1rem; }
+.verdict-state {
+  display: block; font-size: clamp(2.25rem, 11vw, 3.25rem); font-weight: 700;
+  letter-spacing: -.03em; line-height: 1.05; color: var(--incierto);
+}
+.verdict-reason { display: block; margin-top: .5rem; font-size: 1rem; color: var(--ink-2); }
+.verdict-detail { display: block; margin-top: .3rem; font-size: .875rem; color: var(--ink-3); }
 
 [data-state="AVANZA"] .verdict-state, [data-state="AVANZA"] .walk-state { color: var(--avanza); }
 [data-state="CUIDADO"] .verdict-state, [data-state="CUIDADO"] .walk-state { color: var(--cuidado); }
@@ -53,19 +62,20 @@ body {
 
 /* --- mapa --- */
 
-.map { width: 100%; height: auto; aspect-ratio: 1 / 1; background: var(--panel); border-radius: 14px; }
-.map.tall { aspect-ratio: 3 / 4; }
-.map rect.cell { stroke: var(--ground); stroke-width: .4; }
+.map { width: 100%; height: auto; background: var(--card); border-radius: 14px; padding: .75rem; display: block; }
+.map rect.cell { stroke: var(--card); stroke-width: .5; }
 .map rect.free { fill: var(--free); }
 .map rect.occupied { fill: var(--occupied); }
 .map rect.unknown { fill: var(--unknown); }
-.map rect.route { fill: none; stroke: var(--route); stroke-width: .8; }
-.map .zone-label { fill: var(--ink-dim); font-size: 3px; }
+.map rect.route { fill: none; stroke: var(--route); stroke-width: .9; }
+.map .zone-label { fill: var(--ink-2); font-size: 2.6px; letter-spacing: .02em; }
+.map .zone-span { stroke: var(--line); stroke-width: 1.2; stroke-linecap: round; }
+.map .zone-span.risky { stroke: var(--cuidado); }
 
-.legend { display: flex; gap: 1rem; flex-wrap: wrap; list-style: none; padding: 0; margin: .9rem 0 1.5rem;
-          color: var(--ink-dim); font-size: .8rem; }
+.legend { display: flex; gap: 1rem; flex-wrap: wrap; list-style: none; padding: 0;
+          margin: .75rem .25rem 1.25rem; color: var(--ink-2); font-size: .8125rem; }
 .legend li { display: flex; align-items: center; gap: .4rem; }
-.swatch { width: .8rem; height: .8rem; border-radius: 3px; display: inline-block; }
+.swatch { width: .8rem; height: .8rem; border-radius: 3px; display: inline-block; border: 1px solid var(--line); }
 .swatch.free { background: var(--free); }
 .swatch.occupied { background: var(--occupied); }
 .swatch.unknown { background: var(--unknown); }
@@ -73,77 +83,93 @@ body {
 
 /* --- caminata --- */
 
-.walk { text-align: center; padding: 2.5rem 0 1.5rem; }
-.walk-state { font-size: clamp(2.2rem, 11vw, 3.4rem); font-weight: 650; color: var(--incierto); }
-.walk-reason { margin-top: .6rem; color: var(--ink); }
-.walk-note { color: var(--ink-dim); font-size: .82rem; margin-top: 1.75rem; }
-.confidence { height: 5px; background: var(--line); border-radius: 3px; margin: 1.5rem auto 0; max-width: 16rem; }
+.walk { background: var(--card); border-radius: 14px; text-align: center; padding: 2.25rem 1rem 1.75rem; }
+.walk-state { font-size: clamp(2rem, 10vw, 3rem); font-weight: 700; letter-spacing: -.03em; color: var(--incierto); }
+.walk-reason { margin-top: .5rem; color: var(--ink-2); }
+.walk-note { color: var(--ink-3); font-size: .8125rem; margin: 1.5rem 0 0; }
+.confidence { height: 6px; background: var(--line); border-radius: 3px; margin: 1.25rem auto 0; max-width: 16rem; }
 .confidence span { display: block; height: 100%; border-radius: 3px; background: currentColor; transition: width .3s; }
-.walk-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
+.walk-actions { display: flex; gap: .75rem; margin-top: 1rem; }
+[data-screen="caminata"] .walk-actions { position: sticky; top: calc(100vh - 11rem); }
 
 video, canvas { width: 1px; height: 1px; opacity: 0; position: absolute; }
 
-/* --- listas y paneles --- */
+/* --- listas agrupadas, la forma de la app de Ring --- */
 
-.sources, .zones, .decisions { list-style: none; padding: 0; margin: 0 0 1.5rem; }
+.group-title {
+  font-size: .8125rem; font-weight: 600; color: var(--ink-2);
+  margin: 1.25rem .25rem .5rem; letter-spacing: -.01em;
+}
+.sources, .zones, .decisions {
+  list-style: none; padding: 0; margin: 0 0 1rem;
+  background: var(--card); border-radius: 14px; overflow: hidden;
+}
 .sources li, .zones li, .decisions li {
-  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-  padding: .9rem 1rem; margin-bottom: .6rem;
+  padding: .8rem 1rem; border-bottom: 1px solid var(--line);
 }
-.sources li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-.sources .label { font-weight: 550; }
-.sources .kind { display: block; color: var(--ink-dim); font-size: .75rem; letter-spacing: .05em; }
-.dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--ink-dim); display: inline-block; }
-.dot.on { background: var(--avanza); }
-.dot.off { background: var(--para); }
+.sources li:last-child, .zones li:last-child, .decisions li:last-child { border-bottom: none; }
 
-.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-         padding: 1rem; margin-bottom: 1rem; font-size: .9rem; }
-.panel h2 { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase;
-            color: var(--ink-dim); margin: 0 0 .6rem; }
-.panel .row { display: flex; justify-content: space-between; padding: .2rem 0; }
-.panel .row span:last-child { font-variant-numeric: tabular-nums; }
+/* Fila tipo Ring: nombre arriba, estado debajo, chevron a la derecha. */
+.sources li, .zones li { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.sources .label, .zones .label { font-weight: 500; letter-spacing: -.01em; }
+.sources .kind, .zones .meta { display: block; color: var(--ink-3); font-size: .8125rem; margin-top: .1rem; }
+.status { font-size: .8125rem; color: var(--online); font-weight: 500; }
+.status.off { color: var(--para); }
+.chevron { color: var(--ink-3); font-size: 1.1rem; line-height: 1; }
+
+.panel { background: var(--card); border-radius: 14px; padding: .25rem 1rem; margin-bottom: 1rem; font-size: .9375rem; }
+.panel h2 { font-size: .8125rem; font-weight: 600; color: var(--ink-2); margin: .9rem 0 .5rem; letter-spacing: -.01em; }
+.panel .row { display: flex; justify-content: space-between; gap: 1rem; padding: .55rem 0; border-bottom: 1px solid var(--line); }
+.panel .row:last-child { border-bottom: none; }
+.panel .row span:first-child { color: var(--ink-2); }
+.panel .row span:last-child { font-variant-numeric: tabular-nums; font-weight: 500; }
 .bad { color: var(--para); }
-.good { color: var(--avanza); }
+.good { color: var(--online); }
 
-.decisions li { display: grid; gap: .2rem; }
-.decisions .state { font-weight: 600; letter-spacing: .02em; }
-.decisions .meta { color: var(--ink-dim); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.decisions li { display: grid; gap: .15rem; }
+.decisions .state { font-weight: 600; font-size: .9375rem; color: var(--incierto); }
+.decisions .state[data-state="AVANZA"] { color: var(--avanza); }
+.decisions .state[data-state="CUIDADO"] { color: var(--cuidado); }
+.decisions .state[data-state="PARA"] { color: var(--para); }
+.decisions .meta { color: var(--ink-3); font-size: .8125rem; font-variant-numeric: tabular-nums; }
 
-.cell-detail { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-               padding: .9rem 1rem; margin: .9rem 0 1.25rem; font-size: .88rem; }
+.cell-detail { background: var(--card); border-radius: 14px; padding: .9rem 1rem; margin: .75rem 0 1rem; font-size: .9375rem; }
 
-/* --- formulario de calibración --- */
+/* --- formulario --- */
 
-.hint { color: var(--ink-dim); font-size: .88rem; }
-.points { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .85rem; }
-.points th { text-align: left; color: var(--ink-dim); font-weight: 500; padding-bottom: .4rem; }
-.points td { padding: .2rem .25rem .2rem 0; }
+.hint { color: var(--ink-2); font-size: .875rem; margin: 0 .25rem 1rem; }
+.points { width: 100%; border-collapse: collapse; margin: 0 0 1rem; font-size: .8125rem;
+          background: var(--card); border-radius: 14px; overflow: hidden; }
+.points th { text-align: left; color: var(--ink-3); font-weight: 500; padding: .6rem .35rem .3rem; }
+.points td { padding: .25rem .35rem; }
+.points td:first-child { color: var(--ink-2); }
 .points input, .field input {
-  width: 100%; background: var(--panel); color: var(--ink); border: 1px solid var(--line);
-  border-radius: 8px; padding: .5rem .6rem; font: inherit; font-size: .9rem;
+  width: 100%; background: var(--ground); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: .5rem .55rem; font: inherit; font-size: .875rem;
 }
-.field { display: block; margin: .75rem 0; color: var(--ink-dim); font-size: .82rem; }
-.field input { margin-top: .3rem; }
+.field { display: block; margin: .75rem .25rem; color: var(--ink-2); font-size: .8125rem; }
+.field input { margin-top: .3rem; background: var(--card); }
 
-/* --- botones --- */
+/* --- botones, con el azul de Ring --- */
 
-button { font: inherit; border-radius: 10px; border: 1px solid var(--line); cursor: pointer; }
-.primary { background: var(--route); color: #07121c; border: none; padding: .85rem 1.2rem; font-weight: 600; flex: 1; }
-.stop { background: var(--para); color: #1b0704; border: none; padding: .85rem 1.2rem; font-weight: 700; flex: 1; letter-spacing: .06em; }
-.ghost { background: transparent; color: var(--ink-dim); padding: .7rem 1rem; }
+button { font: inherit; border-radius: 10px; border: 1px solid transparent; cursor: pointer; }
+.primary { background: var(--blue); color: #fff; padding: .85rem 1.2rem; font-weight: 600; flex: 1; }
+.stop { background: var(--card); color: var(--ink-2); border-color: var(--line);
+        padding: .85rem 1.2rem; font-weight: 600; flex: 1; letter-spacing: .04em; }
+.walking .stop { background: var(--para); color: #fff; border-color: transparent; }
+.ghost { background: var(--card); color: var(--blue); border-color: var(--line); padding: .75rem 1rem; width: 100%; font-weight: 500; }
 
-/* --- navegación --- */
+/* --- navegación inferior, estilo iOS --- */
 
 .tabs {
   position: fixed; bottom: 0; left: 0; right: 0; display: flex;
-  background: rgba(14, 19, 24, .94); backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, .94); backdrop-filter: blur(12px);
   border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom);
 }
 .tabs button {
-  flex: 1; background: none; border: none; color: var(--ink-dim);
-  padding: .9rem .2rem; font-size: .72rem; letter-spacing: .03em;
+  flex: 1; background: none; border: none; color: var(--ink-3);
+  padding: .8rem .2rem; font-size: .6875rem; letter-spacing: .01em;
 }
-.tabs button.active { color: var(--ink); }
+.tabs button.active { color: var(--blue); font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

@@ -53,6 +53,7 @@ class Site:
         self.measured_error_cm = measured_error_cm
         self.error_ceiling_cm = float(error_ceiling_cm)
         self.clock = clock
+        self.onboard_homography = None
         self.zones: list = []
         self.route: list = []
         self.decisions: list = []
@@ -112,13 +113,37 @@ class Site:
         self.zones = [Zone(str(z["name"]), tuple(tuple(c) for c in z.get("cells", [])),
                            bool(z.get("risky", False))) for z in zones]
 
+    def set_cell_size(self, cell_size_m: float) -> dict:
+        """Rebuild the grid. Changing the cell size invalidates every observation, and this
+        says so with a number instead of quietly reinterpreting old cells at a new scale."""
+        size = float(cell_size_m)
+        if not 0.05 <= size <= 5:
+            raise ValueError("el tamaño de celda debe estar entre 0,05 y 5 m")
+        cleared = len(self.runtime.state.cells)
+        state = self.runtime.state
+        state.cell_size = size
+        state.cells.clear()
+        state.events.clear()
+        state.contradictions.clear()
+        return {"cell_size_m": size, "cleared": cleared}
+
     def observe_onboard(self, gray, *, now=None, decode_ms: float = 0.0) -> dict:
-        """Screen 2. A frame from the phone is an observation like any other, tagged as its own."""
+        """Screen 2. A frame from the phone.
+
+        Without its own calibration the phone cannot be placed on the floor plan: projecting it
+        through the fixed camera's homography writes cells that were never observed. So an
+        uncalibrated onboard source reports what it saw and writes nothing.
+        """
         moment = self.clock() if now is None else now
-        result = self.runtime.on_frame(gray, now=moment, decode_ms=decode_ms)
         self.sources["iphone"].active = True
         self.sources["iphone"].last_seen = moment
-        return result
+        if self.onboard_homography is None:
+            batch = self.runtime.detector.detect(gray)
+            self.sources["iphone"].note = "sin calibrar: observa, no escribe en el mapa"
+            return {"detections": len(batch.detections), "written": 0,
+                    "inference_ms": round(batch.inference_ms, 2),
+                    "reason": "el iPhone no está calibrado contra este suelo"}
+        return self.runtime.on_frame(gray, now=moment, decode_ms=decode_ms)
 
     # --- internals ---------------------------------------------------------
 

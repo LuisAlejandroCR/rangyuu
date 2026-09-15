@@ -44,13 +44,23 @@ function paintVerdict(data) {
 
 function drawMap(svg, cells, route, zones) {
   const all = cells.map((c) => c.cell).concat(route);
-  if (!all.length) { svg.innerHTML = '<text x="50" y="50" class="zone-label" text-anchor="middle">sin observaciones</text>'; return; }
+  if (!all.length) {
+    svg.setAttribute("viewBox", "0 0 100 40");
+    svg.innerHTML = '<text x="50" y="22" class="zone-label" text-anchor="middle">sin observaciones</text>';
+    return;
+  }
   const xs = all.map((c) => c[0]), ys = all.map((c) => c[1]);
-  const minX = Math.min(...xs) - 1, maxX = Math.max(...xs) + 1;
-  const minY = Math.min(...ys) - 1, maxY = Math.max(...ys) + 1;
+  // Sin margen de celdas vacías: el mapa muestra lo observado, no un marco decorativo.
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
   const width = maxX - minX + 1, height = maxY - minY + 1;
-  const size = 100 / Math.max(width, height);
-  const px = (cx) => (cx - minX) * size, py = (cy) => (maxY - cy) * size;
+  const size = 10;
+  // Cada zona ocupa su propia línea: apiladas en una sola se tapan entre ellas.
+  const strip = zones.length ? zones.length * 4 + 2 : 0;
+  const box = [width * size, height * size + strip];
+  svg.setAttribute("viewBox", `0 0 ${box[0]} ${box[1]}`);
+  svg.style.aspectRatio = `${box[0]} / ${box[1]}`;
+  const px = (cx) => (cx - minX) * size, py = (cy) => (maxY - cy) * size + strip;
 
   const parts = cells.map((c) =>
     `<rect class="cell ${c.state.toLowerCase()}" x="${px(c.cell[0])}" y="${py(c.cell[1])}" ` +
@@ -58,11 +68,18 @@ function drawMap(svg, cells, route, zones) {
     `data-confidence="${c.confidence}" data-source="${c.source}"><title>${c.state}</title></rect>`);
 
   parts.push(...route.map((c) =>
-    `<rect class="route" x="${px(c[0]) + 1}" y="${py(c[1]) + 1}" width="${size - 2}" height="${size - 2}" rx="1"/>`));
+    `<rect class="route" x="${px(c[0]) + 1}" y="${py(c[1]) + 1}" width="${size - 2}" height="${size - 2}" rx="1.5"/>`));
 
-  parts.push(...zones.map((z) => {
-    const cell = z.cells[0];
-    return cell ? `<text class="zone-label" x="${px(cell[0])}" y="${py(cell[1]) - 1}">${z.name}</text>` : "";
+  // Las etiquetas de zona van sobre una tira propia arriba del mapa: encima de las celdas
+  // son ilegibles y tapan el dato.
+  parts.push(...zones.map((z, index) => {
+    const cells = z.cells || [];
+    if (!cells.length) return "";
+    const left = Math.min(...cells.map((c) => c[0])), right = Math.max(...cells.map((c) => c[0]));
+    const y = 4 + index * 4;
+    return `<line class="zone-span${z.risky ? " risky" : ""}" x1="${px(left) + 1}" y1="${y}" ` +
+           `x2="${px(right) + size - 1}" y2="${y}"/>` +
+           `<text class="zone-label" x="${px(left) + 1}" y="${y - 1.4}">${z.name}${z.risky ? " · riesgo" : ""}</text>`;
   }));
 
   svg.innerHTML = parts.join("");
@@ -75,8 +92,10 @@ async function loadSpace() {
   $("espacio-stamp").textContent = `celda ${data.cell_size_m} m · ${clock(data.at)}`;
   drawMap($("map-space"), data.cells || [], data.route || [], data.zones || []);
   $("zones").innerHTML = (data.zones || []).map((z) =>
-    `<li><strong>${z.name}</strong> · ${z.cells.length} celdas${z.risky ? " · zona de riesgo" : ""}</li>`
-  ).join("") || '<li class="hint">Todavía no hay zonas nombradas.</li>';
+    `<li><span><span class="label">${z.name}</span>
+      <span class="meta">${z.cells.length} celdas${z.risky ? " · zona de riesgo" : ""}</span></span>
+      <span class="chevron">›</span></li>`
+  ).join("") || '<li><span class="meta">Todavía no hay zonas nombradas.</span></li>';
 }
 
 $("map-space").addEventListener("click", (event) => {
@@ -97,9 +116,10 @@ async function loadSources() {
   $("sources").innerHTML = data.sources.map((s) => `
     <li>
       <span><span class="label">${s.label}</span>
-        <span class="kind">${s.kind}${s.age_s !== null ? ` · hace ${s.age_s} s` : " · sin observaciones"}</span>
+        <span class="kind">${s.note || s.kind}${s.age_s !== null ? ` · hace ${s.age_s} s` : ""}</span>
       </span>
-      <span class="dot ${s.active ? "on" : "off"}" title="${s.active ? "activa" : "sin señal"}"></span>
+      <span><span class="status ${s.active ? "" : "off"}">${s.active ? "Conectado" : "Sin señal"}</span>
+        <span class="chevron">›</span></span>
     </li>`).join("");
 
   const cal = data.calibration;
@@ -140,12 +160,29 @@ $("calibrate").addEventListener("click", async () => {
     const result = await api("/api/space/calibrate", { points });
     const perPoint = Object.entries(result.per_point_cm)
       .map(([k, v]) => `<div class="row"><span>${k}</span><span>${v} cm</span></div>`).join("");
+    $("calibration-result").hidden = false;
     $("calibration-result").innerHTML = `<h2>${result.accepted ? "Calibración guardada" : "No se guardó"}</h2>
       <div class="row"><span>error medio</span><span class="${result.accepted ? "good" : "bad"}">${result.mean_error_cm} cm</span></div>
       <div class="row"><span>error máximo</span><span class="${result.accepted ? "good" : "bad"}">${result.max_error_cm} cm</span></div>
       <div class="row"><span>techo</span><span>${result.ceiling_cm} cm</span></div>${perPoint}`;
   } catch (error) {
+    $("calibration-result").hidden = false;
     $("calibration-result").innerHTML = `<h2 class="bad">No se pudo calibrar</h2><div class="row"><span>${error.message}</span></div>`;
+  }
+});
+
+$("cell-size").addEventListener("change", async (event) => {
+  const value = Number(event.target.value);
+  const panel = $("calibration-result");
+  panel.hidden = false;
+  try {
+    const result = await api("/api/space/config", { cell_size_m: value });
+    panel.innerHTML = `<h2>Rejilla rehecha</h2>
+      <div class="row"><span>tamaño de celda</span><span>${result.cell_size_m} m</span></div>
+      <div class="row"><span>observaciones descartadas</span><span>${result.cleared}</span></div>
+      <div class="row"><span>cambiar la rejilla invalida lo observado</span><span></span></div>`;
+  } catch (error) {
+    panel.innerHTML = `<h2 class="bad">No se pudo cambiar la rejilla</h2><div class="row"><span>${error.message}</span></div>`;
   }
 });
 
@@ -180,6 +217,7 @@ async function startWalk() {
   video.srcObject = stream;
   await video.play();
   walking = true;
+  document.querySelector('[data-screen="caminata"]').classList.add("walking");
   $("walk-toggle").textContent = "Pausar";
   $("walk-stamp").textContent = "cámara activa";
 
@@ -205,6 +243,7 @@ async function startWalk() {
 
 function stopWalk(message) {
   walking = false;
+  document.querySelector('[data-screen="caminata"]').classList.remove("walking");
   if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
   $("walk-toggle").textContent = "Empezar";
   $("walk-stamp").textContent = message || "detenido";

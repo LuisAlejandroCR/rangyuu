@@ -4,6 +4,38 @@
 
 # Memoria
 
+## 2026-09-15 — Revisión con Playwright y estilo de Ring
+
+**Qué se hizo**
+
+- Se revisaron las seis pantallas en un navegador real a 390x844 con Playwright, y quedaron seis
+  pruebas de extremo a extremo en `tests/test_app_e2e.py`, que se saltan solas donde no haya
+  navegador. La decisiva: **una celda ocupada sobre la trayectoria deja la pantalla en `PARA`**.
+- **Bug encontrado y corregido gracias a esa revisión:** el modo caminata proyectaba el frame del
+  teléfono con la homografía de la **cámara fija** y escribía celdas que nadie observó, fuera del
+  sitio (`[-2, 6]`). Ahora una fuente sin calibración propia observa, lo declara en Fuentes, y **no
+  toca el mapa**.
+- Cinco arreglos de interfaz que salieron de mirar las capturas: el estado en la bitácora de
+  evidencia no tenía color; las etiquetas de zona se pisaban unas a otras sobre el mapa; el mapa
+  dibujaba un marco de celdas vacías; el panel de calibración aparecía vacío; y el botón de parar
+  estaba rojo aunque no hubiera nada que parar.
+- **El tamaño de celda dejó de ser decorativo:** `POST /api/space/config` rehace la rejilla y
+  **dice cuántas observaciones descarta**, porque cambiar la escala invalida lo observado.
+- **Decisión escogida: se adopta el lenguaje visual de la app de Ring** —fondo claro, tarjetas
+  blancas agrupadas, azul de acción, verde de *Conectado*, navegación inferior— para que integrarla
+  del lado de ellos sea trivial. Lo que no se copia es el centro: ahí va el mapa y la decisión, no
+  una cuadrícula de cámaras.
+- Suite en 127 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **La app en un iPhone real.** Todo lo probado corre en Chromium de escritorio emulando un teléfono;
+  la cámara de Safari exige HTTPS o túnel. → B12, B11.
+- **La calibración a bordo del teléfono**, que es lo que desbloquearía que la caminata escriba en el
+  mapa. Hoy solo observa. → B11.
+
+**Dónde quedan los pendientes:** B12, B11, B8 y B2 de [plan.md](plan.md).
+
 ## 2026-09-15 — La app: seis pantallas sobre el núcleo real
 
 **Qué se hizo**

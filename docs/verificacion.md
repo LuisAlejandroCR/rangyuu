@@ -9,7 +9,10 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa del núcleo, 120 pruebas | `python -m pytest -q` → `120 passed` | ✅ | 2026-09-15 |
+| Suite completa, 127 pruebas, seis de ellas en navegador real | `python -m pytest -q` → `127 passed` | ✅ | 2026-09-15 |
+| **El momento de la demo, probado en navegador**: una celda ocupada sobre la trayectoria deja la pantalla en `PARA` con la razón visible | `python -m pytest tests/test_app_e2e.py::test_an_occupied_cell_on_the_route_shows_para` | ✅ | 2026-09-15 |
+| Las cinco pantallas renderizan sin errores de consola, sin scroll horizontal y con los cuatro estados válidos | `python -m pytest tests/test_app_e2e.py` (Playwright, 390x844) | ✅ | 2026-09-15 |
+| **Un frame del teléfono sin calibrar observa pero no escribe celdas** | `python -m pytest tests/test_app_e2e.py::test_an_uncalibrated_phone_observes_but_never_writes_to_the_map` | ✅ | 2026-09-15 |
 | **La app arranca sin credenciales y responde**: `AVANZA · camino libre` con la ruta sembrada, y cae a `SIN CERTEZA · hace rato que no llega imagen` cuando el feed envejece | `python -m rangyuu.serve` y `curl localhost:8080/api/space/now` | ✅ | 2026-09-15 |
 | Los cuatro estados de pantalla derivan de las tres decisiones del núcleo, y **CUIDADO nunca suaviza un rechazo** | `python -m pytest tests/test_ui.py` | ✅ | 2026-09-15 |
 | El borde HTTP de la app: seis lecturas, cuatro escrituras, 422 ante calibración incompleta o frame mal formado, 404 fuera de `web/` | `python -m pytest tests/test_webapp.py` | ✅ | 2026-09-15 |
@@ -51,6 +54,11 @@
 | El script del PR upstream corre contra la API real: sin flags da `201`, `H264/90000`, 5 candidatos ICE y `DELETE → 200`; con `--frames 60` da 60 frames a 1280x720 y 23,4 fps | `python scripts/live_view.py --token <token>` en el fork | ✅ | 2026-09-15 |
 
 ## Correcciones a datos ya documentados
+
+- **2026-09-15 — El modo caminata escribía celdas inventadas.** La revisión con Playwright destapó que
+  un frame del iPhone se proyectaba con la homografía de la **cámara fija** y escribía celdas fuera del
+  sitio (`[-2, 6]`). Corregido: una fuente sin calibración propia observa y lo declara, pero no toca el
+  mapa.
 
 - **2026-09-15 — `pytest` sí está instalado.** La bitácora del 2026-09-14 dice que no lo estaba y que
   las funciones de prueba se ejecutaron a mano. `python -m pytest --version` devuelve `pytest 9.1.1`

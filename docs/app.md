@@ -19,7 +19,8 @@ una certeza que no tiene. Todo lo demás está subordinado a eso.
 
 ## 0. Qué no se copia
 
-- Sin cuadrícula de cámaras. Sin línea de tiempo de clips. Sin rojo permanente de alarma.
+- Sin cuadrícula de cámaras. Sin línea de tiempo de clips. Sin rojo permanente de alarma —el botón
+  de parar solo se enciende cuando hay algo que parar.
 - **El video no se muestra por defecto.** Aparece solo al tocar una evidencia concreta.
 - Nada en pantalla que no se pueda señalar en el dato de origen: dispositivo, timestamp, celda.
 
@@ -61,6 +62,10 @@ mirar la pantalla.
 
 Vive de: la cámara local del navegador + `POST /api/space/observe` + `GET /api/space/now`.
 
+**Regla dura, aprendida el 2026-09-15:** el teléfono no tiene calibración propia contra este suelo, y
+proyectar su frame con la homografía de la cámara fija escribe celdas que nadie observó. Mientras no
+haya calibración a bordo, la caminata **observa pero no escribe en el mapa**, y lo dice en Fuentes.
+
 ### 2.3 Espacio — el mapa del sitio
 
 Mapa de ocupación con zonas nombradas: entrada, pasillo, garaje, puerta, zonas de riesgo. Se ve qué
@@ -99,9 +104,15 @@ Vive de: `GET /api/decisions`.
 
 ## 3. Identidad visual
 
-Navegación espacial tranquila, no alarma doméstica. Mapa sobrio, mucho espacio negativo, tipografía
-grande para el estado. Colores **semánticos**, nunca decorativos: uno por estado, y ninguno más.
-El rojo aparece solo en `PARA`; `SIN CERTEZA` no es rojo, porque no es una alarma: es una ausencia.
+**Decisión escogida el 2026-09-15: se adopta el lenguaje visual de la app de Ring**, para que
+integrarla del lado de ellos sea trivial y para que un usuario de Ring no tenga que aprender nada
+nuevo. De ahí salen el fondo claro, las tarjetas blancas con secciones agrupadas, el azul de acción,
+el verde de *Conectado* y la navegación inferior.
+
+**Lo que no se copia es el centro.** Donde Ring pone una cuadrícula de cámaras y una línea de tiempo
+de clips, Rangyuu pone el mapa y la decisión. Los colores de estado siguen siendo **semánticos**, uno
+por estado y ninguno más: el rojo aparece solo en `PARA`, y `SIN CERTEZA` no es rojo, porque no es una
+alarma sino una ausencia.
 
 ## 4. Dónde corre
 

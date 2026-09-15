@@ -99,6 +99,8 @@ def make_handler(site, web_root: Path = WEB_ROOT):
                     self._send(200, site.map())
                 elif path == "/api/space/calibrate":
                     self._send(200, _calibrate(site, value))
+                elif path == "/api/space/config":
+                    self._send(200, site.set_cell_size(value.get("cell_size_m")))
                 elif path == "/api/space/observe":
                     self._send(200, _observe(site, value))
                 else:
