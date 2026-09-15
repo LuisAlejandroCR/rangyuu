@@ -9,7 +9,12 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa del núcleo, 63 pruebas | `python -m pytest -q` → `63 passed` | ✅ | 2026-09-15 |
+| Suite completa del núcleo, 74 pruebas | `python -m pytest -q` → `74 passed` | ✅ | 2026-09-15 |
+| **Sesión WHEP abierta desde un proceso Python, sin navegador.** `POST …/media/streaming/whep/sessions` con SDP offer → `201`, SDP answer y `Location` de sesión; `DELETE` la cierra y responde 2xx | `rangyuu/whep.py`, probado contra el `Playground Device` el 2026-09-15 | ✅ | 2026-09-15 |
+| El `Location` es una URL absoluta del propio dispositivo con un parámetro `?location=<token>` | Misma prueba | ✅ | 2026-09-15 |
+| El answer ofrece **solo video H264** (payload 96, `sendonly`, `rtcp-mux`), sin línea de audio | Misma prueba | ✅ | 2026-09-15 |
+| Hay candidatos ICE host IPv4 e IPv6 y **TCP 443 pasivo**, así que la sesión no exige UDP saliente | Misma prueba | ✅ | 2026-09-15 |
+| **Cuatro sesiones simultáneas** sobre el mismo dispositivo: ninguna rechazada; señalización ~0,7 s cada una | Cuatro `open()` seguidos y sus cuatro `close()` | ✅ | 2026-09-15 |
 | **Primer contacto real con Ring**: `GET /v1/devices` devuelve un `Playground Device` | `python -c "from rangyuu.ring_client import RingClient; print(RingClient().devices())"` con `RANGYUU_ACCESS_TOKEN` cargado | ✅ | 2026-09-15 |
 | La API responde en **JSON:API** (`{"data":[{type,id,attributes,relationships}]}`), no en objetos planos | Misma llamada; el cliente desenvuelve el sobre en `resource()` | ✅ | 2026-09-15 |
 | `/status` del dispositivo simulado: `online: true`, con `reported_at` | `RingClient().device_status(<id>)` | ✅ | 2026-09-15 |
@@ -38,7 +43,7 @@
 |---|---|---|
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
 | Error métrico de la homografía en centímetros a una distancia dada | Requiere cuatro correspondencias medidas contra una escena real | B8 |
-| Cuatro de las seis mediciones de `docs/perception.md` §7: fps y resolución efectiva del WHEP, latencia glass-to-glass, duración máxima de sesión, sesiones simultáneas | Requieren abrir una sesión WHEP viva | B3, B10 |
+| Tres de las seis mediciones de `docs/perception.md` §7: fps y resolución efectiva, latencia glass-to-glass y duración máxima de sesión | Exigen **decodificar** la media, no solo señalizar; hace falta un cliente WebRTC (`aiortc`, no instalado) | B3, B10 |
 | **Si el live view simulado entrega video sintético o un clip enlatado** | Requiere abrir la sesión WHEP; es la medición que decide si B8 necesita hardware | B3 |
 | La ruta real del endpoint de token OAuth | No está en el sample ni se pudo leer la doc oficial; queda en `RANGYUU_TOKEN_URL`, configurable, sin valor por defecto | B1, B2 |
 | Sesión WHEP fuera del navegador | Nada escrito todavía; es el riesgo técnico mayor | B10 |

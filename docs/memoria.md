@@ -4,6 +4,36 @@
 
 # Memoria
 
+## 2026-09-15 — Sesión WHEP real, desde Python y sin navegador
+
+**Qué se hizo**
+
+- `rangyuu/whep.py`: señalización WHEP completa —`POST` del SDP offer, lectura del `Location` de
+  sesión, `DELETE` para cerrar—, sin dependencias y con transporte inyectable. Once pruebas cubren
+  offer malformado, `Location` relativo, sesión sin `Location`, rechazo del servidor, cuerpo que no
+  es SDP y URLs en texto plano.
+- **Se abrió una sesión real contra el `Playground Device`**: respuesta `201`, SDP answer válido y
+  `Location` absoluto; el `DELETE` la cerró con 2xx. Queda resuelto el riesgo técnico mayor que
+  `docs/architecture.md` §4 daba por desconocido: **sostener WHEP fuera del navegador no requiere
+  nada exótico**, la señalización es HTTP corriente.
+- Medido del answer: solo video **H264** (payload 96, `sendonly`, `rtcp-mux`), sin línea de audio;
+  candidatos ICE host IPv4 e IPv6 y **TCP 443 pasivo**, así que la sesión no exige UDP saliente.
+- Medido por experimento: **cuatro sesiones simultáneas** sobre el mismo dispositivo, ninguna
+  rechazada, ~0,7 s de señalización cada una. No se buscó el techo. El multi-cámara de
+  `docs/perception.md` §4 no está bloqueado por este límite.
+- Suite en 74 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **Resolución y fps efectivos, latencia glass-to-glass y duración máxima de sesión.** Las tres
+  exigen **decodificar** la media, no solo señalizar; hace falta un cliente WebRTC —`aiortc` no está
+  instalado—. → B10.
+- **Si el live view simulado entrega video sintético o un clip enlatado.** Sigue siendo la medición
+  que más pesa y depende de lo mismo. → B3.
+- El `Location` trae un parámetro `?location=<token>` cuyo significado y caducidad no se investigaron.
+
+**Dónde quedan los pendientes:** B1, B2, B3, B8 y B10 de [plan.md](plan.md).
+
 ## 2026-09-15 — Primer contacto real con la API de Ring
 
 **Qué se hizo**
