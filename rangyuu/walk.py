@@ -28,7 +28,11 @@ def replay(path: str, every: int = EVERY) -> dict:
     # Este carril no autoriza tránsito: es un banco de medición del detector a bordo, con la
     # ruta declarada libre por construcción sobre una homografía identidad. Por eso se exime
     # de la puerta de calibración medida; el sitio real (serve.build_site) sí la exige.
-    site = Site(runtime, clock=lambda: video_clock["t"], requires_measured_calibration=False)
+    # `onboard_calibration=None` lo deja además sin homografía a bordo pase lo que pase: aunque
+    # mañana el fixture del iPhone quede medido, este banco corre sobre una homografía identidad
+    # y escribir celdas con ella sería inventar posiciones. Observa y cuenta; no escribe.
+    site = Site(runtime, clock=lambda: video_clock["t"], requires_measured_calibration=False,
+                onboard_calibration=None)
     site.set_route(ROUTE)
     site.runtime.mark_free(ROUTE, now=0.0)
     site.runtime.last_frame_at = 0.0

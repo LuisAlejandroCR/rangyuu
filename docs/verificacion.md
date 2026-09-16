@@ -9,7 +9,11 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa, 173 pruebas, once de ellas en navegador real | `python -m pytest -q` → `173 passed` | ✅ | 2026-09-16 |
+| Suite completa, once de ellas en navegador real | `python -m pytest -q` → `186 passed, 1 skipped` (antes de este lote: `181 passed, 1 skipped`; la omitida es el clip de B11, que no existe) | ✅ | 2026-09-16 |
+| **El carril del iPhone escribe en el mapa solo con una calibración medida y bajo el techo de 1,5 cm.** `Site` consulta la puerta de `onboard_calibration.verified_homography()` al construirse; con la plantilla sin llenar la respuesta es `None` y el carril observa sin escribir | `python -m pytest -q tests/test_calibration_onboard.py` → `13 passed, 1 skipped` | ✅ | 2026-09-16 |
+| La puerta a bordo no es decorativa: hacer que `verified_homography` devuelva la matriz siempre tumba **7 pruebas** (3 de ellas nuevas, más `test_app_e2e.py::test_an_uncalibrated_phone_observes_but_never_writes_to_the_map`) | Sustituir el cuerpo de `rangyuu/onboard_calibration.py:verified_homography` por `return [[1,0,0],[0,1,0],[0,0,1]]` y correr `python -m pytest -q` → `7 failed, 179 passed, 1 skipped` | ✅ | 2026-09-16 |
+| El cableado tampoco lo es: dejar `self.onboard_homography = None` fijo en `rangyuu/site.py` tumba la prueba que exige que una calibración medida **sí** abra el carril | Sustituir esa línea por `None` y correr `python -m pytest -q` → `1 failed, 185 passed, 1 skipped` | ✅ | 2026-09-16 |
+| El banco de medición (`rangyuu/walk.py`) sigue sin escribir aunque mañana el fixture quede medido: pasa `onboard_calibration=None` a propósito, porque corre sobre homografía identidad | `python -m pytest -q tests/test_calibration_onboard.py -k bench` → `1 passed`; `rangyuu/walk.py:31-35` | ✅ | 2026-09-16 |
 | Un sitio sin calibración **medida** no autoriza | `python -m pytest -q tests/test_degradation_gates.py` → `10 passed`; invertir la puerta (`calibration_is_verified` devolviendo `True` sin medición) hace caer 5 pruebas | ✅ | 2026-09-16 |
 | Recalibrar desde la interfaz retira la medición anterior | `rangyuu/webapp.py:127` pone `measured_error_cm = None`; prueba `test_recalibrating_drops_the_previous_measurement_and_the_authority` | ✅ | 2026-09-16 |
 | CI remota verde en `main` tras la reconciliación de ramas | `gh run list --branch main --limit 4` → `Rangyuu CI` y `build-scan` en `success` (runs `35129388309`, `35129388771`); los previos `35125517257` y `35125517447` están en `failure` | ✅ | 2026-09-16 |
@@ -110,6 +114,7 @@
 
 | Qué | Por qué no se pudo | Bloque |
 |---|---|---|
+| **Que el iPhone real quede calibrado contra el suelo real.** La puerta y su cableado están probados con fixtures sintéticos; lo que falta es físico: grabar el clip y anotar `fixtures/iphone/calibration_points.json` con píxeles y medidas de cinta, según `fixtures/iphone/MEDICIONES.md`. Inventar esos números daría un residuo de ajuste ~0 que no prueba nada, que es justo lo que esta puerta existe para impedir. Repetible el día que exista: `python -m pytest -q tests/test_calibration_onboard.py::test_the_recorded_clip_lands_under_the_declared_ceiling` (hoy `skipped`) | Nadie ha grabado el clip todavía; es un acto físico, no de código | B11 ⏳ pendiente |
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
 | **La vibración en un iPhone real.** Safari en iOS no expone la API de vibración; lo probado corre en Chromium, donde sí existe. En iPhone el aviso queda en tono y voz, y así lo declara la app | Requiere el teléfono con HTTPS o túnel | B12 |
 | **Si algo obstruye el paso o solo está cerca del paso.** El detector nombra objetos, pero con una cámara sin calibrar no hay distancia, y sin distancia no se puede decidir obstrucción. Es la razón de que los avisos acierten entre 13 % y 20 % contra la verdad de campo | Necesita calibración a bordo o profundidad | B11 |
