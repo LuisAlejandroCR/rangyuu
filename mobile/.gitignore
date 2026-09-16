@@ -1,0 +1,13 @@
+# .gitignore (mobile): lo que el cliente Expo genera en local y nunca se versiona.
+# Se distingue del .gitignore de la raíz, que cubre Python, videos, fotos y worktrees.
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+android/
+ios/
+*.tsbuildinfo
+.env
+.env.local
+.env*.local

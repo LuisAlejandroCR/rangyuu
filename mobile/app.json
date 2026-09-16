@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "rangyuu",
+    "slug": "rangyuu",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rangyuu.mobile",
+      "infoPlist": {
+        "NSCameraUsageDescription": "rangyuu reads the way ahead from the on-board camera to tell the vehicle whether the route is traversable."
+      }
+    },
+    "android": {
+      "package": "com.rangyuu.mobile",
+      "permissions": ["android.permission.CAMERA", "android.permission.VIBRATE"]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "rangyuu reads the way ahead from the on-board camera to tell the vehicle whether the route is traversable."
+        }
+      ]
+    ]
+  }
+}
