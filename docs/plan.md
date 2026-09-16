@@ -10,10 +10,15 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
 
 ## Abiertos
 
-- [ ] **B12 · La app.** Cinco pantallas y una sexta opcional, especificadas en
-      [app.md](app.md): Ahora, Caminata, Espacio, Fuentes, Configurar espacio y Evidencia. Corre
+- [ ] **B12 · La app.** Tres destinos principales, especificados en
+      [app.md](app.md): Ahora, Caminata y Sistema. Corre
       como web app servida por el propio proceso (`python -m rangyuu.serve`), porque compilar
       nativo para iOS exige un Mac.
+      *Tomado por Codex el 2026-09-16:* consolidar la arquitectura de información alrededor de
+      Ahora, Caminata y Sistema, y reparar los tres flujos de CI que hoy fallan antes de validar.
+      *Hecho el 2026-09-16:* Espacio y Evidencia quedaron dentro del mapa de Ahora; Fuentes y
+      Configurar se unieron en Sistema. Setuptools ahora empaqueta solo `rangyuu` y `provider-pr`
+      instala el proyecto antes de probar. Suite completa en 163 pruebas y wheel construido.
       *Tomado por Codex el 2026-09-16:* revisión visual y simplificación de la interfaz contra las
       referencias de Ring suministradas, sin cambiar el contrato de datos ni las decisiones.
       *Hecho el 2026-09-16:* jerarquía reducida a una decisión dominante por pantalla, superficies
@@ -78,10 +83,13 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       *Criterio:* MP4 reproducible en el repo, las cuatro correspondencias anotadas con su medición
       real, y el error de B8 calculado contra ellas. Se etiqueta `IPHONE_ONBOARD` y nunca reemplaza la
       llamada real a Ring.
-      *Añadido el 2026-09-16:* el carril de a bordo existe y está medido —**22 % de precisión**, 140
-      frenadas falsas en 58 s—, así que hoy solo avisa. Para que pueda frenar hace falta un detector
-      de objetos de verdad, no una diferencia de texturas, con su precisión medida contra más de un
-      clip etiquetado.
+      *Añadido el 2026-09-16:* el carril de a bordo tiene dos implementaciones. La heurística de
+      texturas quedó medida en **22 % de precisión** y solo avisa. El detector ONNX local
+      (`rangyuu/vision.py`, 24 ms por frame) **sí reconoce la moto marcada**, pero con una cámara sin
+      calibrar no hay distancia, y sin distancia no se decide si un objeto obstruye: por eso sus
+      avisos aciertan entre 13 % y 20 %.
+      *Lo que desbloquea el resto:* **calibración a bordo del teléfono**. Con ella el objeto detectado
+      cae en una celda y el carril puede frenar con fundamento.
 
 - [ ] **B7 · Video y submission.** Producir el video en inglés, menor de tres minutos, usando
       ElevenLabs MCP solo como herramienta de narración/producción y documentando su feedback.

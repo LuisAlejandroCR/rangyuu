@@ -151,6 +151,17 @@ video, canvas { width: 1px; height: 1px; opacity: 0; position: absolute; }
 .decisions .meta { color: var(--ink-3); font-size: .8125rem; font-variant-numeric: tabular-nums; }
 
 .cell-detail { background: var(--blue-soft); border-radius: 16px; padding: .9rem 1rem; margin: .75rem 0 1rem; font-size: .875rem; }
+.compact-details { margin-top: .75rem; border-top: 1px solid var(--line); }
+.compact-details summary, .setup summary {
+  cursor: pointer; color: var(--ink-2); font-size: .8125rem; font-weight: 620;
+  list-style: none; padding: .85rem .25rem .2rem;
+}
+.compact-details summary::-webkit-details-marker, .setup summary::-webkit-details-marker { display: none; }
+.compact-details summary::after, .setup summary::after { content: "+"; float: right; color: var(--blue); font-size: 1rem; }
+.compact-details[open] summary::after, .setup[open] summary::after { content: "−"; }
+.compact-details .zones { margin: .65rem 0 .15rem; box-shadow: none; border: 1px solid var(--line); border-radius: 16px; }
+.evidence-panel { margin-top: .75rem; padding-top: .1rem; border-top: 1px solid var(--line); }
+.evidence-panel .decisions { box-shadow: none; border: 1px solid var(--line); border-radius: 16px; }
 
 /* --- formulario --- */
 
@@ -166,6 +177,10 @@ video, canvas { width: 1px; height: 1px; opacity: 0; position: absolute; }
 }
 .field { display: block; margin: .75rem .25rem; color: var(--ink-2); font-size: .8125rem; }
 .field input { margin-top: .3rem; background: var(--card); }
+.setup { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-top: 1rem; overflow: hidden; }
+.setup > summary { padding: 1rem 1.1rem; color: var(--ink); }
+.setup-body { padding: 0 1rem 1rem; border-top: 1px solid var(--line); }
+.setup-body .hint { margin-top: 1rem; }
 
 /* --- botones, con el azul de Ring --- */
 

@@ -9,7 +9,12 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa, 151 pruebas, once de ellas en navegador real | `python -m pytest -q` → `151 passed` | ✅ | 2026-09-16 |
+| Suite completa, 163 pruebas, once de ellas en navegador real | `python -m pytest -q` → `163 passed` | ✅ | 2026-09-16 |
+| **Un detector de objetos ONNX local reconoce la moto que la heurística no podía**: en t=49,5 s devuelve `moto 0.69` y `persona 0.94`; en t=20 s y t=40 s no devuelve nada | SSD MobileNet v1 del ONNX Model Zoo con `onnxruntime 1.30`, sobre `walking_video.mp4` | ✅ | 2026-09-16 |
+| **24 ms por frame de media, 34 ms de máximo**, sobre 585 frames a 464x832, en CPU | Misma corrida | ✅ | 2026-09-16 |
+| El carril de visión **no frenó ni una vez** en toda la caminata: nada llegó nunca cerca en el corredor. Emitió 174 avisos, 20 dentro de los tramos marcados | Misma corrida, regla obstáculo = en el corredor **y** cerca | ✅ | 2026-09-16 |
+| La regla se prueba **sin descargar el modelo**, con una sesión ONNX sustituida | `python -m pytest tests/test_vision.py` | ✅ | 2026-09-16 |
+| Las pruebas de navegador esperan por condición, no por reloj: dos corridas seguidas en verde tras haber sido intermitentes | `python -m pytest tests/test_app_e2e.py tests/test_haptics_e2e.py` | ✅ | 2026-09-16 |
 | **La precisión del detector a bordo está medida contra verdad de campo: 22 %.** Sobre la caminata de 58,5 s con dos tramos reales marcados —49-50 s y 55-56 s, una moto a lo lejos— de 180 lecturas de "obstáculo" solo 40 caen en esos tramos: **140 frenadas falsas**. Cobertura de los tramos reales: 67 % | `python -m rangyuu.walk walking_video.mp4` más el etiquetado suministrado el 2026-09-16 | ✅ | 2026-09-16 |
 | Un criterio alternativo por mancha localizada se probó y es **peor**: 9-11 % de precisión. Las distribuciones se superponen (0,174 en los tramos reales contra 0,136 en el resto) | Barrido de umbrales sobre el mismo clip | ✅ | 2026-09-16 |
 | **Una caminata real de 58,5 s grabada con el iPhone atraviesa el carril de a bordo**: 585 lecturas → 149 `AVANZA`, 256 `CUIDADO`, 180 `PARA`; 40 cambios de estado, unos 41 por minuto | `python -m rangyuu.walk walking_video.mp4` (el video no se versiona) | ✅ | 2026-09-15 |
@@ -91,6 +96,7 @@
 |---|---|---|
 | Cualquier llamada a la API real de Ring | No hay `RANGYUU_ACCESS_TOKEN` ni `client_id` en el entorno | B1, B2, B3 |
 | **La vibración en un iPhone real.** Safari en iOS no expone la API de vibración; lo probado corre en Chromium, donde sí existe. En iPhone el aviso queda en tono y voz, y así lo declara la app | Requiere el teléfono con HTTPS o túnel | B12 |
+| **Si algo obstruye el paso o solo está cerca del paso.** El detector nombra objetos, pero con una cámara sin calibrar no hay distancia, y sin distancia no se puede decidir obstrucción. Es la razón de que los avisos acierten entre 13 % y 20 % contra la verdad de campo | Necesita calibración a bordo o profundidad | B11 |
 | El error a distancias mayores que 1,5 m, y con la cámara de Ring en vez de un teléfono | La foto medida cubre hasta 1,50 m de profundidad; más allá no hay marca medida. Dos intentos previos en video fallaron: cámara en mano, desenfoque de movimiento y las cuatro marcas nunca en el mismo frame | B8, B11 |
 | Oclusión derivada del frame | `mark_occluded` existe y tiene pruebas, pero la oclusión se declara desde fuera | B8 |
 | El tramo de actuación por LAN | No hay consumidor real todavía: el rover es digital y vive en el mismo proceso | B10 |

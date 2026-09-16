@@ -49,6 +49,7 @@ def vibrations(page):
 
 
 def test_the_first_state_vibrates_once(page):
+    page.wait_for_function("window.__vibrations.length > 0", timeout=8000)
     assert vibrations(page), "un estado nuevo tiene que avisar"
     assert vibrations(page)[0] == [35]              # AVANZA: un toque corto
 
@@ -64,22 +65,23 @@ def test_para_has_its_own_stronger_pattern(app, page):
     cell = tuple(site.route[1])
     site.runtime.state.cells[(site.runtime.device_id, cell)] = CellObservation(
         cell, time.time(), 0.95, False, "ring", site.runtime.device_id)
-    page.wait_for_timeout(2600)
-    assert page.inner_text("#verdict-state") == "PARA"
+    page.wait_for_function("document.getElementById('verdict-state').textContent === 'PARA'",
+                           timeout=8000)
+    page.wait_for_function("window.__vibrations.at(-1)?.join(',') === '140,80,140'", timeout=8000)
     assert vibrations(page)[-1] == [140, 80, 140]
 
 
 def test_the_sources_screen_declares_which_channels_exist(page):
-    page.click(".tabs button[data-goto='fuentes']")
+    page.click(".tabs button[data-goto='sistema']")
     page.wait_for_timeout(800)
     panel = page.inner_text("#haptics")
     assert "vibración" in panel and "tono" in panel and "voz" in panel
 
 
 def test_the_test_button_repeats_the_current_state_on_demand(page):
-    page.click(".tabs button[data-goto='fuentes']")
+    page.click(".tabs button[data-goto='sistema']")
     page.wait_for_timeout(600)
     before = len(vibrations(page))
     page.click("#haptics-toggle")
-    page.wait_for_timeout(300)
+    page.wait_for_function("n => window.__vibrations.length > n", arg=before, timeout=8000)
     assert len(vibrations(page)) == before + 1

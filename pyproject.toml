@@ -8,5 +8,8 @@ dependencies = ["numpy>=2.0"]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = ["rangyuu"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

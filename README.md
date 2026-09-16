@@ -72,6 +72,7 @@ python -m rangyuu       # demo en terminal: libre → ocupado → duplicado rech
 | `rangyuu/config.py` | Configuración: entorno primero, `.env.local` después. |
 | `rangyuu/calibrate.py` | Correspondencias medidas → homografía **y error en centímetros** (medido: 0,9 cm sobre 61 cm). |
 | `web/` + `rangyuu/webapp.py` | La app: seis pantallas servidas por el propio proceso ([app.md](docs/app.md)). |
+| `rangyuu/vision.py` | Detección de objetos ONNX en local: nombra lo que ve, 24 ms por frame. |
 | `rangyuu/onboard.py` | La cámara a bordo: despejado, obstáculo o incierto, sin hablar de metros. |
 | `rangyuu/walk.py` | Reproduce una caminata grabada y responde con números (`python -m rangyuu.walk`). |
 | `web/haptics.js` | El aviso sin mirar la pantalla: vibración, tono y voz, uno por estado. |

@@ -4,6 +4,27 @@
 
 # Memoria
 
+## 2026-09-16 — Tres destinos y CI instalable
+
+**Qué se hizo**
+
+- La navegación quedó reducida a Ahora, Caminata y Sistema. El mapa, sus zonas, el detalle de celda
+  y la evidencia viven juntos en Ahora; fuentes y calibración viven en Sistema.
+- `pyproject.toml` declara únicamente el paquete Python `rangyuu`, evitando que Setuptools confunda
+  `web/` y `fixtures/` con paquetes de primer nivel.
+- `provider-pr.yml` instala el proyecto antes de ejecutar Pytest y usa permisos de solo lectura.
+- La suite completa pasó en 163 pruebas, incluidas las pruebas ONNX que aparecieron durante la
+  integración paralela. El wheel `rangyuu-0.1.0` se construyó correctamente en aislamiento.
+
+**Qué NO se verificó, y por qué**
+
+- Los workflows reparados todavía no corrieron en GitHub sobre esta rama; la verificación local
+  reproduce la instalación y las pruebas, pero el estado remoto solo existe después del push.
+- No se modificó ni se versionó la integración ONNX en curso; esos archivos pertenecen al trabajo
+  paralelo y esta rama solo comprobó que sus pruebas conviven con el cambio.
+
+**Dónde quedan los pendientes:** ejecución remota de CI y pruebas en iPhone dentro de B12.
+
 ## 2026-09-16 — La interfaz deja de parecer un panel técnico
 
 **Qué se hizo**
@@ -29,6 +50,39 @@
   verificada por inspección y regresión funcional, no por desempeño humano medido.
 
 **Dónde quedan los pendientes:** las dos verificaciones siguen en B12 de [plan.md](plan.md).
+
+## 2026-09-16 — Detector ONNX local: ve la moto que la heurística no veía
+
+**Qué se hizo**
+
+- `rangyuu/vision.py`: detección de objetos con **ONNX en local** —`onnxruntime 1.30`, SSD MobileNet
+  v1 del ONNX Model Zoo—. Ningún frame sale de la máquina, igual que el resto del carril crítico.
+- **Ve lo que la heurística no podía:** en t=49,5 s devuelve `moto 0.69` y `persona 0.94`; en t=20 s
+  y t=40 s, nada. La diferencia con las texturas es que **nombra** el objeto en vez de adivinar por
+  contraste.
+- Coste medido: **24 ms por frame de media, 34 ms de máximo** sobre 585 frames a 464x832, en CPU.
+  Entra en el presupuesto del lazo, que ya estaba en 8,16 ms.
+- La regla es geométrica, no solo de clase: **obstáculo = objeto en el corredor y cerca**; el mismo
+  objeto lejos es aviso. Sobre esta caminata **no frenó ni una vez**, porque nada llegó nunca cerca
+  del corredor, y emitió 174 avisos, 20 de ellos dentro de los tramos marcados.
+- El modelo **no se versiona**: son 29 MB y se configura con `RANGYUU_ONNX_MODEL`. Sin esa variable
+  el sitio cae en la heurística de texturas **y lo declara** en Fuentes; nunca finge tener modelo.
+  Las diez pruebas nuevas corren sin descargar nada, sustituyendo la sesión ONNX.
+- Se arreglaron tres pruebas de navegador intermitentes: esperaban por reloj y ahora esperan por
+  condición. Dos corridas seguidas en verde. Suite en 163 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **La precisión contra la verdad de campo no mejoró de forma concluyente.** Medida contra las dos
+  ventanas marcadas, los avisos aciertan entre el 13 % y el 20 % según cuánto se estreche el
+  corredor. La razón es que el detector encuentra objetos **que sí están ahí** —sillas, autos
+  estacionados, personas— pero que no obstruyen el paso, y con una sola cámara sin calibrar **no hay
+  forma de decidir si algo obstruye**: falta distancia. Eso es B11, no más ajuste de umbrales.
+- **Un clip con dos ventanas no valida un detector.** Sirvió para descartar la heurística; para
+  aceptar esta hace falta más metraje etiquetado.
+- El modelo no se probó en el teléfono ni con el carril alimentado en vivo.
+
+**Dónde quedan los pendientes:** B11, B12 y B7 de [plan.md](plan.md).
 
 ## 2026-09-16 — La precisión del detector a bordo, medida: 22 %
 
