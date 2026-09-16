@@ -14,6 +14,11 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       [app.md](app.md): Ahora, Caminata, Espacio, Fuentes, Configurar espacio y Evidencia. Corre
       como web app servida por el propio proceso (`python -m rangyuu.serve`), porque compilar
       nativo para iOS exige un Mac.
+      *Tomado por Codex el 2026-09-16:* revisión visual y simplificación de la interfaz contra las
+      referencias de Ring suministradas, sin cambiar el contrato de datos ni las decisiones.
+      *Hecho el 2026-09-16:* jerarquía reducida a una decisión dominante por pantalla, superficies
+      blancas amplias con radio consistente, cian único de acción, metadato subordinado y navegación
+      inferior con iconos. Revisado a 390x844 y 1024x900; suite completa en 151 pruebas.
       *Hecho el 2026-09-15:* las seis pantallas existen y se alimentan del núcleo real; los cuatro
       estados de pantalla derivan de las tres decisiones con reglas probadas.
       *Hecho también:* revisión en navegador real con Playwright y seis pruebas de extremo a extremo;
