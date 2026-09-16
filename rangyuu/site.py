@@ -7,12 +7,18 @@ from dataclasses import dataclass
 
 from .calibrate import Calibration
 from .onboard import CLEAR, OBSTACLE, Clearance, ClearanceFilter, ForwardClearance
+from .onboard_calibration import NotMeasured, verified_homography
 from .vision import ModelUnavailable, ObjectEye
 from .policy import cell_is_stale
 from .runtime import LocalRuntime
 from .ui import to_screen
 
 MAX_DECISIONS = 50
+
+# "Pregúntale al fixture del repo" — el valor por defecto. Mientras la plantilla siga sin llenar,
+# la respuesta es None y el carril de a bordo observa sin escribir. Pasar None en su lugar declara
+# que este sitio no tiene calibración a bordo y nunca la tendrá: el banco de medición pide eso.
+SHIPPED_FIXTURE = object()
 
 
 @dataclass
@@ -47,7 +53,8 @@ class Source:
 class Site:
     def __init__(self, runtime: LocalRuntime, *, calibration: Calibration | None = None,
                  error_ceiling_cm: float = 1.5, measured_error_cm: float | None = None,
-                 requires_measured_calibration: bool = True, clock=time.time):
+                 requires_measured_calibration: bool = True,
+                 onboard_calibration=SHIPPED_FIXTURE, clock=time.time):
         self.runtime = runtime
         self.calibration = calibration
         # The fit error is always ~0 and proves nothing. This is the error measured against
@@ -59,7 +66,11 @@ class Site:
         # lands under the ceiling, this site may report what it sees but may not authorise.
         self.requires_measured_calibration = bool(requires_measured_calibration)
         self.clock = clock
-        self.onboard_homography = None
+        # La misma puerta que arriba, pero para el teléfono: solo una homografía medida contra
+        # puntos fuera del ajuste y por debajo del techo de B8 llega hasta aquí. Cualquier otra
+        # cosa —plantilla sin llenar, fixture ausente, error por encima del techo— es None, y
+        # con None el carril de a bordo observa sin escribir en el mapa.
+        self.onboard_homography = self._verified_onboard(onboard_calibration)
         # Con modelo ONNX configurado, la caminata nombra lo que ve; sin él cae en la heurística
         # de texturas, que es más pobre y así lo declara. Nunca se finge tener modelo.
         try:
@@ -222,6 +233,22 @@ class Site:
                     found.observed_at, moment, self.runtime.state.max_age):
                 return True
         return False
+
+    @staticmethod
+    def _verified_onboard(source):
+        """La homografía del teléfono, o None, que es la respuesta ante cualquier duda.
+
+        `source` es el fixture anotado (un dict), `SHIPPED_FIXTURE` para leer el del repo, o
+        None para declarar el sitio sin calibración a bordo. Un fixture ilegible o a medio
+        llenar no es un error que deba tumbar el sitio: es exactamente la respuesta None.
+        """
+        if source is None:
+            return None
+        data = None if source is SHIPPED_FIXTURE else source
+        try:
+            return verified_homography(data)
+        except (NotMeasured, OSError, ValueError, KeyError, TypeError):
+            return None
 
     def calibration_is_verified(self) -> bool:
         """True only when a held-out measurement exists and lands under the ceiling.

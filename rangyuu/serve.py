@@ -37,6 +37,9 @@ def build_site() -> Site:
     homography = calibration.homography if calibration else [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
     runtime = LocalRuntime("ring-front-01", homography, cell_size=CELL_SIZE, max_age=MAX_AGE,
                            stale_after=MAX_AGE)
+    # Sin `onboard_calibration` el sitio consulta el fixture del iPhone: hoy es la plantilla sin
+    # llenar, así que el carril a bordo observa y no escribe. El día que se anote el clip medido,
+    # ese mismo fixture abre la puerta sin tocar este archivo.
     site = Site(runtime, calibration=calibration,
                 measured_error_cm=MEASURED_ERROR_CM if calibration else None)
     site.set_route(ROUTE)

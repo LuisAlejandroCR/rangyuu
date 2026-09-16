@@ -104,6 +104,23 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       avisos aciertan entre 13 % y 20 %.
       *Lo que desbloquea el resto:* **calibración a bordo del teléfono**. Con ella el objeto detectado
       cae en una celda y el carril puede frenar con fundamento.
+      *Hecho el 2026-09-16 — todo el camino de código, nada de metraje:*
+      (1) la **puerta**, `rangyuu/onboard_calibration.py`: `verified_homography()` devuelve la matriz
+      solo si el fixture está declarado `measured` y su error contra puntos **fuera del ajuste** cae
+      bajo 1,5 cm; en cualquier otro caso devuelve `None`, que es la respuesta segura.
+      (2) la **plantilla**, `fixtures/iphone/calibration_points.json`, deliberadamente sin llenar
+      (`"status": "pending"`), y el **protocolo de grabación**, `fixtures/iphone/MEDICIONES.md`.
+      (3) el **cableado**: `Site.__init__` ya no deja `onboard_homography` en `None` para siempre —
+      lo toma de la puerta, con `onboard_calibration` inyectable para las pruebas. `serve.build_site`
+      usa el fixture del repo; `rangyuu/walk.py` pasa `onboard_calibration=None` a propósito, porque
+      es un banco de medición sobre homografía identidad y escribir celdas con ella sería inventarlas.
+      Efecto hoy: **byte por byte el comportamiento anterior** —observa y no escribe—, y el día que se
+      anote el clip el carril empieza a escribir sin tocar una línea de código.
+      *Falta, y es lo único que falta para cerrar el bloque:* **grabar el clip y medir con cinta**.
+      Es un acto físico que nadie ha hecho. Sin él la prueba
+      `test_the_recorded_clip_lands_under_the_declared_ceiling` queda en `skipped` y el bloque en
+      ⏳ **pendiente**. Rellenar el fixture con números inventados no vale: el residuo del ajuste da
+      ~0 siempre y no prueba nada. Evidencia del resto en [verificacion.md](verificacion.md).
 
 - [ ] **B7 · Video y submission.** Producir el video en inglés, menor de tres minutos, usando
       ElevenLabs MCP solo como herramienta de narración/producción y documentando su feedback.

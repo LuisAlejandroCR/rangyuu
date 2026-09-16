@@ -4,6 +4,45 @@
 
 # Memoria
 
+## 2026-09-16 — B11: la puerta de calibración a bordo, conectada al carril
+
+**Qué se hizo**
+
+- `Site.onboard_homography` estaba inicializado a `None` en `site.py` y **nadie lo escribía nunca**:
+  la puerta de `site.py` que impide que el iPhone escriba en el mapa era una puerta sin bisagra. Ahora
+  `Site.__init__` la toma de `onboard_calibration.verified_homography()`, que solo entrega la matriz
+  si el fixture está declarado medido y su error **contra puntos fuera del ajuste** cae bajo 1,5 cm.
+- El argumento `onboard_calibration` es inyectable, como `calibration` / `measured_error_cm`: acepta
+  el fixture anotado, el centinela `SHIPPED_FIXTURE` (por defecto: lee el del repo) o `None`
+  («este sitio no tiene calibración a bordo»). Un fixture ilegible o a medio llenar devuelve `None`
+  en vez de tumbar el sitio.
+- `rangyuu/walk.py` pasa `onboard_calibration=None` explícito. Es un banco de medición del detector
+  sobre homografía identidad: si mañana el fixture del iPhone queda medido, el banco **no** debe
+  empezar a escribir celdas, porque con identidad esas celdas serían inventadas. `serve.build_site`
+  se queda con el fixture del repo y no necesitó cambiar más que un comentario.
+- **Hoy el comportamiento es idéntico al de ayer**: la plantilla sigue en `"status": "pending"`, así
+  que la respuesta es `None` y el carril observa sin escribir. Lo que cambió es que el día que el
+  clip se anote, el carril empieza a escribir solo.
+- Suite: `181 passed, 1 skipped` antes → **`186 passed, 1 skipped`** después (`python -m pytest -q`).
+
+**Que las pruebas nuevas prueban algo, comprobado por mutación**
+
+- `verified_homography` devolviendo la matriz siempre → `7 failed, 179 passed, 1 skipped`.
+- `self.onboard_homography = None` fijo en `site.py` → `1 failed, 185 passed, 1 skipped`, la que
+  exige que una calibración medida **sí** abra el carril. Ambas mutaciones revertidas.
+
+**Qué NO se verificó, y por qué**
+
+- **El clip real no existe.** No se grabó metraje ni se midió con cinta: es un acto físico. La prueba
+  `test_the_recorded_clip_lands_under_the_declared_ceiling` sigue en `skipped` y **B11 sigue abierto**.
+  Las pruebas de este lote usan fixtures sintéticos (`SYNTHETIC` / `SYNTHETIC_OFF`), que sirven para
+  probar la puerta y no pretenden describir ninguna lente real.
+- No se rellenó `fixtures/iphone/calibration_points.json` ni se tocó el techo de 1,5 cm. Con números
+  inventados el residuo del ajuste daría ~0 y «probaría» una calibración falsa: exactamente el error
+  que esta puerta existe para impedir.
+- `python -m rangyuu.walk` no se ejercitó: necesita `av`, un clip y el modelo ONNX, nada de eso se
+  versiona. El cambio en ese archivo es un argumento de construcción, cubierto por prueba unitaria.
+
 ## 2026-09-16 — Reconciliación de ramas y CI verde en main
 
 **Qué se hizo**
