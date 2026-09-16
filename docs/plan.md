@@ -24,6 +24,16 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       *Hecho el 2026-09-16:* jerarquía reducida a una decisión dominante por pantalla, superficies
       blancas amplias con radio consistente, cian único de acción, metadato subordinado y navegación
       inferior con iconos. Revisado a 390x844 y 1024x900; suite completa en 151 pruebas.
+      *Tomado por Claude el 2026-09-16:* tercera pasada de interfaz sobre los tres destinos ya
+      consolidados, buscando lo que seguía flojo sin deshacer ninguna de las dos pasadas previas.
+      *Hecho el 2026-09-16:* **perder el enlace con el sitio ya no deja la pantalla autorizando**
+      —era el hueco real: el `AVANZA` se quedaba en grande y solo cambiaba la razón en letra
+      chica—. Los cuatro estados se distinguen de un vistazo por riel y halo, y la ficha
+      `autoriza el paso` sale del campo `authorizes` del contrato. Todo el texto pequeño pasó a
+      cumplir WCAG AA —el peor caso, 4,80:1— y ningún objetivo táctil baja de 44 px. El mapa dejó
+      de tapar a la decisión, las zonas salieron del SVG donde se desbordaban, y los identificadores
+      crudos (`RING_INFRASTRUCTURE`) dejaron de verse. Consola limpia a 390x844 y 1280x900; suite en
+      185 pruebas. Evidencia en [verificacion.md](verificacion.md).
       *Hecho el 2026-09-15:* las seis pantallas existen y se alimentan del núcleo real; los cuatro
       estados de pantalla derivan de las tres decisiones con reglas probadas.
       *Hecho también:* revisión en navegador real con Playwright y seis pruebas de extremo a extremo;

@@ -18,6 +18,12 @@ export const support = {
 let context = null;
 let last = "";
 let enabled = true;
+// El navegador descarta `navigator.vibrate()` mientras no haya habido un gesto del usuario, y
+// además lo anota como error en consola. En vez de llamar y fallar, se guarda el patrón del
+// estado vigente y se emite en cuanto llega el gesto: el aviso no se pierde y la consola queda
+// limpia. Es la misma puerta que ya necesitaba el audio, así que la abre el mismo `unlock()`.
+let gestured = false;
+let pending = null;
 
 /** Una sola forma de decir el estado por los canales que el dispositivo tenga. */
 export function announce(state, { force = false } = {}) {
@@ -27,7 +33,10 @@ export function announce(state, { force = false } = {}) {
   last = state;
 
   const used = [];
-  if (support.vibrate && navigator.vibrate(pattern.vibrate)) used.push("vibrate");
+  if (support.vibrate) {
+    if (gestured) { if (navigator.vibrate(pattern.vibrate)) used.push("vibrate"); }
+    else pending = pattern.vibrate;
+  }
   if (playTone(pattern.tone)) used.push("tone");
   if (speak(pattern.say)) used.push("speech");
   return { state, used };
@@ -35,7 +44,9 @@ export function announce(state, { force = false } = {}) {
 
 /** El tono es el respaldo real en iPhone, donde no hay vibración desde el navegador. */
 function playTone([frequency, seconds]) {
-  if (!support.audio) return false;
+  // Misma puerta que la vibración: antes del gesto el navegador no deja sonar y avisa por
+  // consola. Declarar que no sonó es más honesto que llamar, fallar y contarlo como usado.
+  if (!support.audio || !gestured) return false;
   try {
     context = context || new (window.AudioContext || window.webkitAudioContext)();
     if (context.state === "suspended") context.resume();
@@ -70,6 +81,9 @@ function speak(text) {
 
 /** El audio del navegador necesita un gesto del usuario para arrancar: esto es ese gesto. */
 export function unlock() {
+  const first = !gestured;
+  gestured = true;
+  if (first && pending && support.vibrate) { navigator.vibrate(pending); pending = null; }
   if (!support.audio) return false;
   try {
     context = context || new (window.AudioContext || window.webkitAudioContext)();
@@ -88,6 +102,7 @@ export function setEnabled(value) {
 
 export function reset() {
   last = "";
+  pending = null;
 }
 
 /** Lo que este dispositivo puede hacer de verdad, para mostrarlo en Fuentes sin prometer de más. */

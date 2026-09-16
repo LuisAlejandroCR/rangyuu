@@ -26,16 +26,22 @@ def app():
 
 
 @pytest.fixture(scope="module")
-def page(app):
+def browser():
     with playwright_api.sync_playwright() as p:
         try:
-            browser = p.chromium.launch()
+            instance = p.chromium.launch()
         except Exception as error:                      # no browser installed in this environment
             pytest.skip(f"chromium no disponible: {error}")
-        page = browser.new_page(viewport={"width": 390, "height": 844})
-        page.goto(app[1], wait_until="networkidle")
-        yield page
-        browser.close()
+        yield instance
+        instance.close()
+
+
+@pytest.fixture(scope="module")
+def page(app, browser):
+    page = browser.new_page(viewport={"width": 390, "height": 844})
+    page.goto(app[1], wait_until="networkidle")
+    yield page
+    page.close()
 
 
 def state_of(page, expected=None, timeout=8000):
@@ -105,6 +111,68 @@ def test_map_details_and_evidence_live_inside_now(page):
     page.wait_for_timeout(300)
     assert page.is_visible("#evidence-panel")
     assert page.is_visible("#zones")
+
+
+def test_losing_the_link_to_the_site_withdraws_the_authorisation(app, page):
+    """Perder el enlace es quedarse sin evidencia, y sin evidencia no se autoriza.
+
+    Antes la pantalla dejaba el último estado en grande —un AVANZA verde— y solo cambiaba la
+    razón en letra chica, así que seguía autorizando sobre un dato que ya no tenía.
+    """
+    page.click(".tabs button[data-goto='ahora']")
+    page.wait_for_function(
+        "document.getElementById('verdict-state').textContent !== 'SIN CERTEZA'", timeout=8000)
+    page.evaluate("() => { window.__fetch = window.fetch;"
+                  "        window.fetch = () => Promise.reject(new Error('down')); return true; }")
+    try:
+        page.wait_for_function(
+            "document.getElementById('verdict-state').textContent === 'SIN CERTEZA'", timeout=8000)
+        assert "sin enlace" in page.inner_text("#verdict-reason")
+        assert page.inner_text("#verdict-gate") == "no autoriza el paso"
+    finally:
+        page.evaluate("() => { window.fetch = window.__fetch; return true; }")
+    page.wait_for_function(
+        "document.getElementById('verdict-state').textContent !== 'SIN CERTEZA'", timeout=8000)
+
+
+AUTHORISING = {"AVANZA", "CUIDADO"}
+
+
+def test_the_screen_says_whether_it_authorises_rather_than_only_colouring_it(page):
+    """El bit que importa sale del contrato (`authorizes`), no de leerle el color al estado."""
+    state = state_of(page)
+    gate = page.inner_text("#verdict-gate")
+    assert gate == ("autoriza el paso" if state in AUTHORISING else "no autoriza el paso")
+
+
+def test_the_app_loads_without_a_single_console_error(app, browser):
+    """La consola se escucha desde antes de `goto`: el error de arranque no se veía de otro modo.
+
+    `navigator.vibrate()` antes del primer gesto lo descarta el navegador y lo anota como error.
+    """
+    fresh = browser.new_page(viewport={"width": 390, "height": 844})
+    errors = []
+    fresh.on("pageerror", lambda e: errors.append(str(e)))
+    fresh.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+    try:
+        fresh.goto(app[1], wait_until="networkidle")
+        fresh.wait_for_function("document.querySelectorAll('#zone-chips li').length > 0",
+                                timeout=8000)
+        assert errors == []
+    finally:
+        fresh.close()
+
+
+def test_zone_names_are_legible_html_instead_of_svg_text_that_scales_with_the_grid(page):
+    """Dentro del SVG el texto se medía en unidades del viewBox y se desbordaba de la tarjeta."""
+    page.click(".tabs button[data-goto='ahora']")
+    page.wait_for_function("document.querySelectorAll('#zone-chips li').length > 0", timeout=8000)
+    assert page.locator("#map-now text.zone-label").count() == 0
+    overflow = page.evaluate(
+        "() => {const c = document.querySelector('.map-card').getBoundingClientRect();"
+        "return [...document.querySelectorAll('#zone-chips li')]"
+        ".some(e => e.getBoundingClientRect().right > c.right + 1);}")
+    assert not overflow
 
 
 def test_the_walk_screen_does_not_offer_recording(page):

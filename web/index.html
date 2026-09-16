@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<!-- index.html: la app entera, cinco pantallas y una sexta opcional. Sin build, sin dependencias:
-     el navegador pide JSON al proceso local y dibuja. La lógica de estados vive en el núcleo
-     (rangyuu/ui.py), no aquí: esta pantalla muestra lo que el núcleo decidió. -->
+<!-- index.html: la app entera, tres destinos —Ahora, Caminata, Sistema—. Sin build, sin
+     dependencias: el navegador pide JSON al proceso local y dibuja. La lógica de estados vive en
+     el núcleo (rangyuu/ui.py), no aquí: esta pantalla muestra lo que el núcleo decidió.
+     Se distingue de styles.css (identidad visual) y de app.js (dato y comportamiento). -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -24,14 +25,16 @@
   <!-- 1 · Ahora / Ruta segura -->
   <section class="screen" data-screen="ahora">
     <header class="bar"><span class="brand">rangyuu</span><div><h1>Ahora</h1><span class="stamp" id="ahora-stamp">—</span></div></header>
-    <div class="verdict" id="verdict">
+    <div class="verdict" id="verdict" role="status" aria-live="polite">
       <span class="eyebrow">Ruta actual</span>
       <span class="verdict-state" id="verdict-state">SIN CERTEZA</span>
       <span class="verdict-reason" id="verdict-reason">esperando al sitio</span>
       <span class="verdict-detail" id="verdict-detail"></span>
+      <span class="verdict-gate" id="verdict-gate">no autoriza el paso</span>
     </div>
     <div class="map-card">
       <div class="section-heading"><span>Plano del espacio</span><button class="text-action" id="evidence-toggle" aria-expanded="false">Evidencia</button></div>
+      <ul class="zone-chips" id="zone-chips"></ul>
       <svg class="map" id="map-now" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
            role="img" aria-label="Mapa espacial con la trayectoria propuesta"></svg>
       <ul class="legend">
@@ -55,7 +58,7 @@
   <!-- 2 · Modo caminata -->
   <section class="screen" data-screen="caminata" hidden>
     <header class="bar"><span class="brand">rangyuu</span><div><h1>Caminata</h1><span class="stamp" id="walk-stamp">detenido</span></div></header>
-    <div class="walk" id="walk">
+    <div class="walk" id="walk" role="status" aria-live="polite">
       <span class="eyebrow">Frente a vos</span>
       <div class="walk-state" id="walk-state">SIN CERTEZA</div>
       <div class="walk-reason" id="walk-reason">la cámara está apagada</div>

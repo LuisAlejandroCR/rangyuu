@@ -39,7 +39,11 @@ def page(app):
         page = browser.new_page(viewport={"width": 390, "height": 844})
         page.add_init_script(STUB)
         page.goto(app[1], wait_until="networkidle")
-        page.wait_for_timeout(800)
+        # El navegador no deja vibrar ni sonar hasta que hay un gesto del usuario, así que la
+        # prueba hace el gesto en vez de fingirlo. Después espera a la primera vibración por
+        # condición, no por reloj: con la máquina cargada un `wait_for_timeout` da intermitencias.
+        page.click(".tabs button[data-goto='ahora']")
+        page.wait_for_function("window.__vibrations.length > 0", timeout=8000)
         yield page
         browser.close()
 
