@@ -6,10 +6,13 @@
 
 # Challenge 3 · Build with ElevenLabs MCP — plan de entrada
 
-**Escrito el 2026-09-16. Dirección creativa reescrita el mismo día** alrededor de un brief de film
-centrado en una persona, entregado por quien firma la submission y tratado como dirección canónica
-(§3). **Lo que se reemplazó es la dirección creativa, no la investigación:** las tablas de créditos,
-la estrategia de *un máster, dos cortes* y el análisis de cumplimiento siguen en pie.
+**Escrito el 2026-09-16. Dirección creativa reescrita dos veces el mismo día.** La segunda reescritura
+reemplaza casi por completo el guion y la lista de planos de la primera, alrededor de un segundo brief
+—más detallado, arquitectónico y explícito sobre el motivo `HOLD`— entregado por quien firma la
+submission y tratado aquí como dirección canónica (§3). **Lo que sigue sin tocarse es la
+investigación:** las tablas de créditos (§2), la estrategia de *un máster, dos cortes* (§4.c), el
+análisis de cumplimiento (§5) y la nota de privacidad (§6) siguen en pie, con ajustes menores donde el
+nuevo guion cambia el reparto de plano o el conteo de caracteres.
 
 Nada de este documento está ejecutado. **No se generó ni un segundo de audio, imagen o video, y no
 se gastó ni un crédito.** Es un plan de producción; lo que aquí se llama "costo" es una estimación
@@ -148,36 +151,41 @@ publicado.
 
 | Elemento | Cálculo | Créditos |
 |---|---|---|
-| Narración TTS | ~2.600 chars **con las audio tags incluidas** × 3 pasadas (2 borradores + máster) | ~7.800 |
-| Música | 2,7 min × 900 × 2 tomas | ~4.900 |
-| Efectos de sonido | 6 × 2 tomas × 200 | ~2.400 |
-| Subtítulos con Scribe | 2,7 min × 330 | ~900 |
-| **Total** | | **~16.000** |
+| Narración TTS | ~2.550 chars **con las audio tags incluidas** × 3 pasadas (2 borradores + máster) | ~7.650 |
+| Música | ~1,8 min efectivos de cue (63 s + 11 s + 33 s) × 900 × 2 tomas | ~3.200 |
+| Efectos de sonido | 5 × 2 tomas × 200 | ~2.000 |
+| Subtítulos con Scribe | ~2,7 min × 330 | ~900 |
+| **Total** | | **~13.800** |
 
 **Confianza: alta.** Las cuatro filas usan costos oficiales publicados y la aritmética es trivial.
 
-**Qué cambió respecto de la versión anterior de este documento, y por qué.** La estimación previa
-daba ~8.000 créditos. Subió al doble por tres razones, todas consecuencia del brief de §3:
+**Qué cambió respecto de la versión anterior de este documento, y por qué.** La estimación anterior
+—ya con el primer brief humano— daba ~16.000 créditos. Bajó a ~13.800 con el segundo brief, por dos
+razones puntuales, no por una relajación general:
 
-1. **Las audio tags se cobran como caracteres.** El guion son ~2.300 caracteres de habla, pero lo
-   que se envía a la API son ~2.600 con las etiquetas inline. ⏳ **pendiente:** confirmar en la
-   primera generación si ElevenLabs descuenta las etiquetas del conteo; este documento asume que
-   **no** lo hace, que es el supuesto caro y por tanto el seguro.
-2. **Tres pasadas de narración, no dos.** El brief pide un arco de interpretación que atraviesa la
-   pieza entera —curiosidad, luego precisión, luego calma—; eso no sale a la primera y el guion se
-   renderiza además **en cinco segmentos** (§3.c), lo que multiplica las retomas parciales.
-3. **Un cue de música y un efecto más.** La estructura de §3.f tiene tres movimientos, no dos, y el
-   sonido de §3.g suma un tono de sala de respaldo.
+1. **El guion es más corto y tiene más silencio, no menos.** El nuevo guion mide ~2.550 caracteres
+   contra ~2.600 antes, y **el cambio real está en la música**: el brief pide silencio explícito antes
+   de `HOLD` y antes de "rangyuu does not brake today" (§3.f), así que los tres cues de música ocupan
+   ~1,8 minutos de audio en total en vez de los ~2,7 minutos que cubría la música anterior de punta a
+   punta. Menos minutos de Eleven Music generados es menos créditos, no una toma menos.
+2. **Cinco efectos de sonido, no seis.** "Confirmación de UI" y "celda asentándose" se fusionan en un
+   solo prompt (§3.g), porque en este guion ambos sonidos ocurren en el mismo plano (la revelación del
+   producto).
 
-Lo que **no** subió: el metraje. Filmar con la cámara que ya existe cuesta cero créditos y es,
+Lo que **no** cambió: sigue habiendo **tres** pasadas de narración (el arco documental-preciso →
+temor contenido → resolución sigue exigiendo tomas distintas por segmento, §3.d) y las audio tags
+siguen contándose como caracteres bajo el mismo supuesto caro-y-seguro de antes. ⏳ **pendiente:**
+confirmar en la primera generación si ElevenLabs descuenta las etiquetas del conteo.
+
+Lo que **no** subió ni bajó: el metraje. Filmar con la cámara que ya existe cuesta cero créditos y es,
 además, la opción que mejor cumple la regla del challenge (§5).
 
 ### 2.c Qué plan hace falta
 
 | Plan | Precio | Créditos/mes | ¿Alcanza? |
 |---|---|---|---|
-| Free | $0 | 10.000 | **Ya no alcanza.** La variante mínima subió a ~16.000 créditos (§2.b) y se pasa por 6.000. Antes entraba con 2.000 de margen; con el guion del brief, no entra. |
-| Starter | $6 | 30.000 | **El plan que hace falta.** Deja ~14.000 de margen: casi una pieza entera de repuesto. Es la recomendación. |
+| Free | $0 | 10.000 | **No alcanza.** La variante mínima es ~13.800 créditos (§2.b); se pasa por ~3.800. |
+| Starter | $6 | 30.000 | **El plan que hace falta.** Deja ~16.200 de margen: casi una pieza entera de repuesto. Es la recomendación. |
 | Creator | $22 (1er mes 50 % off) | 121.000 | Innecesario para la variante mínima; justo al borde de la completa (~111.000). |
 | Pro | $99 | 600.000 | Solo si se genera video, cosa que §3.h recomienda no hacer. |
 | Scale | $299 | 1.800.000 | Innecesario para esto. |
@@ -195,408 +203,313 @@ mínima, o ~9 de la variante completa. Equivale a unos 20 meses de plan Creator.
 
 ## 3. El film — dirección creativa, guion y prompts
 
-**La dirección creativa de este documento cambió por completo el 2026-09-16.** La versión anterior
-era un video técnico con voz en off: milisegundos, homografía y captura de pantalla. Lo que la
-sustituye es un **brief humano**, entregado por quien firma la submission y tratado aquí como
-dirección canónica: *se cuenta la historia de una persona primero y la tecnología después.*
+**La dirección creativa cambió por segunda vez el 2026-09-16, en el mismo día.** La primera reescritura
+había puesto a la persona antes que al producto pero seguía organizada alrededor de un ritual doméstico
+genérico. El segundo brief —el que gobierna esta versión— es más estricto y más arquitectónico:
+*"el video debería sentirse menos como 'AI product launch' y más como una historia humana sostenida
+por una arquitectura extremadamente rigurosa por debajo. El protagonista es la persona; rangyuu es la
+capa invisible que se niega a fingir certeza."* Esa frase, citada tal cual la entregó quien firma la
+submission, es la vara contra la que se mide cada plano de este documento.
 
-**Lo que NO cambió:** la investigación. Las tablas de créditos de §2, la estrategia de *un máster,
-dos cortes* de §4.c, el análisis de cumplimiento de §5 y —sobre todo— **la regla de honestidad de
-§0** siguen vigentes palabra por palabra. Esto reemplaza la dirección estética, no la evidencia.
+**La idea central, en una frase.** Un vehículo de movilidad ve lo que tiene directamente enfrente; no
+puede ver alrededor de una esquina; el edificio ya puede. rangyuu convierte las observaciones de Ring en
+un mapa espacial al que el vehículo le hace **una sola pregunta**: *¿esta trayectoria es transitable?*
+Y cada respuesta incierta se convierte en **HOLD**. La tesis del film: **rangyuu es confiable no porque
+prediga todo, sino porque se niega a fingir que sabe cuando no sabe.**
 
-### 3.a El brief, en once renglones
+**Lo que NO cambió respecto de la versión anterior:** la investigación de §2 (créditos), §4.c (un
+máster, dos cortes), §5 (cumplimiento) y §6 (privacidad) sigue vigente palabra por palabra, salvo el
+ajuste de conteo de caracteres y de reparto de plano que trae este guion (§3.c, §3.e). **Y sobre todo,
+la regla de honestidad de §0 no se negoció ni una línea:** ninguna frase de este guion dice que rangyuu
+frena hoy.
 
-Es la referencia contra la que se juzga cada plano y cada línea. Si algo de lo que sigue lo
-contradice, manda el brief.
+### 3.a El brief, en sus propios términos
 
-1. **Personaje antes que producto.** Se abre sobre un detalle real y específico de la protagonista o
-   el protagonista —algo que repara, cocina, colecciona o hace cada día—. El producto todavía no se
-   explica. El narrador observa con afecto y humor seco.
-2. **Lenguaje visual:** entorno real, luz natural de día, interiores cálidos y verosímiles, detalles
-   táctiles, manos sobre objetos familiares, primeros planos de rituales pequeños, algún plano
-   general del entorno. Cámara sobria: empujes lentos, handheld suave, encuadres fijos compuestos,
-   travelling solo si algo lo motiva. Profundidad de campo selectiva. **Documental íntimo con
-   precisión de pieza premium.** Se conservan las imperfecciones; se descartan las reacciones que se
-   noten actuadas.
-3. **El producto entra como respuesta natural** a algo ya establecido en la vida de la persona. Sin
-   cambio de marcha hacia "modo comercial". La propuesta de valor, en lenguaje extremadamente
-   simple. Nada de jerga que no venga pegada a algo que se vea.
-4. **Demostración:** varias situaciones cortas de vida real, no una demo larga de funcionalidades.
-   Cada latido: situación humana → el producto responde → reacción humana pequeña → siguiente
-   situación. Interfaz mínima. **"No convertir la mitad del film en una grabación de pantalla."**
-5. **Explicación técnica:** contrastar visualmente la simplicidad que vive la persona contra la
-   complejidad que ocurre debajo, invisible. Ritmo algo más rápido, gráficos sobrios. Mensaje:
-   *algo sofisticado está pasando debajo, y la persona nunca necesita pensar en ello.*
-6. **Familia y vínculo:** abrir del individuo a quienes lo quieren. Conexión, tranquilidad, libertad,
-   independencia, presencia — sin intrusión. **Dignidad, no dependencia. La persona nunca es
-   indefensa y nunca pierde la agencia. La tecnología sostiene la independencia, no la reemplaza.**
-7. **Montaje:** empezar lo bastante lento como para observar a la persona, y acelerar de a poco.
-   Mezclar planos observacionales de 2–4 s, momentos conversados, interacciones con el producto,
-   macros, planos de entorno y momentos de familia. Dejar respirar los latidos emocionales. **No
-   cortar cada golpe con la música.** Usar el silencio y el tono de sala. Las transiciones salen de
-   una acción, una mirada, un sonido o un significado — nunca de un efecto.
-8. **Diseño de sonido:** tono de sala, tela, pasos, pequeños sonidos mecánicos, objetos manipulados,
-   puertas, cocina, ambiente de calle, respiración, sonidos sutiles de dispositivo. Los sonidos del
-   producto: suaves, reconocibles, elegantes — **nunca sci-fi agresivo**.
-9. **Música:** contenida y curiosa al principio —piano mínimo, cuerdas sutiles, texturas orgánicas,
-   electrónica sobria—, la calidez entra de a poco, el crecimiento es leve. **Nunca épica. Sin
-   percusión de tráiler. Sin crescendo motivacional.**
-10. **Acto final:** soltar las funcionalidades, volver del todo a la historia humana, dejar que la
-    tecnología se retire. Cerrar sobre lo que el producto protege o habilita —tiempo, vínculo,
-    independencia, confianza, familia, curiosidad, dignidad, libertad—. Una sola frase emocional
-    corta. Después el nombre y el logo. **Sin lista de funcionalidades al cierre.**
-11. **Principio rector:** quien mire debe terminar pensando *"me importa esta persona"*, luego
-    *"entiendo por qué este producto debería existir"*, y recién después *"quiero saber más"*.
+Estructura obligatoria, tomada literalmente del brief entregado y usada como el orden del guion de
+§3.c: **Apertura → revelación del producto → la pregunta → el principio (regla HOLD) → prueba, no
+afirmaciones → el fallo → por qué no frena → retorno humano → posicionamiento de ElevenLabs → acto
+final.**
 
-**Lo que se evita en toda la pieza:** anuncio de startup convencional, demo de software, comercial
-futurista de IA, visuales de neón, imaginería genérica de IA, robots, hologramas, interpretaciones
-exageradas, clichés de anuncio inspiracional.
+1. **Apertura.** La persona antes que el producto. Un plano sostenido sobre una esquina ocluida.
+   Narración: *"a camera on a mobility vehicle can see what's ahead — it can't see around the corner —
+   but the building already can."*
+2. **Revelación del producto.** Infraestructura, no app. Visualización física restringida: piso,
+   celdas, confianza, ocupación, vencimiento. **Sin hologramas, sin IA brillante flotando.**
+3. **La pregunta.** Se muestra la trayectoria y el razonamiento en pantalla: cobertura, sesión, piso
+   verificado, celdas libres, frescura, contradicciones.
+4. **El principio.** Analogía del freno de emergencia, y luego la regla *HOLD-salvo-que-todo-sostenga*
+   mostrada condición por condición, colapsando a un solo estado.
+5. **Prueba, no afirmaciones.** Solo metraje real: cinta métrica sobre las juntas de la baldosa, 0,9 cm
+   de error sobre 61 cm, 8,16 ms/frame, cinco campos y una caja sin píxeles, corte de red que prueba
+   inferencia local, API/WHEP real de Ring.
+6. **El fallo.** 140 frenadas falsas en 58 segundos — **la mejor escena del film, no un descargo**:
+   *"we took the brake away, and left it a warning"*, dicho como decisión de ingeniería, no como
+   disculpa.
+7. **Por qué no frena.** Distancia → obstrucción → autoridad, y la calibración que falta.
+8. **Retorno humano.** Las interfaces desaparecen; la persona sigue por el espacio.
+9. **Posicionamiento de ElevenLabs.** Solo producción, nunca el runtime: *"ElevenLabs tells the story.
+   It never makes the decision."*
+10. **Acto final.** *"The app is the showcase. The product is the refusal underneath it."* /
+    *"When the evidence is there, move. When it isn't — HOLD."*
 
-### 3.b Tres tensiones reales entre el brief y este proyecto
+**Lo que el brief prohíbe explícitamente**, y que este guion no contiene en ninguna toma: demo de
+startup, montaje de hackathon, comercial de autos autónomos, film futurista de IA, hologramas, redes
+neuronales brillantes, partículas de IA flotando, beeps de ciencia ficción, retratar a la persona como
+indefensa, retratar la tecnología como heroica, lenguaje *"AI-powered" / "revolutionary" / "smart
+mobility"*, música épica, percusión de tráiler, crescendo motivacional, montaje frenético, transiciones
+con glitch, cortar cada golpe a la música.
 
-El brief no se apoya limpiamente sobre el plan anterior. Hay tres choques genuinos. Se nombran y se
-resuelven con una recomendación, no con un menú.
+### 3.b `HOLD` como motivo estructural — tres apariciones, tres tratamientos distintos
 
-#### Tensión 1 — la estructura de demostración contra la regla de honestidad
+**Nota del usuario, ejecutada aquí, no solo reconocida:** *"140 false stops in 58 seconds" no es un
+descargo — es la mejor escena del film, la prueba del carácter del producto.* Y **`HOLD` es el motivo
+recurrente del film** — visual, verbal y sonoro —, leído primero como una respuesta de sistema y
+entendido al final como la filosofía entera del producto. Se especifican **cuatro** apariciones (el
+brief pedía al menos tres) para que el arco sea inequívoco en el montaje.
 
-**El choque.** El brief pide latidos de vida real donde *el producto responde* y *una persona
-reacciona*: un momento de asistencia, un momento de independencia. **rangyuu no puede hacer eso
-hoy.** rangyuu avisa; no actúa. El detector a bordo acierta **13-20 %** cuando avisa; cableado a una
-frenada completa produjo **140 frenadas falsas en 58 segundos** (22 % de acierto) y por eso se
-degradó a propósito de `PARA` a `CUIDADO`. Lección 5: **"frenar hay que ganárselo"**. Montar una
-escena donde rangyuu asiste a alguien fabricaría una capacidad — exactamente lo que §0 prohíbe, y lo
-que peor envejecería si un jurado probara el repositorio.
+| # | Momento del guion | Qué dispara `HOLD` | Tratamiento visual | Tratamiento de narración | Tratamiento de sonido | Cómo difiere de la anterior |
+|---|---|---|---|---|---|---|
+| 1 | `[0:22]` — apertura, sobre la esquina ocluida | Nadie corta nada todavía; es la condición por defecto del sistema, mostrada antes de explicarla | Un HUD mínimo en la esquina del encuadre físico (dentro de la pantalla del teléfono, no a pantalla completa) muestra `HOLD` en gris, sin urgencia | El narrador **no dice la palabra todavía** — la cámara la deja leerse sola, sin comentario | Silencio casi total; un solo tick de UI apenas audible | **Primera lectura: clínica y silenciosa.** Es un estado del sistema, no un evento dramático. |
+| 2 | `[1:04]` — el principio, la regla mostrada condición por condición | Se listan en pantalla, una por una, cobertura / sesión / piso verificado / celdas libres / frescura / sin contradicción, y colapsan a un único estado cuando cualquiera falla | Cada condición aparece y se apaga como un interruptor; la última que se apaga deja `HOLD` solo, en el centro, más grande | El narrador dice la regla completa: *"it holds unless everything holds. Absence of evidence is a no."* | Un tono de UI seco y sin reverberación marca cada condición que se apaga; silencio total antes de la palabra `HOLD` | **Segunda lectura: mecánica y explicada.** Deja de ser un misterio visual y se vuelve una regla que se entiende. |
+| 3 | `[1:34]` — se corta el cable de red en vivo | Pérdida de señal real, filmada, no recreada en post | Pantalla completa por primera y única vez en el film; caída de señal real, luego `HOLD` sostenido varios segundos sin cortar | Silencio de narración total durante el corte; el narrador vuelve recién después: *"It says: hold. Not a warning. Not a question. A refusal."* | El sonido de corte de red real (o el generado en §3.g si el corte de cable no suena) y después silencio de sala, sin música | **Tercera lectura: el clímax dramático.** Es la prueba física de que la negativa es real, no una animación. |
+| 4 | `[2:38]` — última línea del guion, acto final | Ninguna condición nueva: es la síntesis de las tres anteriores | Plano quieto, sin gráficos, sin pantalla; corte a negro con el nombre | El narrador cierra con la línea del brief casi textual: *"When the evidence is there, move. When it isn't — hold."* | Música casi apagada (Cue C, §3.f), sin percusión, terminando en un sostenido que se corta | **Cuarta lectura: la respuesta se convierte en filosofía.** La misma palabra que abrió como estado de sistema cierra como principio de producto. |
 
-**Recomendación.** Se conserva **toda** la estructura humana del brief y se cambia una sola cosa: lo
-que responde en el segundo acto **no es rangyuu actuando sobre el vehículo, es rangyuu contestando
-en pantalla, filmado en vivo**. El latido del brief se instancia así:
-
-| Brief | Instancia honesta en rangyuu |
-|---|---|
-| Situación humana | La esquina de la calle que no se ve. La caja que alguien dejó en el umbral. |
-| El producto responde | La pantalla dice `AVANZA`, `PARA`, `SIN CERTEZA` — respuesta real del núcleo, capturada, no recreada. |
-| Reacción humana pequeña | La persona levanta la vista, rodea la caja, sigue. **Decide ella.** |
-| Momento de asistencia | **Sustituido por un momento de negativa:** se corta el cable y el sistema dice `HOLD`. Es el plano más fuerte que el proyecto tiene y es literalmente cierto. |
-| Momento de independencia | **Se conserva intacto**, y es el que cierra: la persona sale, y nadie la vigila. |
-
-**Y la película lo dice en voz alta.** El guion de §3.c incluye, a los `[2:12]`, la confesión: *no
-frena todavía; lo intentamos; se detuvo 140 veces en 58 segundos sobre un piso vacío; le quitamos el
-freno*. Eso no es un descargo legal al final en letra chica: **es el giro emocional del tercer
-acto**, y funciona dramáticamente porque el brief pide dignidad. Un producto que admite lo que no
-sabe hacer es coherente con un protagonista que conserva su agencia.
-
-**Quién es el protagonista.** Una persona real y específica que se mueve con un vehículo de
-movilidad motorizado, filmada en su casa y en su calle, con su consentimiento (§6). **Fecha de
-decisión: día 3 de los 9** (2026-09-19). Si para entonces no hay persona disponible y consentida, el
-plan B **no es recrearla con un actor**: el film pasa a tener como protagonista a quien construye —
-misma estructura, mismo arco, misma frase final—, y la primera línea cambia de *"esto es [NOMBRE]"*
-a *"esto se está construyendo para alguien"*. Recrear con actor un usuario de vehículo de movilidad
-es precisamente la escena que el brief llama *"reacción actuada"* y que §0 llama *afirmación sin
-evidencia*.
-
-#### Tensión 2 — "que no sea una grabación de pantalla" contra la recomendación de cumplimiento
-
-**El choque.** §5 recomienda **cero video generado** porque los modelos de imagen y video que
-ElevenLabs expone son de terceros (Sora 2, Veo 3.1, FLUX, OmniHuman) y la regla del challenge dice
-que no haya otro generador de IA en la cadena. La consecuencia de esa recomendación, en el plan
-anterior, era que **todo** el metraje fuera captura de pantalla. El brief ahora exige cinematografía
-de acción real, de una persona real, en una casa real.
-
-**Esto no es un problema: es la mejor noticia del documento.** Filmar es *estrictamente más
-cumplidor* que generar —una grabación con cámara no es un elemento generado bajo ninguna lectura de
-la regla, ni la laxa ni la estricta— y además es gratis en créditos. Lo que cuesta es **tiempo**, y
-quedan 9 días.
-
-**Lo que es realista filmar en 9 días** —con un iPhone en 4K, luz natural, sin equipo, sin crew—:
-
-| Día | Qué pasa |
-|---|---|
-| 1 (09/16) | Bloquear este documento. Pedir consentimiento (§6). Elegir el ritual de apertura: tiene que ser **real**, no inventado para la cámara. |
-| 2 (09/17) | Recorrido de localización a la hora exacta del día en que se va a filmar. Lista de planos cerrada contra §3.e. |
-| 3 (09/18) | **Fecha límite de casting** (Tensión 1). Rodaje bloque A: casa, rituales, manos, retratos de entorno. Medio día de luz. |
-| 4 (09/19) | Rodaje bloque B: umbral, calle, esquina, la caja, el momento de familia. El resto de la luz. |
-| 5 (09/20) | **Captura de pantalla**, que es un día aparte y no se mezcla con el rodaje: sesión WHEP viva, mapa llenándose, el corte de red y el `HOLD`, la pantalla de calibración. Grabación de tono de sala. |
-| 6 (09/21) | Generación en ElevenLabs: cinco segmentos de narración, dos cues de música, seis efectos. |
-| 7 (09/22) | Montaje. Primer corte completo. |
-| 8 (09/23) | Mezcla, subtítulos con Scribe, corrección de color. |
-| 9 (09/24) | Margen. **Enviar el 09/24, no el 09/25 a las 17:50.** |
-
-**Cuánta captura de pantalla sobrevive sin violar el brief.** El brief prohíbe que la pantalla se
-coma la mitad del film, no que aparezca. El reparto que cumple ambas cosas: **de 162 s, no más de
-40 s de pantalla (25 %), y ningún tramo continuo de pantalla mayor a 8 s.** Toda pantalla aparece
-**dentro del encuadre físico** siempre que se pueda —el teléfono en la mano, el monitor sobre la
-mesa del taller, con la habitación alrededor y fuera de foco— y solo se va a pantalla completa en
-**dos** momentos, ambos ganados: el `HOLD` al cortar el cable, y la cinta métrica sobre la baldosa.
-Eso satisface la frase del brief: la gente interactuando con el producto, no interfaz flotando.
-
-#### Tensión 3 — los números medidos contra "evitar la jerga"
-
-**El choque.** El guion anterior era milisegundos y homografía. El brief quiere lenguaje simple
-pegado a algo que se vea. Pero los números medidos **son la credibilidad del proyecto**: sin ellos
-esto es otro anuncio de startup, que es justo lo que el brief prohíbe. No se descartan: se traducen.
-
-**Los cuatro que sobreviven, y contra qué se muestra cada uno:**
-
-| Número medido | Cómo suena en el film | Contra qué se ve |
-|---|---|---|
-| 0,9 cm de error sobre 61 cm | *"menos de un centímetro de error en dos pies de baldosa"* | **Una cinta métrica de verdad, en una mano, sobre una junta de baldosa.** El número más fácil de entender que tiene el repositorio. |
-| ~122 fps de capacidad contra 29 fps reales | *"la cámara habla veintinueve veces por segundo; rangyuu puede contestar ciento veintidós"* | La imagen en vivo de la cámara y la respuesta apareciendo antes de que el plano cambie. Se dice "hablar" y "contestar" porque es una conversación, no un presupuesto de latencia. |
-| `Observation` = 5 campos y una caja | *"cinco campos y una caja. Ni un píxel."* | El texto literal cruzando el cable, en una terminal, junto al video que **no** cruza. |
-| 140 frenadas falsas en 58 s (22 %) | *"acertaba una de cada cinco — y frenó ciento cuarenta veces en cincuenta y ocho segundos, sobre un piso vacío"* | Nada. Cara de la persona y una pantalla quieta. Es el latido de honestidad y no necesita gráfico. |
-
-**Los que se caen, y por qué.** La palabra *homografía*: es jerga y su consecuencia —la cinta y la
-baldosa— ya está en pantalla. *WHEP*, *1280x720*, *400 frames*: nomenclatura de infraestructura,
-invisible para quien mira. El desglose de 7,48 + 0,58 + 0,10 ms: tres números donde alcanza uno, y
-el que alcanza es la comparación 29 contra 122. *"Envenenando el módulo `socket`"*: se convierte en
-*"cortamos la red a propósito, para probar que no salía nada"*, que es lo mismo dicho en humano.
-*1,6 %*: redundante con los 0,9 cm y menos visible.
-
-**Una precisión que importa.** El film usa **22 % / una de cada cinco**, no el rango 13-20 % del
-detector ONNX, porque el 22 % es el número atado al experimento que se cuenta —las 140 frenadas—.
-Son dos mediciones distintas de dos implementaciones distintas ([app.md](app.md) §2.2,
-[store-readiness.md](store-readiness.md) §2) y **no se promedian ni se mezclan**. El rango 13-20 %
-sigue vivo en la documentación; simplemente no es el número de esta escena.
+**Por qué cuatro y no una.** Repetir `HOLD` sin variar el tratamiento sería el "cortar cada golpe a la
+música" que el brief prohíbe en otro plano: aquí el riesgo es prohibir la repetición monótona de una
+palabra. Cada aparición cambia al menos dos de tres ejes —visual, verbal, sonoro— respecto de la
+anterior, y la cuarta no introduce evidencia nueva a propósito: es pura síntesis.
 
 ### 3.c Narration script — the master text for Text to Speech
 
 **English on purpose**: it is what will be heard, and the hackathon and its judges are in English.
-The bracketed timecodes are edit notes; the `[square-bracket]` words inside the prose are **Eleven
-v3 audio tags** and are sent to the API as written. `[NAME]` and `[RITUAL]` are placeholders the
-shoot fills in — ⏳ **pendiente**, they depend on who is filmed (§3.b, Tensión 1).
+Bracketed timecodes are edit notes; `[square-bracket]` words inside the prose are **Eleven v3 audio
+tags**, sent to the API as written. `[NAME]` is a placeholder the shoot fills in — ⏳ **pendiente**,
+depends on who is filmed (§3.d, casting note carried over unchanged from the prior draft).
 
-~2.300 characters of speech, ~2.600 with tags, ~2:42 at a documentary pace. **Every number in it is
-a number this repository actually measured.**
+Target: **~2:35**, comfortably inside 2:30–2:45 and under video.md's three-minute ceiling.
+~2.250 characters of speech, ~2.550 with tags — slightly **shorter** than the previous draft (~2.300 /
+~2.600), because this brief's beats are tighter and the technical block compresses to one paragraph
+instead of two. **Every number in it is a number this repository actually measured** — see the table
+in §0.
 
 > **[0:00]** `[curious]`
-> This is [NAME].
-> [NAME] believes nothing is really broken until you've opened it. `[laughs softly]` And
-> technically… he's right. Most of the time.
+> A camera on a mobility vehicle can see what's ahead.
+> `[pause]` It can't see around the corner.
 >
-> **[0:14]**
-> Thursday mornings, the kitchen table stops being a table.
-> Small screws. A lamp that's been dying since March. `[pause]` A coffee that goes cold, every
-> single week, in exactly the same spot.
+> **[0:10]**
+> [NAME] knows that corner by heart. The vehicle doesn't — not yet.
 >
-> **[0:32]**
-> He knows this house by heart.
-> `[pause]` The street outside, less so.
+> **[0:16]**
+> But the building already can. A camera above the door. One on the porch across the street. They've
+> watched that sidewalk for years, and told nobody anything useful. `[pause]` Until now.
 >
-> **[0:40]**
-> [NAME] moves on a machine with a joystick and a camera on the front. The camera sees what's in
-> front of it. `[pause]` It does not see around the corner.
+> **[0:30]** `[serious]`
+> This isn't an app. It's a floor.
+> A grid of cells — free, occupied, uncertain — each one timestamped, each one expiring. No pixels
+> leave this room. Five fields and a box. `[pause]` That's the whole shape of what crosses the wire.
 >
-> **[0:54]**
-> But the corner is already being watched.
-> There's a camera above his door. One on the porch across the street. They've been looking at that
-> sidewalk for years — and telling nobody anything useful.
+> **[0:46]**
+> rangyuu asks it one question: is this trajectory traversable?
+> `[pause]` And it shows its work. Coverage. Session. A floor that was actually measured. Free cells.
+> How fresh the evidence is. Whether anything contradicts anything else.
 >
-> **[1:08]**
-> rangyuu asks them.
-> `[pause]` What comes back isn't video. It's a map of what's free.
+> **[1:04]** `[serious]`
+> Here's the rule, and it doesn't bend: it holds unless everything holds.
+> `[pause]` Coverage — session — a verified floor — free cells — fresh evidence — no contradiction.
+> Any one goes dark, and the answer collapses to the same word.
+> `[pause]` Hold. Absence of evidence is a no.
 >
-> **[1:18]**
-> Hallway. Free.
-> Doorway — somebody's box, left where a box shouldn't be. Not free.
-> `[pause]`
-> And then the part nobody puts in a product film.
+> **[1:22]**
+> Think of the emergency brake in a car. It doesn't ask permission. `[pause]` This is that instinct,
+> built for a building instead of a bumper.
 >
-> **[1:32]**
-> Cut the cable, and rangyuu doesn't guess. It says: hold.
-> Not a warning. Not a question. A refusal.
-> It holds unless everything holds. `[pause]` Absence of evidence is a no.
+> **[1:30]**
+> We don't ask you to believe it. We measured it.
+> A tape, on a tile joint — less than a centimetre of error across two feet.
+> Eight milliseconds to decode, think, and decide, frame after frame.
+> `[pause]` We cut the network ourselves, on purpose. Nothing left this room. `[laughs softly]`
+> We checked.
 >
-> **[1:48]** `[serious]`
-> Underneath that one word there's a lot of arithmetic.
-> The floor was measured with a tape — less than a centimetre of error across two feet of tile.
-> The camera speaks twenty-nine times a second. rangyuu can answer a hundred and twenty-two.
-> And what crosses the wire is five fields and a box. No pixels. We cut the network ourselves, on
-> purpose, to prove nothing was leaving.
+> **[1:34]**
+> `[pause, five seconds]`
 >
-> **[2:06]**
-> [NAME] never sees any of that. `[pause]` That's the whole point.
->
-> **[2:12]**
-> Here's what it doesn't do yet. It doesn't brake.
-> That's where this is going — the way a car brakes for you, without asking.
-> But we tried it early. Wired to a full stop, it was right about one time in five — and it stopped
-> a hundred and forty times in fifty-eight seconds, on an empty floor.
-> `[pause]` So we took the brake away from it.
+> **[1:39]** `[serious]`
+> Here's what it doesn't do. It doesn't brake.
+> We tried. Wired straight to a stop, it was right about one time in five — and it stopped a hundred
+> and forty times in fifty-eight seconds, on an empty floor.
+> `[pause]` Distance isn't obstruction. Obstruction isn't authority. We don't have the calibration to
+> tell them apart yet. `[pause]` So we took the brake away, and left it a warning.
 > Braking has to be earned.
 >
-> **[2:32]** `[warmly]`
-> His daughter still calls on Sundays.
-> Not to check. `[pause]` She's never had to check.
+> **[2:02]** `[warmly]`
+> [NAME] never sees any of this. The floor, the cells, the arithmetic underneath — it disappears, and
+> he just… goes.
 >
-> **[2:40]**
-> Nobody should have to give up a street to keep a life.
-> `[pause]`
-> rangyuu.
+> **[2:12]**
+> His daughter still calls on Sundays. `[pause]` Not to check. She's never had to.
+>
+> **[2:20]**
+> ElevenLabs told you this story. `[pause]` It never made a single decision in it. It never will.
+>
+> **[2:28]** `[warmly]`
+> The app is the showcase. `[pause]` The product is the refusal underneath it.
+>
+> **[2:35]**
+> When the evidence is there, move.
+> `[pause]` When it isn't —
+> hold.
 
-**Nota de alcance, y es deliberada.** La línea de apertura del guion anterior decía *"A camera on a
-wheelchair"* y estrechaba el producto a sillas de ruedas, contradiciendo la corrección ya hecha:
-rangyuu sirve a **todo vehículo de movilidad** —rover, robot, scooter, silla motorizada— y
-[plan.md](plan.md) B4 lo registra como **capa espacial reutilizable para dispositivos autónomos y
-asistidos**. El guion nuevo resuelve la tensión entre eso y la especificidad que exige el brief
-**sin nombrar la categoría**: `[0:40]` dice *"una máquina con un joystick y una cámara adelante"*,
-que es verdad de la máquina concreta de una persona concreta y no es una etiqueta de producto. La
-generalización no se hace en la narración —donde sonaría a folleto— sino **en la descripción del
-post y en la página de la submission**, que es donde corresponde.
+**Nota de alcance.** Como en el borrador anterior, `[0:00]` evita nombrar la categoría del vehículo
+—"silla de ruedas", "scooter"— y en cambio dice *"a mobility vehicle"*, que es genérico y verdadero
+para el rango completo que [plan.md](plan.md) B4 registra: rover, robot, scooter, silla motorizada. La
+especificidad la aporta `[NAME]` y el metraje, no una etiqueta de producto en la narración.
 
-### 3.d Cómo se distila la dirección de voz — tags, elección de voz y notas de dirección
+**Qué se dejó afuera del guion anterior y por qué.** El ritual doméstico del jueves ([RITUAL], la
+lámpara, el café frío) desaparece: el segundo brief no lo pide y competía con el tiempo que ahora exige
+"la pregunta" (§3.a punto 3) y "el principio" (punto 4), que en la versión anterior estaban comprimidos
+en una sola frase. Se conserva el llamado del domingo de la hija —es el latido de familia que el brief
+sigue pidiendo en "retorno humano"— pero se acorta de dos frases a dos líneas.
 
-La dirección de interpretación entregada son doce párrafos. **No se pega antes del guion**: un
-bloque de prosa como prompt de sistema produce una lectura promediada. Se reparte en tres cubetas, y
-hay que ser explícito sobre cuál es cuál.
+### 3.d Voz — elección, audio tags y notas de dirección
 
-**Lo que sobrevive como ELECCIÓN DE VOZ** (se decide una vez, en la biblioteca, antes de generar):
+Mismo esquema de tres cubetas que el borrador anterior; se reconstruye para el arco emocional de este
+guion, que ya no es *curiosidad → calidez → calma* sino **documental-preciso → temor contenido durante
+el fallo → resolución contenida al final.**
 
-| Del brief | Por qué es voz y no tag |
-|---|---|
-| Hombre, entre 35 y 45 años | Es timbre y edad. Ningún tag lo cambia. |
-| Inglés americano neutro, natural | Propiedad de la voz. |
-| Tono medio-bajo, timbre suave y tranquilizador | Propiedad de la voz. |
-| Inteligente, carismático en voz baja, autoridad amable | Se elige; no se pide. |
-| Documental premium, no locutor comercial | **La elección más importante de todo el documento.** Descartar cualquier voz etiquetada *narration/commercial/promo*. |
+**ELECCIÓN DE VOZ** (se decide una vez, sin cambios respecto del borrador anterior — el brief no tocó
+esto): hombre, 35–45, inglés americano neutro, tono medio-bajo, autoridad amable, **documental premium,
+nunca locutor comercial**. ⏳ Pendiente el `voice_id` concreto; se prueba contra el párrafo `[1:39]`
+—el del fallo— porque es el que peor tolera sonar a anuncio.
 
-⏳ **Pendiente:** el `voice_id` concreto. Hay que escuchar candidatas con el párrafo `[2:12]` —el de
-las 140 frenadas— como texto de prueba, porque es el que más fácil se arruina sonando a anuncio.
+**AUDIO TAGS inline** (se cobran como caracteres, §2.b):
 
-**Lo que sobrevive como AUDIO TAGS inline** (van en el texto, se cobran como caracteres, §2.b):
-
-| Punto del guion | Tag | Qué pedazo de la dirección instancia |
+| Punto | Tag | Función en el nuevo arco |
 |---|---|---|
-| `[0:00]` | `[curious]` | *"empezar con curiosidad sutil"* |
-| `[0:03]` | `[laughs softly]` | *"un dejo de humor seco y contenido"* — **no** `[laughs]`, que sale a carcajada |
-| a lo largo | `[pause]` | *"micro-pausas deliberadas entre ideas"*, colocadas **solo** donde el sentido cambia |
-| `[1:48]` | `[serious]` | *"más precisión y ritmo en lo técnico"* |
-| `[2:32]` | `[warmly]` | *"desacelerar en lo emocional: familia, independencia, vínculo"* |
+| `[0:00]` | `[curious]` | Abre en curiosidad documental, igual que antes |
+| `[0:30]`, `[1:04]`, `[1:39]` | `[serious]` | Marca las tres zonas de mayor precisión técnica: la revelación del producto, el principio, y el fallo — **tres usos, no uno**, porque el brief pide que "el fallo" suene a decisión de ingeniería y eso exige el mismo registro que la explicación técnica, no un registro distinto |
+| `[1:30]` | `[laughs softly]` | Único momento de alivio antes del silencio de `[1:34]` — humor seco, nunca carcajada |
+| `[2:02]`, `[2:28]` | `[warmly]` | El retorno humano y el acto final se desaceleran, igual que el borrador anterior marcaba lo emocional |
+| a lo largo | `[pause]` | Micro-pausas donde cambia el sentido; una sola pausa larga marcada explícitamente, `[pause, five seconds]` en `[1:34]`, que es el silencio antes de "the failure" — la pausa más importante del guion, y la única con duración explícita |
 
-Son **cinco tags y siete pausas**, no veinte. El brief pide contención; una narración salpicada de
-tags suena manipulada, que es el defecto exacto que el brief prohíbe.
+Siete tags de contenido más ocho pausas — algo más denso que el borrador anterior (cinco tags, siete
+pausas), porque este guion tiene **tres** zonas técnicas distintas (revelación, principio, fallo) en
+vez de una sola.
 
-⚠️ **Verdad incómoda sobre los tags:** Eleven v3 los interpreta, no los ejecuta. Un tag que la voz
-elegida no entienda **se ignora o, peor, se lee en voz alta**. Por eso la primera generación de cada
-segmento se escucha entera antes de gastar las otras dos pasadas. ⏳ **Pendiente:** confirmar el
-comportamiento de cada uno de estos cinco tags con la voz elegida. Nada de esto se probó — **no hay
-MCP de ElevenLabs conectado en la sesión que escribió este documento** (§0 y §5).
+**NOTAS DE DIRECCIÓN que ni voz ni tag expresan:**
 
-**Lo que NO se puede expresar y es NOTA DE DIRECCIÓN para quien opera** (ni voz ni tag: se consigue
-segmentando, ajustando parámetros y editando):
-
-1. **El arco de toda la pieza** —curiosidad → confianza creciente en lo técnico → calma final—. No
-   existe un tag de "arco". Se consigue **renderizando en cinco segmentos** con ajustes distintos:
-   S1 `[0:00–0:39]`, S2 `[0:40–1:17]`, S3 `[1:18–1:47]`, S4 `[1:48–2:11]`, S5 `[2:12–2:45]`. Subir
-   *stability* en S1 y S5 (contención), bajarla un punto en S4 (precisión con algo más de energía).
-   Una mala toma cuesta un segmento, no el guion.
-2. **"Una leve sonrisa en la voz"**. No es un tag. Es una propiedad de la toma: se elige entre las
-   tres pasadas, escuchando.
-3. **"Nunca suene a locutor, presentador corporativo o tráiler"**. Es un criterio de **descarte**,
-   no una instrucción. Se aplica al elegir voz y al elegir toma.
-4. **"No vender. Contar, y dejar que el sentido aterrice"**. Se consigue **en el montaje**, no en la
-   generación: dejando aire después de `[1:32]`, de `[2:12]` y de `[2:40]`. El brief ya lo dice —
-   *no cortar cada golpe con la música*— y eso es una decisión de editor.
-5. **La variación natural de ritmo**. Salió del guion, no de la interpretación: frases cortas,
-   fragmentos sin verbo, y un párrafo largo —el técnico— que por contraste suena más rápido sin que
-   nadie acelere.
+1. **El silencio de `[1:34]` es el gesto dramático central del guion**, no un espacio en blanco entre
+   frases. Se renderiza como un segmento de audio separado —silencio real, no un corte de edición— para
+   que la ausencia de narración quede intencional y no accidental si se re-edita el master.
+2. **El registro de `[1:39]` no es una disculpa.** Es la instrucción de dirección más importante del
+   documento: la misma cadencia firme del principio (`[1:04]`), nunca una caída de energía ni un tono
+   de descargo legal. Se elige la toma que suena más a "esto es lo que decidimos" y se descarta
+   cualquier toma que suene a "lamentamos informar".
+3. **Arco por segmentos**, igual que antes pero renumerado sobre este guion: S1 `[0:00–0:29]`
+   (curiosidad), S2 `[0:30–1:21]` (revelación + pregunta + principio, la zona más densa), S3
+   `[1:22–1:38]` (prueba, hasta el silencio), S4 `[1:39–2:01]` (el fallo), S5 `[2:02–2:35]` (retorno,
+   ElevenLabs, cierre). Cinco segmentos, como antes; los límites se movieron porque los latidos se
+   movieron.
+4. **`[2:20]`, la línea de ElevenLabs, se graba y se escucha aislada del resto.** Es la línea de
+   cumplimiento más sensible del documento (§5): tiene que sonar a hecho, no a nota legal susurrada.
 
 ### 3.e Beat sheet y lista de planos
 
-162 s. Origen de cada plano marcado: **LA** = acción real filmada, **SC** = captura de pantalla,
-**EL** = generado en ElevenLabs. **No hay una sola fila EL en la columna de imagen** — y ese es
-justamente el argumento de cumplimiento de §5.
+~155 s de guion hablado más aire de montaje, apuntando a **2:35–2:40** final. **LA** = acción real
+filmada, **SC** = captura de pantalla, **EL** = generado en ElevenLabs. **Ninguna fila EL en la columna
+de imagen**, igual que en el borrador anterior — es el argumento de cumplimiento de §5.
 
-| # | t | Dur | Latido | Plano | Origen |
+| # | t | Dur | Latido (§3.a) | Plano | Origen |
 |---|---|---|---|---|---|
-| 1 | 0:00 | 6 s | Personaje, antes que nada | Macro: manos y un destornillador pequeño sobre [RITUAL]. Fijo, poca profundidad de campo. | LA |
-| 2 | 0:06 | 8 s | El chiste seco aterriza | Plano medio de [NAME] en su mesa. Ni mira a cámara. Luz de ventana. | LA |
-| 3 | 0:14 | 10 s | El ritual | Tres planos de 3 s: tornillos, la lámpara, la taza en su marca de siempre. Corta por acción. | LA |
-| 4 | 0:24 | 8 s | El entorno | Plano general del interior. Él pequeño en su casa. Handheld apenas. | LA |
-| 5 | 0:32 | 8 s | Se nombra la calle | Umbral desde adentro: la puerta abierta, la calle fuera de foco. | LA |
-| 6 | 0:40 | 14 s | Aparece la máquina, no la categoría | El joystick bajo su mano, en movimiento. La cámara del vehículo, macro. Luego él saliendo. **Nunca un plano que titule "silla de ruedas".** | LA |
-| 7 | 0:54 | 14 s | La infraestructura que ya mira | Empuje lento hacia la cámara sobre la puerta. La del porche de enfrente. La acera que ambas ven. | LA |
-| 8 | 1:08 | 10 s | **Entra el producto** | El teléfono en su mano, la habitación alrededor. El mapa se llena celda por celda. **Dentro del encuadre físico, no a pantalla completa.** | LA + SC |
-| 9 | 1:18 | 14 s | Demostración, tres situaciones | (a) pasillo, `AVANZA`; (b) la caja en el umbral, `PARA`; (c) él **rodea la caja y sigue** — decide él. 2–4 s cada uno. | LA + SC |
-| 10 | 1:32 | 16 s | **El clímax: la negativa** | Se tira del cable. Corte a **pantalla completa**: `HOLD`. Único tramo largo de SC de la pieza, y está ganado. Volver a su cara. | SC + LA |
-| 11 | 1:48 | 18 s | Lo complejo, debajo | Ritmo más rápido. **Cinta métrica sobre la junta de baldosa** (LA, macro). La imagen viva contestando (SC, 4 s). La terminal con los cinco campos (SC, 4 s). Superposiciones gráficas mínimas o ninguna. | LA + SC |
-| 12 | 2:06 | 6 s | *Él nunca ve nada de eso* | Vuelta a un plano quieto de él haciendo algo cotidiano. La tecnología se retira. | LA |
-| 13 | 2:12 | 20 s | **El giro de honestidad** | Lo más contenido de la pieza. Un plano largo, casi sin cortar. Taller vacío, o su cara, o la máquina quieta. **Sin gráficos. Sin pantalla.** | LA |
-| 14 | 2:32 | 8 s | Familia, sin intrusión | Una llamada de domingo. Ella ríe. **Él no está siendo comprobado.** Corto, de lejos, sin sentimentalismo. | LA |
-| 15 | 2:40 | 6 s | Cierre | Él sale a la calle solo. La cámara se queda. Nombre y logo sobre negro. **Sin lista de funcionalidades.** | LA |
+| 1 | 0:00 | 10 s | Apertura | Plano fijo, cámara del vehículo mirando al frente; la esquina fuera de campo. Handheld apenas. | LA |
+| 2 | 0:10 | 6 s | Apertura, `HOLD` #1 (§3.b) | Encuadre físico del teléfono en su mano: HUD mínimo, `HOLD` en gris, sin urgencia. Habitación alrededor, fuera de foco. | LA + SC |
+| 3 | 0:16 | 14 s | Apertura → transición | Cámaras de terceros: sobre la puerta, en el porche de enfrente. Empujes lentos. | LA |
+| 4 | 0:30 | 16 s | **Revelación del producto** | Visualización física restringida: el mapa de celdas llenándose sobre la mesa del taller (monitor, no pantalla completa), confianza y vencimiento visibles como texto simple. **Sin hologramas, sin partículas.** | SC (dentro de encuadre físico) |
+| 5 | 0:46 | 18 s | **La pregunta** | Terminal simple: coverage / session / floor verified / free cells / freshness / contradiction, apareciendo en el orden en que se nombran. | SC (dentro de encuadre físico) |
+| 6 | 1:04 | 18 s | **El principio — `HOLD` #2** | Cada condición se apaga una por una en pantalla; la última deja `HOLD` solo, centrado, agrandándose. | SC (pantalla completa breve, ≤4 s) |
+| 7 | 1:22 | 8 s | Analogía del freno | Plano de la mano sobre el joystick, corte a un plano genérico de un auto frenando en la calle (metraje propio, no de archivo con marca visible). | LA |
+| 8 | 1:30 | 4 s | Prueba — cinta métrica | **Cinta métrica real, en una mano, sobre una junta de baldosa.** Macro. | LA |
+| 9 | 1:34 | 5 s | **`HOLD` #3 — el clímax** | Se corta el cable. Pantalla completa, caída de señal real, `HOLD` sostenido. Único tramo largo de SC del film. | SC |
+| 10 | 1:39 | 20 s | **El fallo** | Plano largo, casi sin cortar, cara de la persona o la máquina quieta sobre piso vacío. **Sin gráficos. Sin pantalla.** Es la escena, no el descargo. | LA |
+| 11 | 1:59 | 4 s | Por qué no frena | Insert breve: distancia medida, obstrucción no confirmada, autoridad apagada — tres palabras simples en pantalla, sin jerga. | SC |
+| 12 | 2:02 | 10 s | Retorno humano | Él sale a la calle. Nadie lo vigila. Plano general, luz natural. | LA |
+| 13 | 2:12 | 8 s | Familia | Llamada de domingo. Corto, de lejos, sin sentimentalismo. | LA |
+| 14 | 2:20 | 8 s | Posicionamiento ElevenLabs | Plano quieto de la persona o del taller; ningún elemento de interfaz en cámara — la línea se sostiene sola, sin ilustrarse con un logo de ElevenLabs superpuesto a una decisión del sistema. | LA |
+| 15 | 2:28 | 7 s | Acto final — `HOLD` #4 | Plano fijo, corte a negro, nombre y logo. **Sin lista de funcionalidades.** | LA |
 
-**Reparto final:** ~122 s de acción real, ~40 s de pantalla (25 %), 0 s generado. Ningún tramo
-continuo de pantalla supera los 8 s salvo el `HOLD`, que es el punto del film.
+**Reparto final y su cambio respecto del borrador anterior.** Suma de columna SC: planos 2 (parcial),
+4, 5, 6, 9, 11 ≈ **35 s sobre ~148 s de guion visible**, es decir **~24 %** — prácticamente el mismo
+techo del 25 % que fijaba el borrador anterior (40 s sobre 162 s), y por la misma razón: el reparto es
+una decisión de cumplimiento y de ritmo, no del guion. **Lo que sí cambió es la distribución dentro de
+ese 24 %:** el borrador anterior concentraba la pantalla en una demostración de tres situaciones de
+uso; este guion la reparte en tres momentos más cortos y más densos —la revelación del producto, la
+pregunta razonada, y el colapso a `HOLD`— porque el brief pide explícitamente mostrar el razonamiento
+en pantalla como parte de "la pregunta" y "el principio". Ningún tramo continuo de pantalla supera los
+8 s salvo el plano 9 (`HOLD` #3), que sigue siendo, como en el borrador anterior, el único ganado.
 
 ### 3.f Música — prompts para Eleven Music
 
-Tres movimientos, generados por separado. **Nunca épico**: sin percusión de tráiler, sin crescendo
-motivacional. La música entra tarde y sale antes del final.
+Estructura de tres movimientos, ajustada al nuevo arco (documental-preciso → temor contenido →
+resolución contenida), no una copia del borrador anterior. **Silencio explícito antes de `HOLD` (plano
+9) y antes de la línea "rangyuu does not brake today" (`[1:39]`)** — ambos exigidos por el usuario como
+tratamiento sonoro del motivo.
 
-**Cue A — curiosidad, 0:00 a 1:17, objetivo 78 s, instrumental, sin voces:**
+**Cue A — curiosidad documental, 0:00 a 1:03, objetivo ~63 s, instrumental, sin voces:**
 
-> A restrained, curious opening for an intimate documentary. Solo upright piano, played softly and
-> a little sparsely, with the felt and the room audible. A single sustained cello note underneath,
-> barely there. Occasional small organic texture — something wooden, something mechanical, like a
-> clock in another room. Around 68 BPM, but loose, not locked to a grid. No drums at all. Warm and
-> observant, slightly amused, never sentimental. Leave a wide midrange gap for a spoken voice. No
-> vocals. No swells. No build.
+> A restrained, observational documentary opening. Solo upright piano, sparse and dry, room tone
+> audible around it. A single low sustained string note underneath, barely present. No drums. Around
+> 66 BPM, loose, not gridded. Curious and precise, never sentimental. Wide midrange gap for spoken
+> voice throughout. No vocals, no swells.
 
-**Cue B — la calidez entra, 1:18 a 2:11, objetivo 54 s, instrumental, sin voces:**
+**Cue B — precisión técnica con calidez naciente, 1:22 a 1:33, objetivo ~11 s, instrumental, sin
+voces:**
 
-> A gentle continuation for a documentary scene that is becoming more confident. The same solo
-> piano, now joined by a quiet string pad that fades in slowly over twenty seconds. A soft low
-> pulse — a muted heartbeat, not a kick drum — enters at the halfway point and stays underneath. It
-> grows warmer, never louder. Around 72 BPM. No percussion with attack, no cymbals, no risers, no
-> cinematic climax. No vocals. Leave room for speech throughout.
+> A brief, focused continuation. The same piano, slightly more rhythmic and even, like a steady
+> pulse of measurement rather than emotion. No percussion with attack. Quiet and exact. Fades to
+> near-silence by the end of the cue. No vocals.
 
-**Cue C — se retira, 2:12 a 2:45, objetivo 34 s, instrumental, sin voces:**
+*(Nota: este cue es corto a propósito — termina justo antes del silencio de cinco segundos en `[1:34]`,
+que va **sin música**, ver más abajo.)*
 
-> A quiet withdrawal at the end of an intimate film. Everything thins out: the pulse stops
-> completely, the strings fade to a single sustained note, and the piano plays one small figure,
-> twice, then stops. Almost silence for the last eight seconds. Honest and calm rather than
-> uplifting or triumphant. Ends on an unresolved sustain that simply stops. No vocals, no build, no
-> final chord.
+**Cue C — resolución contenida, 2:02 a 2:35, objetivo ~33 s, instrumental, sin voces:**
 
-**Notas de ejecución.** Generar cada cue dos veces y escoger; a 900 créditos por minuto, dos tomas
-de los tres cues son ~4.900 créditos (§2.b). Atenuar 14–18 dB bajo la narración —más que el plan
-anterior, porque el brief pide que se oiga el silencio—. **Y `[2:12]`, el latido de honestidad, va
-sin música o casi:** que la música se retire justo ahí es la decisión de montaje que vale más que
-cualquier prompt.
+> A quiet return at the end of an intimate, precise documentary. The piano returns alone after an
+> absence, plays one small figure, and a single string note joins late and briefly. No pulse, no
+> percussion, no rise, no triumphant chord. Ends on an unresolved sustain that simply stops. Honest
+> and calm, never uplifting. No vocals.
+
+**Silencios explícitos, sin música:** `[1:34]–[1:38]` (el corte de cable y el silencio de cinco
+segundos que precede al fallo) y el instante inmediatamente anterior a *"So we took the brake away"* en
+`[1:39]`. Es la instrucción del usuario aplicada literalmente: silencio específico antes de `HOLD` y
+antes de la confesión de que rangyuu no frena hoy.
+
+**Notas de ejecución.** Dos tomas de cada cue, igual que el borrador anterior: a 900 créditos/min, tres
+cues cortos (63 + 11 + 33 ≈ 107 s ≈ 1,8 min) generan **~3.200 créditos** con dos tomas — **menos** que
+el estimado anterior de ~4.900, porque este guion tiene más silencio, no más música. Ver §2.b para el
+ajuste del total.
 
 ### 3.g Efectos de sonido — prompts para Sound Effects (200 créditos cada uno)
 
-**El sonido del brief sale mayormente del rodaje, no de ElevenLabs.** Tono de sala, tela, pasos,
-puerta, cocina, calle, respiración: eso se graba en la locación y es mejor que cualquier generación.
-Hay que grabar **60 s de tono de sala limpio en cada espacio**, sin excepción; es el error que
-siempre se paga en montaje.
+**El sonido sale mayormente del rodaje**, igual que en el borrador anterior: tono de sala, pasos,
+puerta, calle, respiración. Se generan **cinco** efectos —uno menos que antes, porque "celda del mapa
+asentándose" y "confirmación de UI" se fusionan en uno solo dado que la revelación del producto (plano
+4) ahora es la escena que más los necesita juntos—:
 
-Se generan **seis** efectos, que son los que la locación no puede dar:
+1. **Confirmación de UI / celda asentándose** — `A single short soft synthetic interface confirmation tone with a subtle granular tick layered underneath, like a data cell locking into a grid. Warm, low, clean digital decay under 400 milliseconds, no reverb tail, no alarm quality.`
+2. **Negativa de UI (`HOLD` aparece)** — `A single short muted synthetic interface tone signalling refusal. Low, dry, slightly detuned downward, no harshness, no science-fiction character, under 500 milliseconds.` — usado en las apariciones 1 y 2 de `HOLD` (§3.b), nunca en la 3, que usa el corte de red real.
+3. **Corte de red** — `The sound of a live signal dropping out: a brief burst of digital noise collapsing into silence, with a faint low-frequency thump underneath. Under one second, no musical pitch.` — usado en `HOLD` #3, el clímax.
+4. **Rodadura** — `Continuous close-mic recording of small rubber wheels rolling steadily over smooth indoor tile, quiet and even, no voices, no room echo, ten seconds, loopable.`
+5. **Tono de sala de respaldo** — `Quiet interior room tone of a small domestic space in the morning. Faint distant hum, no voices, no footsteps, no music, thirty seconds, seamless loop.`
 
-1. **Confirmación de UI** — `A single short soft synthetic interface confirmation tone, warm and low, one note, clean digital decay under 400 milliseconds, no reverb tail.`
-2. **Negativa de UI** — `A single short muted synthetic interface tone signalling refusal. Low, dry, slightly detuned downward, no harshness, no alarm quality, no science-fiction character, under 500 milliseconds.`
-3. **Celda del mapa asentándose** — `A very short granular digital tick, like a single data cell locking into place on a grid. Dry, tiny, almost subliminal, under 150 milliseconds.`
-4. **Corte de red** — `The sound of a live signal dropping out: a brief burst of digital noise collapsing into silence, with a faint low-frequency thump underneath. Under one second, no musical pitch.`
-5. **Rodadura** — `Continuous close-mic recording of small rubber wheels rolling steadily over smooth indoor tile, quiet and even, no voices, no room echo, ten seconds, loopable.`
-6. **Tono de sala de respaldo** — `Quiet interior room tone of a small domestic kitchen in the morning. Faint refrigerator hum, very distant traffic, no voices, no footsteps, no music, thirty seconds, seamless loop.`
+**La regla que gobierna los cinco, sin cambios:** *suaves, reconocibles, elegantes — nunca sci-fi
+agresivo*. No se clona el chime real de Ring, que es marca de un tercero.
 
-**La regla que gobierna los seis:** *suaves, reconocibles, elegantes — nunca sci-fi agresivo*. Si una
-generación suena a nave espacial, se descarta aunque haya costado 200 créditos. Y **no se clona el
-chime real de Ring**, que es marca de un tercero.
+### 3.h Imagen, video generado y lipsync — la recomendación sigue siendo no usar ninguno
 
-### 3.h Imagen, video generado y lipsync — la recomendación es no usar ninguno
-
-**Con el brief nuevo la recomendación se endurece, no se ablanda.**
-
-- **Lipsync: no.** No hay presentador ni avatar, y no hace falta ninguno.
-- **Video generado: no.** El brief pide una persona real en su casa real, con imperfecciones. Un clip
-  generado de un pasillo imaginario es más caro, menos convincente, y **contradice el brief punto por
-  punto** —*"conservar las imperfecciones"*, *"evitar imaginería genérica de IA"*—.
-- **Imagen generada: no.** Las tarjetas de título del plan anterior sobraban ya entonces. Un tipo
-  limpio sobre negro no necesita generarse, y el brief prohíbe explícitamente los visuales de neón y
-  la estética futurista que esas tarjetas tenían.
-
-Costo evitado: entre **96.000 y 144.000 créditos** (§2.b, variante completa), con la cifra de video
-todavía ⏳ pendiente. **Las tres razones —brief, cumplimiento y precio— apuntan al mismo lado**, que
-es la señal de que la decisión es correcta y no una racionalización.
+Sin cambios respecto del borrador anterior, y el nuevo brief la refuerza en el mismo sentido:
+**lipsync no** (no hay presentador ni avatar), **video generado no** (el brief pide metraje real,
+"proof not claims", que es precisamente lo opuesto a un clip sintético), **imagen generada no** (la
+"visualización física restringida" del plano 4 se filma sobre una pantalla real, no se genera). Costo
+evitado: el mismo rango de §2.b, ~96.000–144.000 créditos.
 
 ---
 
@@ -610,18 +523,19 @@ cumpliendo los dos contratos**, aunque el orden cambió al reordenarse alrededor
 
 | Bloque de video.md | Dónde cae en el guion de §3.c |
 |---|---|
-| 0:00–0:15 problema | `[0:40]` — la cámara a bordo no ve la esquina. Llega más tarde **a propósito**: el brief pone al personaje antes que al problema. |
-| 0:15–0:35 idea | `[0:54]`–`[1:08]` — la infraestructura ya mira; rangyuu la convierte en mapa |
-| 0:35–1:20 flujo | `[1:18]` — las tres situaciones, con el mapa contestando en pantalla |
-| 1:20–2:15 estados | `[1:32]` — el corte de red y el `HOLD`, que es el clímax |
-| 2:15–2:45 privacidad | `[1:48]` — cinco campos, sin píxeles, la red cortada a propósito |
-| 2:45–3:00 cierre | `[2:12]`–`[2:40]` — el freno como destino, el 22 % como presente, y la salida a la calle |
+| 0:00–0:15 problema | `[0:00]`–`[0:16]` — la cámara a bordo no ve la esquina; el brief pone la esquina y a la persona antes que la explicación de producto, no después |
+| 0:15–0:35 idea | `[0:16]`–`[0:46]` — la infraestructura ya mira; rangyuu la convierte en mapa (revelación del producto) |
+| 0:35–1:20 flujo | `[0:46]`–`[1:21]` — la pregunta razonada y el principio, con `HOLD` #1 y #2 (§3.b) contestando en pantalla |
+| 1:20–2:15 estados | `[1:22]`–`[2:01]` — la prueba, el corte de red (`HOLD` #3, el clímax) y el fallo |
+| 2:15–2:45 privacidad | `[1:30]`–`[1:38]` — cinco campos, sin píxeles, la red cortada a propósito |
+| 2:45–3:00 cierre | `[2:02]`–`[2:35]` — el retorno humano, el posicionamiento de ElevenLabs y `HOLD` #4 como cierre filosófico |
 
-**El bloque humano de apertura, `[0:00]`–`[0:32]`, no existía en video.md.** No la contradice:
-video.md fija *qué se cuenta* y no prohíbe llegar al problema por una persona. Es el cambio que trae
-el brief, y es el que hace que el resto se escuche.
+**El bloque de apertura sobre la esquina, `[0:00]`–`[0:16]`, no existía en video.md.** No la
+contradice: video.md fija *qué se cuenta* y no prohíbe llegar al problema por una persona y una esquina
+ocluida en vez de una lista de funcionalidades. Es el cambio que trae el brief, y es el que hace que el
+resto se escuche.
 
-Y cumple el criterio de B7 sin trucos: **los planos 8, 9, 10 y 11 de §3.e son captura de Ring
+Y cumple el criterio de B7 sin trucos: **los planos 4, 5, 6 y 9 de §3.e son captura de Ring
 funcionando**, no narración sobre Ring.
 
 ### 4.b El calendario manda
@@ -632,15 +546,30 @@ funcionando**, no narración sobre Ring.
 - En medio queda **B11**, abierto: falta grabar el clip y medir con cinta. Si B11 cierra entre las dos
   fechas, el video del hackathon puede mostrar algo que el del Challenge 3 no tenía.
 
+**El calendario de 9 días del borrador anterior sigue en pie**, reconciliado contra el guion de §3.c y
+§3.e — cambia qué se filma cada día, no cuándo:
+
+| Día | Qué pasa |
+|---|---|
+| 1 (09/16) | Bloquear este documento. Pedir consentimiento (§6). Confirmar quién es el protagonista real. |
+| 2 (09/17) | Recorrido de localización: la esquina ocluida, la calle, las cámaras de terceros visibles desde afuera. Lista de planos cerrada contra §3.e. |
+| 3 (09/18) | **Fecha límite de casting.** Sin protagonista consentido para esta fecha, el film pasa a tener como protagonista a quien construye rangyuu, misma estructura, mismo guion salvo `[NAME]`. Rodaje bloque A: interior, la máquina, el joystick, manos. |
+| 4 (09/19) | Rodaje bloque B: la esquina, la calle, el umbral, la llamada de domingo (o su reconstrucción honesta si no coincide con el rodaje). |
+| 5 (09/20) | **Captura de pantalla**, día aparte: sesión WHEP viva, el mapa de celdas llenándose (plano 4), la terminal con los seis campos de la pregunta (plano 5), el colapso a `HOLD` (plano 6), el corte de red en vivo (plano 9). Grabación de tono de sala. |
+| 6 (09/21) | Generación en ElevenLabs: cinco segmentos de narración, tres cues de música, cinco efectos (§3.c–§3.g). |
+| 7 (09/22) | Montaje. Primer corte completo. |
+| 8 (09/23) | Mezcla, silencios de §3.f colocados a mano, subtítulos con Scribe, corrección de color. |
+| 9 (09/24) | Margen. **Enviar el 09/24, no el 09/25 a las 17:50.** |
+
 ### 4.c Recomendación: **una pieza, dos cortes**
 
 **No dos producciones. Tampoco un único archivo congelado.**
 
-1. **Un solo máster** de ~2:42 en inglés, producido para el 2026-09-24, con todo el audio generado en
-   ElevenLabs sobre **metraje filmado y capturado, nada generado**. Ese archivo se envía al
-   Challenge 3.
+1. **Un solo máster** de ~2:35–2:40 en inglés, producido para el 2026-09-24, con todo el audio
+   generado en ElevenLabs sobre **metraje filmado y capturado, nada generado**. Ese archivo se envía
+   al Challenge 3.
 2. **Los stems se guardan sin mezclar** —los cinco segmentos de narración, los cues A, B y C, los
-   seis efectos— en la carpeta de artefactos que ya pide video.md, y **fuera del repositorio** (§6).
+   cinco efectos— en la carpeta de artefactos que ya pide video.md, y **fuera del repositorio** (§6).
 3. **Para el 2026-10-23 se re-corta**, no se re-produce: si B11 cerró, entra el plano de la
    calibración a bordo medida y se regeneran **solo** los segmentos de narración afectados. Costo
    marginal: unos cientos de créditos, no una pieza entera.
@@ -702,13 +631,13 @@ cumple. Es además la variante barata y la más convincente. **Las tres razones 
 | Ver la referencia de Vimeo | Bloqueada por verificación anti-bot; solo se obtuvieron metadatos. |
 | Confirmar que el MCP oficial expone TTS, música y efectos con los nombres esperados | **No hay MCP de ElevenLabs conectado en la sesión que escribió esto.** Nada se probó contra la API. |
 | B11 — el clip grabado y medido con cinta | Sigue abierto; decide si el corte de octubre supera al de septiembre. |
-| **Quién es el protagonista** — la persona real que se filma | Fecha límite: **día 3, 2026-09-18** (§3.b, Tensión 1). Sin ella el film cambia de protagonista, no de estructura. |
+| **Quién es el protagonista** — la persona real que se filma | Fecha límite: **día 3, 2026-09-18** (§4.b). Sin ella el film cambia de protagonista, no de estructura. |
 | **Consentimiento escrito** de quien se filma y de quien se oye | Es de quien filma; este documento no puede darlo ni presumirlo (§6). |
-| **`voice_id` concreto** para la narración | No se eligió. Hay que escuchar candidatas contra el párrafo `[2:12]`, que es el que peor tolera una voz de locutor (§3.d). |
-| **Comportamiento real de los cinco audio tags** con esa voz | Eleven v3 los interpreta, no los ejecuta: un tag no entendido se ignora o se lee en voz alta. Nada se probó — **sin MCP conectado** (§3.d). |
+| **`voice_id` concreto** para la narración | No se eligió. Hay que escuchar candidatas contra el párrafo `[1:39]` — el del fallo —, que es el que peor tolera una voz de locutor o de descargo legal (§3.d). |
+| **Comportamiento real de los siete audio tags** con esa voz | Eleven v3 los interpreta, no los ejecuta: un tag no entendido se ignora o se lee en voz alta. Nada se probó — **sin MCP conectado** (§3.d). |
 | **Si ElevenLabs cobra las audio tags como caracteres** | §2.b asume que **sí**, que es el supuesto caro. Se confirma en la primera generación. |
-| El nombre real en la narración, o un sustituto | Decisión de la persona filmada, no del documento (§6). |
-| Los `[RITUAL]` del plano 1 y el momento de familia del plano 14 | Dependen de la vida real de quien se filme; el brief exige que sean **reales**, no inventados para la cámara. |
+| El nombre real ([NAME]) en la narración, o un sustituto | Decisión de la persona filmada, no del documento (§6). |
+| El momento de familia del plano 13 (§3.e) | Depende de la vida real de quien se filme; el brief exige que sea **real**, no inventado para la cámara. |
 
 **Feedback de herramienta.** [video.md](video.md) ya obliga a consignar en la submission qué
 funcionó, qué limitó y si se volvería a usar ElevenLabs. Ese registro se lleva **durante** la
@@ -749,4 +678,4 @@ queda ahí. Este documento no puede darlo ni presumirlo.
 
 ⏳ **Pendiente:** el consentimiento firmado, y la decisión de si el nombre real de la persona aparece
 en la narración o se sustituye. **Las dos cosas antes del día 3** (2026-09-18), que es la fecha
-límite de casting de §3.b.
+límite de casting de §4.b.
