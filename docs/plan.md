@@ -28,6 +28,10 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       estados de pantalla derivan de las tres decisiones con reglas probadas.
       *Hecho también:* revisión en navegador real con Playwright y seis pruebas de extremo a extremo;
       interfaz alineada al lenguaje visual de la app de Ring para que integrarla sea trivial.
+      *Hecho el 2026-09-16:* `main` absorbió `codex/north-navigation-ci` por fast-forward y con eso
+      **CI remota quedó verde** —`Rangyuu CI` y `build-scan` venían fallando en `main`—. El worker
+      programado ya no falla por falta de `RANGYUU_PROVIDER_URL`. Cierra el pendiente de ejecución
+      remota; la evidencia son los números de run en [verificacion.md](verificacion.md).
       *Falta:* (1) probar el **modo caminata en un iPhone real**, que necesita HTTPS o túnel porque
       Safari no da cámara en HTTP; (2) **calibración a bordo del teléfono**, sin la cual la caminata
       observa pero no escribe en el mapa; (3) alimentar la app desde una **sesión WHEP viva** en vez
@@ -64,6 +68,12 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       2026-09-15: homografía ajustada sobre cuatro marcas en un rectángulo de 0,90 x 1,50 m medido
       con cinta, y **error de 0,9 cm sobre 61 cm (1,6 %)** contra juntas de baldosa que no entraron en
       el ajuste, con prueba de regresión en `tests/test_calibration_home.py`.
+      *Añadido el 2026-09-16:* auditando `claude/stellar-project-setup-gd0ba3` se encontró que la
+      medición de 0,9 cm era **decorativa**: `Site.now()` autorizaba con `calibration=None` y la
+      validez salía del residuo del propio ajuste, que siempre da ~0 (Lección 3); recalibrar desde
+      la interfaz heredaba el error medido de la matriz anterior. El arreglo está medido —173
+      pruebas, 5 caen al invertir la puerta— en el **PR #4, todavía sin mergear**: hasta que entre,
+      `main` sigue autorizando sobre una homografía solo ajustada.
       *Falta:* (1) el error **más allá de 1,50 m**, que es donde la homografía se degrada y hoy no hay
       marca medida; (2) el mismo error **con la cámara de Ring**, no con un teléfono; y (3) la
       oclusión **derivada del frame** en vez de declararse desde fuera.
