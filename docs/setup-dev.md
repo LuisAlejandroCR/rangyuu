@@ -14,7 +14,7 @@ python -m rangyuu
 python -m rangyuu tests/fixtures/b0_events.json
 ```
 
-`python -m pytest -q` debe terminar en `43 passed`. `python -m rangyuu` reproduce el fixture por el
+`python -m pytest -q` debe terminar en `163 passed`. `python -m rangyuu` reproduce el fixture por el
 mismo normalizador y el mismo estado espacial que usa el receptor HTTP, e imprime un informe por
 paso: `PROCEED` con la celda observada libre, `HOLD` cuando la persona la ocupa, el evento repetido
 rechazado por deduplicación, y `HOLD` por `cell stale` cuando la observación caduca. Ese último paso
