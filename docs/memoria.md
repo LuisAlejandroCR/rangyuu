@@ -42,7 +42,7 @@
 `claude/stellar-project-setup-gd0ba3` viaja en su propio PR y **todavía no está en `main`**; ver
 abajo, en la nota de PR #4.
 
-## PR #4 — abierto, todavía sin mergear
+## PR #4 — mergeado (`78da540`)
 
 Auditando `claude/stellar-project-setup-gd0ba3` apareció un hueco real y vivo en `main`: `Site.now()`
 autorizaba tránsito con `calibration=None`, y `_calibration()` derivaba `valid` del residuo del
@@ -57,9 +57,24 @@ El arreglo vive en `salvage/stellar-degradation-gates` (`4f0f3be`) y está medid
 en la app: `serve.py:41` sigue pasando los 0,9 cm reales, bajo el techo de 1,5 cm, así que sigue
 autorizando; la puerta solo muerde cuando el número falta.
 
-⏳ **Pendiente:** mergear. Al cerrar esta entrada el PR está `OPEN`, `MERGEABLE`, estado `CLEAN` y con
-sus cinco chequeos en verde, pero `origin/main` sigue en `64332c4` y el commit no es ancestro de
-`main`. No se documenta como hecho lo que no está en la rama.
+Mergeado el 2026-09-16 como `78da540`. `main` queda en **173 pruebas** y `serve.py:41` sigue pasando
+los 0,9 cm reales, así que la app sigue autorizando: la puerta solo muerde cuando el número falta.
+
+**Las "tres puertas" de `3101781`, una por una.** El mensaje de aquel commit prometía cerrar tres
+puertas entre observar y autorizar. Contra `main` de hoy:
+
+1. **Calibración** — estaba realmente abierta. Cerrada por `78da540`, pero **solo en el camino de
+   `Site`**, que es el que sirven `serve` y `webapp`. El camino del webhook sigue sin la puerta.
+2. **Vivacidad del feed** — ya estaba cerrada en `main`, y con mejor código que el de la rama:
+   `runtime.py:93-94` (`feed_is_stale` → `"feed stale"`), medido bajo B10 al cortar la red. Nada que
+   portar; resucitar la versión vieja habría sido una regresión.
+3. **Sesión activa** — **sigue abierta**. La rama existe en `policy.py:20`, pero `spatial.py:67` fija
+   `session_active=True` y por ese camino nada puede dispararla. La puerta está puesta y no tiene
+   picaporte.
+
+O sea: una cerrada hoy, una que ya lo estaba, una todavía abierta. Las dos que faltan quedan en
+[verificacion.md](verificacion.md) como ⏳ pendiente, con el motivo: cerrarlas pide un error medido
+**por dispositivo**, y B8 dice que para la cámara de Ring ese número no existe todavía.
 
 
 ## 2026-09-16 — Tres destinos y CI instalable

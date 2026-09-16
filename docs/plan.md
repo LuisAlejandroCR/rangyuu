@@ -72,8 +72,12 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       medición de 0,9 cm era **decorativa**: `Site.now()` autorizaba con `calibration=None` y la
       validez salía del residuo del propio ajuste, que siempre da ~0 (Lección 3); recalibrar desde
       la interfaz heredaba el error medido de la matriz anterior. El arreglo está medido —173
-      pruebas, 5 caen al invertir la puerta— en el **PR #4, todavía sin mergear**: hasta que entre,
-      `main` sigue autorizando sobre una homografía solo ajustada.
+      pruebas, 5 caen al invertir la puerta— y entró en `main` como `78da540`. La medición de 0,9 cm
+      pasó de decorativa a **portante**: `serve.py:41` la pasa y por eso la app sigue autorizando.
+      *Falta todavía:* la misma puerta en el **camino del webhook** (`spatial.py:67` valida
+      *ajustada*, no *medida*) y `session unavailable`, inalcanzable porque ese mismo renglón fija
+      `session_active=True`. Ambas piden un error medido **por dispositivo**, que es justo lo que
+      falta abajo.
       *Falta:* (1) el error **más allá de 1,50 m**, que es donde la homografía se degrada y hoy no hay
       marca medida; (2) el mismo error **con la cámara de Ring**, no con un teléfono; y (3) la
       oclusión **derivada del frame** en vez de declararse desde fuera.
