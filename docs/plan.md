@@ -73,6 +73,10 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       *Criterio:* MP4 reproducible en el repo, las cuatro correspondencias anotadas con su medición
       real, y el error de B8 calculado contra ellas. Se etiqueta `IPHONE_ONBOARD` y nunca reemplaza la
       llamada real a Ring.
+      *Añadido el 2026-09-16:* el carril de a bordo existe y está medido —**22 % de precisión**, 140
+      frenadas falsas en 58 s—, así que hoy solo avisa. Para que pueda frenar hace falta un detector
+      de objetos de verdad, no una diferencia de texturas, con su precisión medida contra más de un
+      clip etiquetado.
 
 - [ ] **B7 · Video y submission.** Producir el video en inglés, menor de tres minutos, usando
       ElevenLabs MCP solo como herramienta de narración/producción y documentando su feedback.

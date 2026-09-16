@@ -9,7 +9,9 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa, 147 pruebas, once de ellas en navegador real | `python -m pytest -q` → `147 passed` | ✅ | 2026-09-15 |
+| Suite completa, 151 pruebas, once de ellas en navegador real | `python -m pytest -q` → `151 passed` | ✅ | 2026-09-16 |
+| **La precisión del detector a bordo está medida contra verdad de campo: 22 %.** Sobre la caminata de 58,5 s con dos tramos reales marcados —49-50 s y 55-56 s, una moto a lo lejos— de 180 lecturas de "obstáculo" solo 40 caen en esos tramos: **140 frenadas falsas**. Cobertura de los tramos reales: 67 % | `python -m rangyuu.walk walking_video.mp4` más el etiquetado suministrado el 2026-09-16 | ✅ | 2026-09-16 |
+| Un criterio alternativo por mancha localizada se probó y es **peor**: 9-11 % de precisión. Las distribuciones se superponen (0,174 en los tramos reales contra 0,136 en el resto) | Barrido de umbrales sobre el mismo clip | ✅ | 2026-09-16 |
 | **Una caminata real de 58,5 s grabada con el iPhone atraviesa el carril de a bordo**: 585 lecturas → 149 `AVANZA`, 256 `CUIDADO`, 180 `PARA`; 40 cambios de estado, unos 41 por minuto | `python -m rangyuu.walk walking_video.mp4` (el video no se versiona) | ✅ | 2026-09-15 |
 | El carril de a bordo **degrada pero no autoriza**: un `OBSTACLE` lleva la pantalla a `PARA` aunque el mapa dijera libre | `python -m pytest tests/test_ui.py tests/test_onboard.py` | ✅ | 2026-09-15 |
 | La histéresis es asimétrica: empeorar es inmediato, volver a `CLEAR` exige cuatro lecturas de acuerdo y 1,2 s | `python -m pytest tests/test_onboard.py::test_going_back_to_clear_needs_agreement_and_time` | ✅ | 2026-09-15 |
@@ -59,6 +61,12 @@
 | El script del PR upstream corre contra la API real: sin flags da `201`, `H264/90000`, 5 candidatos ICE y `DELETE → 200`; con `--frames 60` da 60 frames a 1280x720 y 23,4 fps | `python scripts/live_view.py --token <token>` en el fork | ✅ | 2026-09-15 |
 
 ## Correcciones a datos ya documentados
+
+- **2026-09-16 — El carril de a bordo ya no frena, avisa.** Se había cableado para llevar la pantalla
+  a `PARA`. Medido contra la caminata etiquetada, acierta el 22 % de sus "obstáculo": frenar con eso
+  serían unas catorce paradas falsas por minuto. Ahora degrada a `CUIDADO` y el detector tendrá que
+  ganarse el derecho a detener a alguien. Sobre la misma caminata, la pantalla pasa de 180 `PARA` a
+  ninguno, con 25 cambios de estado en vez de 40.
 
 - **2026-09-15 — Un objeto oscuro se leía como "demasiado oscuro para juzgar".** En la caminata, un
   vehículo negro tapando el paso salía `UNCERTAIN` en vez de `OBSTACLE`. Ninguno autoriza, así que

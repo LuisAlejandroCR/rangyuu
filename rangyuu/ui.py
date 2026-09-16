@@ -58,11 +58,13 @@ def to_screen(report: dict, *, confidence=None, age_fraction=None, adjacent_occu
     if decision != "PROCEED":
         return Screen(SIN_CERTEZA, reason, False)
 
-    # El carril de a bordo es contexto: puede degradar, nunca autorizar por sí solo.
-    if onboard == "OBSTACLE":
-        return Screen(PARA, "la cámara a bordo ve algo al frente", False,
-                      "el mapa autorizaba; la vista a bordo no")
+    # El carril de a bordo es contexto: puede degradar, nunca autorizar por sí solo. Y no llega
+    # a `PARA`: medido contra una caminata real etiquetada el 2026-09-15, acierta el 22 % de las
+    # veces que dice "obstáculo". Frenar con eso sería frenar catorce veces de más por minuto, así
+    # que avisa como `CUIDADO` hasta que un detector mejor se gane el derecho a detener a alguien.
     thin = []
+    if onboard == "OBSTACLE":
+        thin.append("la cámara a bordo ve algo distinto al suelo adelante")
     if onboard == "UNCERTAIN":
         thin.append("la cámara a bordo no puede afirmar qué hay al frente")
     if adjacent_occupied:

@@ -82,9 +82,10 @@ proyectar su frame con la homografía de la cámara fija escribe celdas que nadi
 haya calibración a bordo, la caminata **observa pero no escribe en el mapa**, y lo dice en Fuentes.
 
 Lo que sí puede afirmar sin calibración es si la franja de suelo de unos pasos adelante **sigue
-pareciéndose al suelo que tiene bajo los pies** (`rangyuu/onboard.py`). Eso alcanza para degradar:
-`OBSTACLE` lleva la pantalla a `PARA` aunque el mapa diga libre, y `UNCERTAIN` la baja a `CUIDADO`.
-**Nunca autoriza por sí solo.** La lectura cruda parpadea varias veces por segundo, así que se
+pareciéndose al suelo que tiene bajo los pies** (`rangyuu/onboard.py`). Eso alcanza para **avisar**, no para frenar: medido contra
+una caminata real etiquetada el 2026-09-16, acierta el **22 %** de las veces que dice "obstáculo".
+Por eso `OBSTACLE` y `UNCERTAIN` bajan la pantalla a `CUIDADO` y **nunca a `PARA`**: detener a una
+persona catorce veces por minuto sin motivo es peor que no avisar. **Nunca autoriza por sí solo.** La lectura cruda parpadea varias veces por segundo, así que se
 suaviza con histéresis asimétrica: empeorar es inmediato, volver a despejado exige acuerdo y 1,2 s.
 
 ### 2.3 Espacio — el mapa del sitio

@@ -4,6 +4,34 @@
 
 # Memoria
 
+## 2026-09-16 — La precisión del detector a bordo, medida: 22 %
+
+**Qué se hizo**
+
+- Se recibió la verdad de campo de la caminata: dos tramos con algo real en el camino —**49-50 s y
+  55-56 s, una moto a lo lejos**—. Con eso se pudo medir lo que ayer quedó explícitamente sin medir.
+- **El resultado es malo y queda escrito: 22 % de precisión.** De 180 lecturas de "obstáculo", 40
+  caen en esos tramos y **140 son frenadas falsas** en 58 segundos. La cobertura de los tramos reales
+  es del 67 %.
+- Se probó un criterio alternativo —mancha localizada en vez de contraste global— y es **peor**:
+  9-11 %. Las distribuciones se superponen casi por completo (0,174 en los tramos reales contra 0,136
+  en el resto). Con este método, una moto lejana no es separable de la variación normal de la escena.
+- **Consecuencia aplicada, no solo anotada:** el carril de a bordo deja de poder llevar la pantalla a
+  `PARA` y ahora degrada a `CUIDADO`. Detener a una persona catorce veces por minuto sin razón es
+  peor que no avisar. Sobre la misma caminata, la pantalla pasa de 180 `PARA` a ninguno y de 40
+  cambios de estado a 25.
+- Suite en 151 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **Si un detector de objetos entrenado resuelve esto.** Es el camino obvio —una moto a 15 m es
+  exactamente lo que un modelo detecta y una diferencia de texturas no—, pero no se probó ninguno.
+  Queda como el siguiente bloque de B11.
+- **La medición sale de un solo clip con dos tramos etiquetados.** Es suficiente para descartar el
+  método actual, no para validar el que venga: ajustar umbrales contra dos ventanas es sobreajustar.
+
+**Dónde quedan los pendientes:** B11 y B12 de [plan.md](plan.md).
+
 ## 2026-09-15 — El carril de a bordo: la caminata real, con su límite
 
 **Qué se hizo**

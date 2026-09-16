@@ -44,5 +44,18 @@ def test_cuidado_never_softens_a_refusal(decision, reason):
     assert screen.state in (PARA, SIN_CERTEZA) and not screen.authorizes
 
 
+@pytest.mark.parametrize("onboard,expected", [("OBSTACLE", CUIDADO), ("UNCERTAIN", CUIDADO), ("CLEAR", AVANZA)])
+def test_the_onboard_lane_degrades_but_never_stops_on_its_own(onboard, expected):
+    """Medido: el detector a bordo acierta el 22 % de sus 'obstáculo'. Avisa, no frena."""
+    screen = to_screen(report(), onboard=onboard)
+    assert screen.state == expected
+    if onboard != "CLEAR":
+        assert screen.detail and screen.authorizes
+
+
+def test_the_onboard_lane_cannot_lift_a_refusal():
+    assert to_screen(report("HOLD", "path occupied"), onboard="CLEAR").state == PARA
+
+
 def test_an_unmapped_reason_is_shown_as_is_rather_than_hidden():
     assert to_screen(report("HOLD", "something new upstream")).reason == "something new upstream"
