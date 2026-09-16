@@ -1,0 +1,20 @@
+{
+  "status": "pending",
+  "note": "PLANTILLA SIN LLENAR. El clip no se versiona: aquí solo van píxeles y medidas de cinta. Al llenarlo, poner status en \"measured\".",
+  "source": "fixtures/iphone/<clip>.mp4, frame <n>. Anotar resolución y fecha de grabación.",
+  "marks": {
+    "note": "Cuatro marcas en las esquinas de un rectángulo medido con cinta metrica. Estas SÍ entran en el ajuste.",
+    "rectangle_m": {"width": null, "depth": null},
+    "points": [
+      {"label": "NL", "pixel": null, "floor_m": [0.0, 0.0]},
+      {"label": "NR", "pixel": null, "floor_m": null},
+      {"label": "FR", "pixel": null, "floor_m": null},
+      {"label": "FL", "pixel": null, "floor_m": null}
+    ]
+  },
+  "held_out": {
+    "note": "Puntos que NO entran en el ajuste: son la única comprobación honesta. El residuo del ajuste siempre da ~0 y no prueba nada.",
+    "tile_side_m": null,
+    "pixels": []
+  }
+}
