@@ -96,8 +96,7 @@ function drawMap(svg, cells, route, zones) {
 
 async function loadSpace() {
   const data = await api("/api/space/map");
-  $("espacio-stamp").textContent = `celda ${data.cell_size_m} m · ${clock(data.at)}`;
-  drawMap($("map-space"), data.cells || [], data.route || [], data.zones || []);
+  drawMap($("map-now"), data.cells || [], data.route || [], data.zones || []);
   $("zones").innerHTML = (data.zones || []).map((z) =>
     `<li><span><span class="label">${z.name}</span>
       <span class="meta">${z.cells.length} celdas${z.risky ? " · zona de riesgo" : ""}</span></span>
@@ -105,7 +104,7 @@ async function loadSpace() {
   ).join("") || '<li><span class="meta">Todavía no hay zonas nombradas.</span></li>';
 }
 
-$("map-space").addEventListener("click", (event) => {
+$("map-now").addEventListener("click", (event) => {
   const rect = event.target.closest("rect.cell");
   const panel = $("cell-detail");
   if (!rect) { panel.hidden = true; return; }
@@ -223,6 +222,14 @@ async function loadDecisions() {
   }).join("") || '<li class="hint">Todavía no hay decisiones registradas.</li>';
 }
 
+$("evidence-toggle").addEventListener("click", async () => {
+  const panel = $("evidence-panel");
+  const opening = panel.hidden;
+  panel.hidden = !opening;
+  $("evidence-toggle").setAttribute("aria-expanded", String(opening));
+  if (opening) await loadDecisions();
+});
+
 // --- 2 · Caminata ------------------------------------------------------------
 
 let stream = null, walking = false;
@@ -286,10 +293,12 @@ $("walk-stop").addEventListener("click", () => { stopWalk("detenido por el usuar
 
 async function refresh(name) {
   try {
-    if (name === "ahora") paintVerdict(await api("/api/space/now"));
-    if (name === "espacio") await loadSpace();
-    if (name === "fuentes") await loadSources();
-    if (name === "evidencia") await loadDecisions();
+    if (name === "ahora") {
+      paintVerdict(await api("/api/space/now"));
+      await loadSpace();
+      if (!$("evidence-panel").hidden) await loadDecisions();
+    }
+    if (name === "sistema") await loadSources();
   } catch (error) {
     $("verdict-reason").textContent = "sin enlace con el sitio";
   }

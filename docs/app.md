@@ -5,7 +5,7 @@
 
 # La app
 
-**Decidido el 2026-09-15.** Cinco pantallas principales y una sexta opcional. Ring ya cubre alertas,
+**Decidido el 2026-09-16.** Tres destinos principales: Ahora, Caminata y Sistema. Ring ya cubre alertas,
 Live View, conversación, historial y control de dispositivos: su app responde *qué está pasando en
 casa*. Rangyuu responde otra pregunta, y por eso no se parece.
 
@@ -47,7 +47,8 @@ Cada estado va acompañado de **una razón corta y humana** —"pasillo libre", 
 ### 2.1 Ahora / Ruta segura — la principal
 
 Mapa espacial sobrio del sitio y un estado grande. Encima, la trayectoria propuesta; debajo, las
-celdas ocupadas y las desconocidas, distinguidas entre sí. Una línea de razón. Nada más.
+celdas ocupadas y las desconocidas, distinguidas entre sí. Las zonas, el detalle de una celda y el
+historial corto de decisiones se abren dentro del mapa: son evidencia de la decisión, no destinos.
 
 Vive de: `GET /api/space/now` — estado, razón, trayectoria, celdas por estado, edad de la observación.
 
@@ -88,15 +89,7 @@ Por eso `OBSTACLE` y `UNCERTAIN` bajan la pantalla a `CUIDADO` y **nunca a `PARA
 persona catorce veces por minuto sin motivo es peor que no avisar. **Nunca autoriza por sí solo.** La lectura cruda parpadea varias veces por segundo, así que se
 suaviza con histéresis asimétrica: empeorar es inmediato, volver a despejado exige acuerdo y 1,2 s.
 
-### 2.3 Espacio — el mapa del sitio
-
-Mapa de ocupación con zonas nombradas: entrada, pasillo, garaje, puerta, zonas de riesgo. Se ve qué
-aporta Ring —contexto fijo, de infraestructura— y qué aporta el iPhone —contexto cercano, a bordo—.
-**Sin video.** Al tocar una celda se abre su evidencia, y solo ahí puede aparecer una imagen.
-
-Vive de: `GET /api/space/map`.
-
-### 2.4 Fuentes — la honestidad del sistema
+### 2.3 Sistema — honestidad y configuración
 
 Una fila por fuente, con su verdad incómoda a la vista:
 
@@ -105,24 +98,10 @@ Una fila por fuente, con su verdad incómoda a la vista:
 - Calibración válida o **requiere recalibración**, con el error medido en centímetros.
 - Cobertura: qué parte del espacio está siendo observada ahora mismo.
 
-Esta pantalla existe para comunicar límites, no capacidades.
+Esta pantalla existe para comunicar límites, no capacidades. El flujo infrecuente de calibración,
+tamaño de celda y ruta de prueba vive plegado aquí; no ocupa una pestaña de uso diario.
 
-Vive de: `GET /api/sources`.
-
-### 2.5 Configurar espacio — la pantalla "pro"
-
-Flujo de calibración: marcar cuatro puntos del suelo sobre una foto, escribir sus medidas reales,
-nombrar zonas, elegir el tamaño de celda y probar una ruta. Muestra el error resultante en
-centímetros antes de guardar; si el error supera el techo declarado, no deja guardar en silencio.
-
-Vive de: `POST /api/space/calibrate`.
-
-### 2.6 Evidencia — opcional
-
-Historial corto de **decisiones**, no de videos: qué sensor produjo el dato, cuándo, qué celda afectó
-y por qué el sistema decidió detenerse. Una fila por decisión, la más reciente arriba.
-
-Vive de: `GET /api/decisions`.
+Vive de: `GET /api/sources`, `POST /api/space/calibrate` y `POST /api/space/route`.
 
 ## 3. Identidad visual
 

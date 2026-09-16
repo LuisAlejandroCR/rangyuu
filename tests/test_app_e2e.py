@@ -38,15 +38,20 @@ def page(app):
         browser.close()
 
 
-def state_of(page):
+def state_of(page, expected=None, timeout=8000):
+    """Espera a que la pantalla llegue al estado esperado, en vez de dormir un rato fijo:
+    con la máquina cargada, una espera fija convierte una prueba correcta en intermitente."""
     page.click(".tabs button[data-goto='ahora']")
-    page.wait_for_timeout(300)
+    if expected is None:
+        page.wait_for_timeout(300)
+        return page.inner_text("#verdict-state")
+    page.wait_for_function("wanted => document.getElementById('verdict-state').textContent === wanted",
+                           arg=expected, timeout=timeout)
     return page.inner_text("#verdict-state")
 
 
 def test_a_freshly_observed_floor_authorises(page):
-    page.wait_for_timeout(600)
-    assert state_of(page) == "AVANZA"
+    assert state_of(page, expected="AVANZA") == "AVANZA"
 
 
 def test_an_occupied_cell_on_the_route_shows_para(app, page):
@@ -55,8 +60,7 @@ def test_an_occupied_cell_on_the_route_shows_para(app, page):
     cell = tuple(site.route[1])
     occupied = CellObservation(cell, time.time(), 0.95, False, "ring", site.runtime.device_id)
     site.runtime.state.cells[(site.runtime.device_id, cell)] = occupied
-    page.wait_for_timeout(2400)
-    assert state_of(page) == "PARA"
+    assert state_of(page, expected="PARA") == "PARA"
     assert "ocupa" in page.inner_text("#verdict-reason")
 
 
@@ -82,11 +86,25 @@ def test_every_screen_renders_without_console_errors(page):
     errors = []
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
-    for screen in ("ahora", "caminata", "espacio", "fuentes", "configurar"):
+    for screen in ("ahora", "caminata", "sistema"):
         page.click(f".tabs button[data-goto='{screen}']")
         page.wait_for_timeout(500)
         assert page.is_visible(f".screen[data-screen='{screen}']")
     assert errors == []
+
+
+def test_navigation_only_exposes_the_three_product_destinations(page):
+    labels = page.locator(".tabs button").all_text_contents()
+    assert labels == ["Ahora", "Caminata", "Sistema"]
+
+
+def test_map_details_and_evidence_live_inside_now(page):
+    page.click(".tabs button[data-goto='ahora']")
+    page.click("#evidence-toggle")
+    page.click(".compact-details summary")
+    page.wait_for_timeout(300)
+    assert page.is_visible("#evidence-panel")
+    assert page.is_visible("#zones")
 
 
 def test_the_walk_screen_does_not_offer_recording(page):

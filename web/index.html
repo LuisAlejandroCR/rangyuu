@@ -31,7 +31,7 @@
       <span class="verdict-detail" id="verdict-detail"></span>
     </div>
     <div class="map-card">
-      <div class="section-heading"><span>Plano del espacio</span><button class="text-action" data-goto="evidencia">Evidencia</button></div>
+      <div class="section-heading"><span>Plano del espacio</span><button class="text-action" id="evidence-toggle" aria-expanded="false">Evidencia</button></div>
       <svg class="map" id="map-now" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
            role="img" aria-label="Mapa espacial con la trayectoria propuesta"></svg>
       <ul class="legend">
@@ -40,6 +40,15 @@
         <li><i class="swatch unknown"></i>sin datos</li>
         <li><i class="swatch route"></i>ruta</li>
       </ul>
+      <div class="cell-detail" id="cell-detail" hidden></div>
+      <details class="compact-details">
+        <summary>Zonas del sitio</summary>
+        <ul class="zones" id="zones"></ul>
+      </details>
+      <div class="evidence-panel" id="evidence-panel" hidden>
+        <p class="group-title">Últimas decisiones</p>
+        <ol class="decisions" id="decisions"></ol>
+      </div>
     </div>
   </section>
 
@@ -61,49 +70,29 @@
     </div>
   </section>
 
-  <!-- 3 · Espacio -->
-  <section class="screen" data-screen="espacio" hidden>
-    <header class="bar"><span class="brand">rangyuu</span><div><h1>Espacio</h1><span class="stamp" id="espacio-stamp">—</span></div></header>
-    <div class="map-card">
-      <div class="section-heading"><span>Mapa de ocupación</span><span class="section-meta">tocá una celda</span></div>
-      <svg class="map tall" id="map-space" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
-           role="img" aria-label="Mapa de ocupación del sitio"></svg>
-    </div>
-    <div class="cell-detail" id="cell-detail" hidden></div>
-    <p class="group-title">Zonas</p>
-    <ul class="zones" id="zones"></ul>
-  </section>
-
-  <!-- 4 · Fuentes -->
-  <section class="screen" data-screen="fuentes" hidden>
-    <header class="bar"><span class="brand">rangyuu</span><div><h1>Fuentes</h1><span class="stamp" id="fuentes-stamp">—</span></div></header>
+  <!-- 3 · Sistema: fuentes y configuración, fuera del uso diario -->
+  <section class="screen" data-screen="sistema" hidden>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1>Sistema</h1><span class="stamp" id="fuentes-stamp">—</span></div></header>
     <p class="group-title">Fuentes de observación</p>
     <ul class="sources" id="sources"></ul>
     <div class="panel" id="calibration"></div>
     <div class="panel" id="budget"></div>
     <div class="panel" id="haptics"></div>
-  </section>
-
-  <!-- 5 · Configurar espacio -->
-  <section class="screen" data-screen="configurar" hidden>
-    <header class="bar"><span class="brand">rangyuu</span><div><h1>Configurar</h1><span class="stamp">espacio</span></div></header>
-    <p class="hint">Marcá cuatro puntos del suelo y escribí sus medidas reales. El error se muestra
-      antes de guardar; si supera el techo declarado, no se guarda.</p>
-    <table class="points" id="points"></table>
-    <label class="field">Tamaño de celda (m)<input id="cell-size" type="number" step="0.05" value="0.25"></label>
-    <label class="field">Trayectoria a probar (celdas)<input id="route-input" type="text" value="2,2 3,2"></label>
-    <div class="walk-actions">
-      <button class="primary" id="calibrate">Calibrar y medir</button>
-      <button class="ghost" id="save-route">Probar ruta</button>
-    </div>
-    <div class="panel" id="calibration-result" hidden></div>
-  </section>
-
-  <!-- 6 · Evidencia -->
-  <section class="screen" data-screen="evidencia" hidden>
-    <header class="bar"><span class="brand">rangyuu</span><div><h1>Evidencia</h1><span class="stamp">decisiones, no clips</span></div></header>
-    <p class="group-title">Últimas decisiones</p>
-    <ol class="decisions" id="decisions"></ol>
+    <details class="setup">
+      <summary>Configurar espacio</summary>
+      <div class="setup-body">
+        <p class="hint">Marcá cuatro puntos del suelo y escribí sus medidas reales. El error se muestra
+          antes de guardar; si supera el techo declarado, no se guarda.</p>
+        <table class="points" id="points"></table>
+        <label class="field">Tamaño de celda (m)<input id="cell-size" type="number" step="0.05" value="0.25"></label>
+        <label class="field">Trayectoria a probar (celdas)<input id="route-input" type="text" value="2,2 3,2"></label>
+        <div class="walk-actions">
+          <button class="primary" id="calibrate">Calibrar y medir</button>
+          <button class="ghost" id="save-route">Probar ruta</button>
+        </div>
+        <div class="panel" id="calibration-result" hidden></div>
+      </div>
+    </details>
   </section>
 
 </main>
@@ -111,9 +100,7 @@
 <nav class="tabs" id="tabs">
   <button data-goto="ahora" class="active"><svg><use href="#icon-now"></use></svg><span>Ahora</span></button>
   <button data-goto="caminata"><svg><use href="#icon-walk"></use></svg><span>Caminata</span></button>
-  <button data-goto="espacio"><svg><use href="#icon-space"></use></svg><span>Espacio</span></button>
-  <button data-goto="fuentes"><svg><use href="#icon-sources"></use></svg><span>Fuentes</span></button>
-  <button data-goto="configurar"><svg><use href="#icon-settings"></use></svg><span>Ajustes</span></button>
+  <button data-goto="sistema"><svg><use href="#icon-settings"></use></svg><span>Sistema</span></button>
 </nav>
 
 <script type="module" src="app.js"></script>

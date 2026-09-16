@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 from .calibrate import Calibration
 from .onboard import CLEAR, OBSTACLE, Clearance, ClearanceFilter, ForwardClearance
+from .vision import ModelUnavailable, ObjectEye
 from .policy import cell_is_stale
 from .runtime import LocalRuntime
 from .ui import to_screen
@@ -55,7 +56,14 @@ class Site:
         self.error_ceiling_cm = float(error_ceiling_cm)
         self.clock = clock
         self.onboard_homography = None
-        self.onboard = ForwardClearance()
+        # Con modelo ONNX configurado, la caminata nombra lo que ve; sin él cae en la heurística
+        # de texturas, que es más pobre y así lo declara. Nunca se finge tener modelo.
+        try:
+            self.onboard = ObjectEye()
+            self.onboard_kind = "onnx"
+        except (ModelUnavailable, ImportError, OSError):
+            self.onboard = ForwardClearance()
+            self.onboard_kind = "texturas"
         self.onboard_filter = ClearanceFilter(clock=self.clock)
         self.onboard_reading = None
         self.zones: list = []
@@ -102,7 +110,8 @@ class Site:
             "sources": [s.as_dict(moment) for s in self.sources.values()],
             "calibration": self._calibration(),
             "coverage": {"cells_known": len(known), "cells_seen": len(observed)},
-            "onboard": (self.onboard_reading[0].as_dict() if self.onboard_reading else None),
+            "onboard": ({**self.onboard_reading[0].as_dict(), "detector": self.onboard_kind}
+                        if self.onboard_reading else {"detector": self.onboard_kind}),
             "budget_ms": self.runtime.budget.as_dict(),
         }
 
@@ -144,6 +153,7 @@ class Site:
         self.sources["iphone"].active = True
         self.sources["iphone"].last_seen = moment
         raw = self.onboard.look(gray)
+        objects = getattr(self.onboard, "last_objects", None)
         # Lo que se muestra es la lectura suavizada: la cruda parpadea varias veces por segundo.
         steady = self.onboard_filter.push(raw)
         reading = raw if raw.state == steady else Clearance(steady, raw.confidence, raw.contrast,
@@ -154,7 +164,8 @@ class Site:
             OBSTACLE: "algo al frente que no es el suelo",
         }.get(reading.state, "no puede afirmar qué hay al frente")
         if self.onboard_homography is None:
-            return {"written": 0, "clearance": reading.as_dict(),
+            return {"written": 0, "clearance": {**reading.as_dict(), "detector": self.onboard_kind,
+                                                "objects": objects or []},
                     "reason": "el iPhone no está calibrado contra este suelo: observa, no escribe"}
         return {**self.runtime.on_frame(gray, now=moment, decode_ms=decode_ms),
                 "clearance": reading.as_dict()}
