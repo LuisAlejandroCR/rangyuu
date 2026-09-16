@@ -124,7 +124,13 @@ def _calibrate(site, value) -> dict:
     accepted = calibration.max_error_cm <= site.error_ceiling_cm
     if accepted:
         site.calibration = calibration
-    return {"accepted": accepted, "ceiling_cm": site.error_ceiling_cm, **calibration.as_dict()}
+        # The measured error belonged to the previous matrix. Carrying it over would hand a
+        # new calibration a proof it never earned, so the site goes back to unverified and
+        # stops authorising until someone measures this matrix against a known point.
+        site.measured_error_cm = None
+    return {"accepted": accepted, "ceiling_cm": site.error_ceiling_cm,
+            "measured": site.measured_error_cm is not None,
+            "authorizes": site.calibration_is_verified(), **calibration.as_dict()}
 
 
 def _observe(site, value) -> dict:

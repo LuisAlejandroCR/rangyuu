@@ -47,13 +47,17 @@ class Source:
 class Site:
     def __init__(self, runtime: LocalRuntime, *, calibration: Calibration | None = None,
                  error_ceiling_cm: float = 1.5, measured_error_cm: float | None = None,
-                 clock=time.time):
+                 requires_measured_calibration: bool = True, clock=time.time):
         self.runtime = runtime
         self.calibration = calibration
         # The fit error is always ~0 and proves nothing. This is the error measured against
         # points that were NOT part of the fit, which is the number the screen must show.
         self.measured_error_cm = measured_error_cm
         self.error_ceiling_cm = float(error_ceiling_cm)
+        # Fitting a homography is not verifying it: a matrix that closes on its own four
+        # corners only proves the solve converged. Until a held-out measurement exists and
+        # lands under the ceiling, this site may report what it sees but may not authorise.
+        self.requires_measured_calibration = bool(requires_measured_calibration)
         self.clock = clock
         self.onboard_homography = None
         # Con modelo ONNX configurado, la caminata nombra lo que ve; sin él cae en la heurística
@@ -80,7 +84,8 @@ class Site:
         """Screen 1. The state, the reason, the route and the cells behind both."""
         moment = self.clock()
         route = self.route or []
-        report = self.runtime.can_traverse([list(c) for c in route], moment)
+        report = self._gate_on_measured_calibration(
+            self.runtime.can_traverse([list(c) for c in route], moment))
         screen = to_screen(report, confidence=self._path_confidence(route),
                            age_fraction=self._age_fraction(route, moment),
                            adjacent_occupied=self._adjacent_occupied(route, moment),
@@ -218,16 +223,48 @@ class Site:
                 return True
         return False
 
+    def calibration_is_verified(self) -> bool:
+        """True only when a held-out measurement exists and lands under the ceiling.
+
+        `calibration.max_error_cm` is the fit's own residual and is always ~0, so it is
+        never accepted as the proof: the number has to come from points left out of the fit.
+        """
+        if self.calibration is None or self.measured_error_cm is None:
+            return False
+        return float(self.measured_error_cm) <= self.error_ceiling_cm
+
+    def _gate_on_measured_calibration(self, report: dict) -> dict:
+        """An unmeasured calibration observes; it does not authorise.
+
+        Without a measured error the map's scale is unproven, so a cell that looks free
+        cannot be placed on the floor with any declared accuracy. The report keeps its
+        evidence and loses only its authority.
+        """
+        if not self.requires_measured_calibration or self.calibration_is_verified():
+            return report
+        gated = dict(report)
+        gated["decision"] = "HOLD"
+        gated["action"] = "WAIT"
+        gated["reason"] = "homography invalid/derived"
+        gated["authorizes"] = False
+        return gated
+
     def _calibration(self) -> dict:
         if self.calibration is None:
             return {"valid": False, "reason": "sin calibrar", "error_cm": None,
                     "ceiling_cm": self.error_ceiling_cm}
         error = self.calibration.max_error_cm if self.measured_error_cm is None else self.measured_error_cm
-        valid = error <= self.error_ceiling_cm
+        valid = self.calibration_is_verified()
+        if valid:
+            reason = "calibración válida"
+        elif self.measured_error_cm is None:
+            reason = "ajustada pero sin medir contra un punto conocido"
+        else:
+            reason = "requiere recalibración"
         return {"valid": valid, "error_cm": error, "ceiling_cm": self.error_ceiling_cm,
                 "fit_error_cm": self.calibration.max_error_cm,
                 "measured": self.measured_error_cm is not None,
-                "reason": "calibración válida" if valid else "requiere recalibración"}
+                "reason": reason}
 
     def _log(self, payload) -> None:
         entry = {key: payload[key] for key in ("state", "reason", "decision", "at", "evidence")}
