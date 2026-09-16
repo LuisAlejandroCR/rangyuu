@@ -35,7 +35,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$RANGYUU_PROVIDER_URL" || { echo 'RANGYUU_PROVIDER_URL is not configured' >&2; exit 1; }
+          if [[ -z "$RANGYUU_PROVIDER_URL" ]]; then
+            # A scheduled run is opportunistic: an unconfigured provider is not a repo failure.
+            # A manual dispatch still fails, because somebody asked for the call on purpose.
+            if [[ "${GITHUB_EVENT_NAME:-}" == 'schedule' ]]; then
+              echo '::notice::RANGYUU_PROVIDER_URL is not configured; skipping the scheduled invocation.'
+              exit 0
+            fi
+            echo 'RANGYUU_PROVIDER_URL is not configured' >&2
+            exit 1
+          fi
           case "$RANGYUU_PROVIDER_URL" in
             https://*) ;;
             *) echo 'RANGYUU_PROVIDER_URL must use HTTPS' >&2; exit 1 ;;
