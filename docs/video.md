@@ -15,6 +15,10 @@ debe llevar el tag `Challenge 3: MCP` en el canal indicado y citar el anuncio of
 es independiente de la submission de Amazon: ElevenLabs es herramienta creativa, no requisito de
 runtime Ring.
 
+**El plan de producción de esa entrada —costo en créditos, prompts listos para ejecutar y
+calendario— vive en [elevenlabs-challenge.md](elevenlabs-challenge.md).** Este documento sigue
+fijando *qué se cuenta*; aquél dice *cuánto cuesta y qué se escribe en cada prompt*.
+
 La integración oficial es el MCP alojado en `https://api.elevenlabs.io/v1/mcp`, con autenticación OAuth;
 no se debe guardar una API key en este repositorio. El MCP puede gestionar agentes y generar voz,
 música, imágenes y video desde un asistente. Fuente: https://elevenlabs.io/mcp (consultada 2026-09-14).
