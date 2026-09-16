@@ -25,7 +25,10 @@ def replay(path: str, every: int = EVERY) -> dict:
     # El reloj del sitio sigue al video: con el reloj de pared, el replay corre 20x más rápido
     # que la caminata y la histéresis temporal dejaría de significar nada.
     video_clock = {"t": 0.0}
-    site = Site(runtime, clock=lambda: video_clock["t"])
+    # Este carril no autoriza tránsito: es un banco de medición del detector a bordo, con la
+    # ruta declarada libre por construcción sobre una homografía identidad. Por eso se exime
+    # de la puerta de calibración medida; el sitio real (serve.build_site) sí la exige.
+    site = Site(runtime, clock=lambda: video_clock["t"], requires_measured_calibration=False)
     site.set_route(ROUTE)
     site.runtime.mark_free(ROUTE, now=0.0)
     site.runtime.last_frame_at = 0.0
