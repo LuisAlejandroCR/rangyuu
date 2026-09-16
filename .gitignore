@@ -19,3 +19,6 @@ __pycache__/
 *.jpg
 *.png
 !fixtures/ring/playground_frame_120.png
+
+# Worktrees creados por agentes en paralelo; nunca se versionan.
+.claude/worktrees/
