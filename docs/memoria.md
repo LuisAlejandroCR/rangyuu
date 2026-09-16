@@ -43,6 +43,48 @@
 - `python -m rangyuu.walk` no se ejercitó: necesita `av`, un clip y el modelo ONNX, nada de eso se
   versiona. El cambio en ese archivo es un argumento de construcción, cubierto por prueba unitaria.
 
+## 2026-09-16 — La interfaz habla el idioma de quien mira
+
+**Qué se hizo**
+
+Segundo lote del mismo PR, separado a propósito del de interfaz para que se revisen aparte.
+
+- **Toda cadena visible salió del marcado y del JS a una sola tabla**, `web/i18n.js`. Sin
+  dependencias, sin build, sin assets remotos: dos objetos y una función de búsqueda. `app.js` ya no
+  escribe ni una cadena: o sale de `t()`, o viene del servidor y pasa por `s()`.
+- **Dos orígenes de texto, dos tablas.** `UI` por clave; `SERVER` indexado por el valor que el
+  núcleo manda ya resuelto —razones de `ui.py`, detalles de `CUIDADO`, etiquetas de fuente, razones
+  de calibración, las cuatro esquinas—. **El servidor no se tocó**: las etiquetas de calibración
+  siguen viajando en castellano en el cuerpo del POST y vuelven como claves de `per_point_cm`; solo
+  se traducen al mostrarlas.
+- **Inglés y castellano.** Por defecto el del navegador (`navigator.languages`), inglés de respaldo
+  si ninguno coincide. Una clave que falte cae al inglés; un texto del servidor sin traducción se
+  muestra **tal cual** antes que en blanco.
+- **Anulación explícita en Sistema**, guardada en `localStorage`, con `try/catch` en cada lectura y
+  cada escritura. Cambiar de idioma **vuelve a pintar lo que ya se tenía en memoria**, sin pedirle
+  nada al sitio: probado que `state`, `authorizes` y `decision` no se mueven al cambiarlo.
+- **El nombre en inglés del segundo destino es "On board", no "Walk".** B4 dice que el consumidor es
+  cualquier vehículo autónomo o asistido; traducir *Caminata* literalmente estrecharía el producto a
+  gente a pie en el idioma que leen los jurados. Hay una prueba que falla si *walk*, *pedestrian*,
+  *step* u *on foot* reaparecen en la copia inglesa. **En castellano sigue siendo "Caminata".**
+- **La voz también cambia de idioma** (`utterance.lang`), pero **el patrón de vibración y el tono
+  no**: son la firma del estado y se aprenden de memoria.
+- Verificado en navegador real en **los dos idiomas** a 390x844 y 1280x900: consola limpia en las
+  cuatro combinaciones, sin scroll horizontal y sin etiquetas desbordando la navegación inferior
+  —el caso que importa, porque el castellano es 20-30 % más largo—. Suite en **193 pruebas**.
+
+**Qué NO se verificó, y por qué**
+
+- Solo Chromium. Safari en iOS sigue sin probarse por falta de HTTPS o túnel. ⏳ pendiente, B12.
+- **El ícono de la pestaña sigue siendo una persona caminando**, que en inglés contradice el nombre
+  neutral. No se cambió porque en castellano la etiqueta sigue siendo *Caminata* y ahí el ícono es
+  correcto; queda anotado en el PR como pendiente de decisión. ⏳ pendiente.
+- Los nombres de zona (*entrada*, *pasillo*, *puerta*) **no se traducen a propósito**: son dato del
+  sitio, no de la interfaz. Un sitio real nombra sus zonas como quiera.
+- Nadie con lector de pantalla probó la app; lo que se comprobó es que el `<select>` tiene nombre
+  accesible y que `aria-current="page"` sigue en la pestaña activa. ⏳ pendiente.
+
+**Dónde quedan los pendientes:** B12, junto a iPhone real y sesión WHEP viva.
 ## 2026-09-16 — La pantalla deja de autorizar cuando se queda sin dato
 
 **Qué se hizo**
