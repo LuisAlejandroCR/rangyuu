@@ -9,7 +9,9 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa, 163 pruebas, once de ellas en navegador real | `python -m pytest -q` → `163 passed` | ✅ | 2026-09-16 |
+| Suite completa, 173 pruebas, once de ellas en navegador real | `python -m pytest -q` → `173 passed` | ✅ | 2026-09-16 |
+| Un sitio sin calibración **medida** no autoriza | `python -m pytest -q tests/test_degradation_gates.py` → `10 passed`; invertir la puerta (`calibration_is_verified` devolviendo `True` sin medición) hace caer 5 pruebas | ✅ | 2026-09-16 |
+| Recalibrar desde la interfaz retira la medición anterior | `rangyuu/webapp.py:127` pone `measured_error_cm = None`; prueba `test_recalibrating_drops_the_previous_measurement_and_the_authority` | ✅ | 2026-09-16 |
 | CI remota verde en `main` tras la reconciliación de ramas | `gh run list --branch main --limit 4` → `Rangyuu CI` y `build-scan` en `success` (runs `35129388309`, `35129388771`); los previos `35125517257` y `35125517447` están en `failure` | ✅ | 2026-09-16 |
 | Las tres ramas `codex/*` restantes no tienen trabajo único | `git merge-base --is-ancestor origin/<rama> main` → 0 para `ring-ui-less-is-more`, `block-geometry-dlt` y `north-navigation-ci` | ✅ | 2026-09-16 |
 | `codex/rangyuu-rebuild` no aporta nada que `main` no tenga | auditoría concepto por concepto con prueba `archivo:línea`; ver `docs/memoria.md` 2026-09-16 | ✅ | 2026-09-16 |
@@ -96,10 +98,15 @@
 
 ## Sin comprobar — ⏳ pendiente
 
-- **La puerta de calibración medida no está en `main`.** El arreglo está medido en su rama
-  (`salvage/stellar-degradation-gates`, `4f0f3be`): `python -m pytest -q` → `173 passed`, y al
-  invertir la puerta fallan 5 pruebas. Pero el PR #4 sigue `OPEN` y el commit no es ancestro de
-  `origin/main` (`64332c4`), así que la fila **no pasa a ✅** hasta que se mergee.
+- **La puerta de calibración solo cubre el camino de la app.** `78da540` cerró `Site.now()`, que es
+  lo que sirve `serve`/`webapp`. El camino del webhook **no** la tiene: `spatial.py:67` pasa
+  `homography_valid=device_id in self.calibrations`, es decir *ajustada*, no *medida*. Es la misma
+  trampa del residuo ~0 en otra puerta. Cerrarla necesita un error medido **por dispositivo**, y B8
+  dice que para la cámara de Ring ese número todavía no existe: inventarlo sería exactamente la
+  ficción que la puerta evita. ⏳ pendiente, y dicho en el PR #4.
+- **`session unavailable` es inalcanzable por la API de webhook.** La rama existe en `policy.py:20`,
+  pero `spatial.py:67` fija `session_active=True`, así que nada puede dispararla por ese camino. La
+  tercera de las "tres puertas" de `3101781` sigue abierta. ⏳ pendiente.
 
 | Qué | Por qué no se pudo | Bloque |
 |---|---|---|
