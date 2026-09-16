@@ -115,6 +115,35 @@ de clips, Rangyuu pone el mapa y la decisión. Los colores de estado siguen sien
 por estado y ninguno más: el rojo aparece solo en `PARA`, y `SIN CERTEZA` no es rojo, porque no es una
 alarma sino una ausencia.
 
+## 3.1 Idioma
+
+**Decidido el 2026-09-16: la interfaz sigue el idioma configurado en el navegador**, con inglés y
+castellano listos y **inglés como respaldo** cuando ninguno de los idiomas pedidos está en la tabla.
+El envío del hackathon y su video están en inglés y los jurados abren esta app: una interfaz solo en
+castellano es un riesgo de puntaje, no una cortesía pendiente.
+
+- **Dónde viven las cadenas.** Todas en `web/i18n.js`, en dos tablas. `UI` es lo que escribe la
+  pantalla, por clave (`nav.now`, `walk.stop`). `SERVER` es lo que el núcleo ya resolvió y manda en
+  castellano —estado, razón, detalle, etiquetas de fuente, razones de calibración—, indexado **por
+  el valor que de verdad llega**. El servidor no se toca: traducir es presentación.
+- **Nada se rompe si falta una traducción.** Una clave ausente cae al inglés y, si tampoco está,
+  devuelve la clave. Un texto del servidor sin entrada se muestra **tal cual**, no en blanco.
+- **El marcado estático** se marca con `data-i18n`, `data-i18n-aria` y `data-i18n-title`;
+  `applyStatic()` los rellena. `<html lang>` se sincroniza con el idioma activo.
+- **Anulación explícita** en Sistema, guardada en `localStorage` con `try/catch` en cada lectura y
+  cada escritura: en una ventana privada tira o vuelve vacío, y la app tiene que dibujar igual.
+  Volver a *El del navegador* borra la preferencia.
+- **Para agregar un idioma:** una entrada más en `UI` y otra en `SERVER` dentro de `web/i18n.js`, y
+  su nombre en `LANGUAGES`. Nada más: no hay build, ni paquete, ni archivo aparte.
+
+**El nombre del segundo destino en inglés no es "Walk".** El alcance escrito en
+[plan.md](plan.md) B4 es una capa espacial para **robots y dispositivos autónomos**, y el consumidor
+visible es un rover digital. Traducir *Caminata* literalmente estrecharía el producto a gente a pie
+justo en el idioma que leen los jurados, así que en inglés el destino se llama **"On board"** —el
+carril de la cámara a bordo— y la copia evita *walk*, *pedestrian*, *step* y *on foot*, con una
+prueba que lo verifica. **En castellano sigue siendo "Caminata"**: renombrarlo tocaría decisiones ya
+tomadas y no vale la churn dentro de un PR de interfaz.
+
 ## 4. Dónde corre
 
 **Aplicación web servida por el propio proceso de Rangyuu**, no app nativa. El motivo está medido y

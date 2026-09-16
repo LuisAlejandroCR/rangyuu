@@ -1,12 +1,17 @@
 // haptics.js: el aviso que no exige mirar la pantalla — vibración, tono y voz, uno por estado.
-// Se distingue de app.js, que trae el dato y dibuja: acá solo vive cómo se avisa. Cada canal se
-// detecta antes de usarse, porque Safari en iOS no tiene API de vibración y no se puede fingir.
+// Se distingue de app.js, que trae el dato y dibuja, y de i18n.js, de donde saca la palabra que
+// dice: acá solo vive cómo se avisa. Cada canal se detecta antes de usarse, porque Safari en iOS
+// no tiene API de vibración y no se puede fingir.
 
+import { language_, t } from "./i18n.js";
+
+// El patrón —vibración y tono— es el mismo en cualquier idioma: es la firma del estado y se
+// aprende de memoria. Lo único que cambia es la palabra, que sale de la tabla de idiomas.
 const PATTERNS = {
-  AVANZA: { vibrate: [35], tone: [660, 0.08], say: "avanza" },
-  CUIDADO: { vibrate: [60, 70, 60], tone: [440, 0.12], say: "cuidado" },
-  PARA: { vibrate: [140, 80, 140], tone: [220, 0.25], say: "para" },
-  "SIN CERTEZA": { vibrate: [25, 120, 25, 120, 25], tone: [330, 0.18], say: "sin certeza" },
+  AVANZA: { vibrate: [35], tone: [660, 0.08] },
+  CUIDADO: { vibrate: [60, 70, 60], tone: [440, 0.12] },
+  PARA: { vibrate: [140, 80, 140], tone: [220, 0.25] },
+  "SIN CERTEZA": { vibrate: [25, 120, 25, 120, 25], tone: [330, 0.18] },
 };
 
 export const support = {
@@ -38,7 +43,7 @@ export function announce(state, { force = false } = {}) {
     else pending = pattern.vibrate;
   }
   if (playTone(pattern.tone)) used.push("tone");
-  if (speak(pattern.say)) used.push("speech");
+  if (speak(t(`say.${state}`))) used.push("speech");
   return { state, used };
 }
 
@@ -70,7 +75,7 @@ function speak(text) {
   if (!support.speech) return false;
   try {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "es-ES";
+    utterance.lang = language_() === "es" ? "es-ES" : "en-US";
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
     return true;
@@ -107,10 +112,5 @@ export function reset() {
 
 /** Lo que este dispositivo puede hacer de verdad, para mostrarlo en Fuentes sin prometer de más. */
 export function channels() {
-  return {
-    vibrate: support.vibrate,
-    tone: support.audio,
-    speech: support.speech,
-    note: support.vibrate ? "" : "este navegador no expone vibración: el aviso es tono y voz",
-  };
+  return { vibrate: support.vibrate, tone: support.audio, speech: support.speech };
 }

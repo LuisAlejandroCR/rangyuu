@@ -34,6 +34,14 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       de tapar a la decisión, las zonas salieron del SVG donde se desbordaban, y los identificadores
       crudos (`RING_INFRASTRUCTURE`) dejaron de verse. Consola limpia a 390x844 y 1280x900; suite en
       185 pruebas. Evidencia en [verificacion.md](verificacion.md).
+      *Hecho el 2026-09-16:* **la interfaz es multilingüe** —inglés y castellano, por defecto el del
+      navegador, con anulación explícita en Sistema que sobrevive a una recarga—. Toda cadena
+      visible vive en `web/i18n.js`; el servidor no se tocó y traducir no mueve `state`,
+      `authorizes` ni `decision`. En inglés el segundo destino se llama **"On board"**, no "Walk":
+      B4 dice que el consumidor es cualquier vehículo autónomo o asistido. Verificado en los dos
+      idiomas a 390x844 y 1280x900, consola limpia; suite en 193 pruebas. El comportamiento de
+      idioma está especificado en [app.md](app.md) §3.1.
+      *Falta además:* el ícono de esa pestaña sigue siendo una persona caminando.
       *Hecho el 2026-09-15:* las seis pantallas existen y se alimentan del núcleo real; los cuatro
       estados de pantalla derivan de las tres decisiones con reglas probadas.
       *Hecho también:* revisión en navegador real con Playwright y seis pruebas de extremo a extremo;

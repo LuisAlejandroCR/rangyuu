@@ -24,32 +24,32 @@
 
   <!-- 1 · Ahora / Ruta segura -->
   <section class="screen" data-screen="ahora">
-    <header class="bar"><span class="brand">rangyuu</span><div><h1>Ahora</h1><span class="stamp" id="ahora-stamp">—</span></div></header>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1 data-i18n="nav.now">Ahora</h1><span class="stamp" id="ahora-stamp">—</span></div></header>
     <div class="verdict" id="verdict" role="status" aria-live="polite">
-      <span class="eyebrow">Ruta actual</span>
-      <span class="verdict-state" id="verdict-state">SIN CERTEZA</span>
-      <span class="verdict-reason" id="verdict-reason">esperando al sitio</span>
+      <span class="eyebrow" data-i18n="now.eyebrow">Ruta actual</span>
+      <span class="verdict-state" id="verdict-state" data-i18n="state.SIN CERTEZA">SIN CERTEZA</span>
+      <span class="verdict-reason" id="verdict-reason" data-i18n="now.waiting">esperando al sitio</span>
       <span class="verdict-detail" id="verdict-detail"></span>
-      <span class="verdict-gate" id="verdict-gate">no autoriza el paso</span>
+      <span class="verdict-gate" id="verdict-gate" data-i18n="gate.no">no autoriza el paso</span>
     </div>
     <div class="map-card">
-      <div class="section-heading"><span>Plano del espacio</span><button class="text-action" id="evidence-toggle" aria-expanded="false">Evidencia</button></div>
+      <div class="section-heading"><span data-i18n="now.map">Plano del espacio</span><button class="text-action" id="evidence-toggle" aria-expanded="false" data-i18n="now.evidence">Evidencia</button></div>
       <ul class="zone-chips" id="zone-chips"></ul>
       <svg class="map" id="map-now" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
-           role="img" aria-label="Mapa espacial con la trayectoria propuesta"></svg>
+           role="img" data-i18n-aria="now.mapAria" aria-label="Mapa espacial con la trayectoria propuesta"></svg>
       <ul class="legend">
-        <li><i class="swatch free"></i>libre</li>
-        <li><i class="swatch occupied"></i>ocupado</li>
-        <li><i class="swatch unknown"></i>sin datos</li>
-        <li><i class="swatch route"></i>ruta</li>
+        <li><i class="swatch free"></i><span data-i18n="legend.free">libre</span></li>
+        <li><i class="swatch occupied"></i><span data-i18n="legend.occupied">ocupado</span></li>
+        <li><i class="swatch unknown"></i><span data-i18n="legend.unknown">sin datos</span></li>
+        <li><i class="swatch route"></i><span data-i18n="legend.route">ruta</span></li>
       </ul>
       <div class="cell-detail" id="cell-detail" hidden></div>
       <details class="compact-details">
-        <summary>Zonas del sitio</summary>
+        <summary><span data-i18n="now.zones">Zonas del sitio</span></summary>
         <ul class="zones" id="zones"></ul>
       </details>
       <div class="evidence-panel" id="evidence-panel" hidden>
-        <p class="group-title">Últimas decisiones</p>
+        <p class="group-title" data-i18n="now.decisions">Últimas decisiones</p>
         <ol class="decisions" id="decisions"></ol>
       </div>
     </div>
@@ -57,41 +57,46 @@
 
   <!-- 2 · Modo caminata -->
   <section class="screen" data-screen="caminata" hidden>
-    <header class="bar"><span class="brand">rangyuu</span><div><h1>Caminata</h1><span class="stamp" id="walk-stamp">detenido</span></div></header>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1 data-i18n="nav.onboard">Caminata</h1><span class="stamp" id="walk-stamp" data-i18n="walk.idle">detenido</span></div></header>
     <div class="walk" id="walk" role="status" aria-live="polite">
-      <span class="eyebrow">Frente a vos</span>
-      <div class="walk-state" id="walk-state">SIN CERTEZA</div>
-      <div class="walk-reason" id="walk-reason">la cámara está apagada</div>
+      <span class="eyebrow" data-i18n="walk.eyebrow">Frente a vos</span>
+      <div class="walk-state" id="walk-state" data-i18n="state.SIN CERTEZA">SIN CERTEZA</div>
+      <div class="walk-reason" id="walk-reason" data-i18n="walk.cameraOff">la cámara está apagada</div>
       <div class="confidence"><span id="walk-confidence" style="width:0%"></span></div>
-      <p class="walk-note">La cámara es un sensor, no una grabadora: no se guarda video.</p>
+      <p class="walk-note" data-i18n="walk.note">La cámara es un sensor, no una grabadora: no se guarda video.</p>
     </div>
     <video id="camera" playsinline muted hidden></video>
     <canvas id="sampler" width="64" height="36" hidden></canvas>
     <div class="walk-actions">
-      <button class="primary" id="walk-toggle">Empezar</button>
-      <button class="stop" id="walk-stop">PARAR</button>
+      <button class="primary" id="walk-toggle" data-i18n="walk.start">Empezar</button>
+      <button class="stop" id="walk-stop" data-i18n="walk.stop">PARAR</button>
     </div>
   </section>
 
   <!-- 3 · Sistema: fuentes y configuración, fuera del uso diario -->
   <section class="screen" data-screen="sistema" hidden>
-    <header class="bar"><span class="brand">rangyuu</span><div><h1>Sistema</h1><span class="stamp" id="fuentes-stamp">—</span></div></header>
-    <p class="group-title">Fuentes de observación</p>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1 data-i18n="nav.system">Sistema</h1><span class="stamp" id="fuentes-stamp">—</span></div></header>
+    <p class="group-title" data-i18n="system.sources">Fuentes de observación</p>
     <ul class="sources" id="sources"></ul>
     <div class="panel" id="calibration"></div>
     <div class="panel" id="budget"></div>
     <div class="panel" id="haptics"></div>
+    <div class="panel" id="language-panel">
+      <h2 data-i18n="system.language">Idioma</h2>
+      <div class="row"><label class="sr-only" for="language" data-i18n="system.language">Idioma</label>
+        <select id="language"></select></div>
+    </div>
     <details class="setup">
-      <summary>Configurar espacio</summary>
+      <summary><span data-i18n="setup.title">Configurar espacio</span></summary>
       <div class="setup-body">
-        <p class="hint">Marcá cuatro puntos del suelo y escribí sus medidas reales. El error se muestra
+        <p class="hint" data-i18n="setup.hint">Marcá cuatro puntos del suelo y escribí sus medidas reales. El error se muestra
           antes de guardar; si supera el techo declarado, no se guarda.</p>
         <table class="points" id="points"></table>
-        <label class="field">Tamaño de celda (m)<input id="cell-size" type="number" step="0.05" value="0.25"></label>
-        <label class="field">Trayectoria a probar (celdas)<input id="route-input" type="text" value="2,2 3,2"></label>
+        <label class="field"><span data-i18n="setup.cellSize">Tamaño de celda (m)</span><input id="cell-size" type="number" step="0.05" value="0.25"></label>
+        <label class="field"><span data-i18n="setup.testRoute">Trayectoria a probar (celdas)</span><input id="route-input" type="text" value="2,2 3,2"></label>
         <div class="walk-actions">
-          <button class="primary" id="calibrate">Calibrar y medir</button>
-          <button class="ghost" id="save-route">Probar ruta</button>
+          <button class="primary" id="calibrate" data-i18n="setup.calibrate">Calibrar y medir</button>
+          <button class="ghost" id="save-route" data-i18n="setup.runRoute">Probar ruta</button>
         </div>
         <div class="panel" id="calibration-result" hidden></div>
       </div>
@@ -101,9 +106,9 @@
 </main>
 
 <nav class="tabs" id="tabs">
-  <button data-goto="ahora" class="active"><svg><use href="#icon-now"></use></svg><span>Ahora</span></button>
-  <button data-goto="caminata"><svg><use href="#icon-walk"></use></svg><span>Caminata</span></button>
-  <button data-goto="sistema"><svg><use href="#icon-settings"></use></svg><span>Sistema</span></button>
+  <button data-goto="ahora" class="active"><svg><use href="#icon-now"></use></svg><span data-i18n="nav.now">Ahora</span></button>
+  <button data-goto="caminata"><svg><use href="#icon-walk"></use></svg><span data-i18n="nav.onboard">Caminata</span></button>
+  <button data-goto="sistema"><svg><use href="#icon-settings"></use></svg><span data-i18n="nav.system">Sistema</span></button>
 </nav>
 
 <script type="module" src="app.js"></script>

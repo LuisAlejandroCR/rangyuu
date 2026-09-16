@@ -36,7 +36,8 @@ def page(app):
             browser = p.chromium.launch()
         except Exception as error:
             pytest.skip(f"chromium no disponible: {error}")
-        page = browser.new_page(viewport={"width": 390, "height": 844})
+        # Idioma declarado: la interfaz sigue al navegador y la voz habla en el idioma activo.
+        page = browser.new_page(viewport={"width": 390, "height": 844}, locale="es-ES")
         page.add_init_script(STUB)
         page.goto(app[1], wait_until="networkidle")
         # El navegador no deja vibrar ni sonar hasta que hay un gesto del usuario, así que la

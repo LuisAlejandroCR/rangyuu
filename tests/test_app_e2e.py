@@ -36,9 +36,14 @@ def browser():
         instance.close()
 
 
+PHONE = {"width": 390, "height": 844}
+
+
 @pytest.fixture(scope="module")
 def page(app, browser):
-    page = browser.new_page(viewport={"width": 390, "height": 844})
+    # El idioma va declarado: la interfaz sigue al navegador, así que sin `locale` estas pruebas
+    # dependerían del idioma de la máquina que las corre. Acá se fija el castellano a propósito.
+    page = browser.new_page(viewport=PHONE, locale="es-ES")
     page.goto(app[1], wait_until="networkidle")
     yield page
     page.close()
@@ -150,7 +155,7 @@ def test_the_app_loads_without_a_single_console_error(app, browser):
 
     `navigator.vibrate()` antes del primer gesto lo descarta el navegador y lo anota como error.
     """
-    fresh = browser.new_page(viewport={"width": 390, "height": 844})
+    fresh = browser.new_page(viewport=PHONE, locale="es-ES")
     errors = []
     fresh.on("pageerror", lambda e: errors.append(str(e)))
     fresh.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
