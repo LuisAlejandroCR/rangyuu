@@ -21,7 +21,10 @@ const clock = (at) => (at ? new Date(at * 1000).toLocaleTimeString("es") : "—"
 function show(name) {
   document.querySelectorAll(".screen").forEach((s) => { s.hidden = s.dataset.screen !== name; });
   document.querySelectorAll(".tabs button").forEach((b) => {
-    b.classList.toggle("active", b.dataset.goto === name);
+    const active = b.dataset.goto === name;
+    b.classList.toggle("active", active);
+    if (active) b.setAttribute("aria-current", "page");
+    else b.removeAttribute("aria-current");
   });
   refresh(name);
 }

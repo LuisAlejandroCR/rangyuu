@@ -4,6 +4,32 @@
 
 # Memoria
 
+## 2026-09-16 — La interfaz deja de parecer un panel técnico
+
+**Qué se hizo**
+
+- Se comparó la web con las referencias visuales de Ring suministradas y se corrigió la brecha
+  principal: el color ya coincidía, pero la jerarquía seguía dando el mismo peso a título, dato,
+  mapa, leyenda y navegación.
+- `web/index.html` y `web/styles.css`: cada pantalla ahora tiene una sola lectura dominante, tarjetas
+  blancas amplias sobre fondo frío, radios de 24 px, un único cian de acción, rótulos secundarios
+  discretos y navegación inferior con iconos propios en SVG. No se añadieron dependencias ni assets
+  remotos.
+- La acción de evidencia pasó dentro del encabezado del mapa y la leyenda se redujo a cuatro claves
+  cortas. Fuentes conserva todas las mediciones, pero las presenta como grupos secundarios.
+- `web/app.js`: la pestaña activa expone `aria-current="page"`; el cambio no toca el contrato de
+  datos ni deriva estados nuevos.
+- Revisión en navegador real a 390x844 y 1024x900 sin errores ni advertencias de consola. La suite
+  completa pasó: 151 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- No se probó la interfaz en Safari ni en un iPhone físico; el entorno disponible ejecutó Chromium.
+- No se hizo una prueba de usabilidad con una persona caminando. La simplificación visual está
+  verificada por inspección y regresión funcional, no por desempeño humano medido.
+
+**Dónde quedan los pendientes:** las dos verificaciones siguen en B12 de [plan.md](plan.md).
+
 ## 2026-09-16 — La precisión del detector a bordo, medida: 22 %
 
 **Qué se hizo**

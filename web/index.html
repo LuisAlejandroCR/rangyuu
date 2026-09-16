@@ -11,31 +11,43 @@
 </head>
 <body>
 
+<svg class="icon-sprite" aria-hidden="true">
+  <symbol id="icon-now" viewBox="0 0 24 24"><path d="M4 12.5 12 5l8 7.5v7a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="icon-walk" viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="2"/><path d="m10.5 8 3.5 1.5 2 4 3 1.5M12.5 9.5l-2 5 3 2.5-2 4M10.5 14.5 6 17.5"/></symbol>
+  <symbol id="icon-space" viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4zM4 12l8 4 8-4M4 17l8 4 8-4"/></symbol>
+  <symbol id="icon-sources" viewBox="0 0 24 24"><path d="M7 17a7 7 0 0 1 10 0M9.5 14.5a3.5 3.5 0 0 1 5 0"/><circle cx="12" cy="19" r="1"/></symbol>
+  <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6"/></symbol>
+</svg>
+
 <main id="screens">
 
   <!-- 1 · Ahora / Ruta segura -->
   <section class="screen" data-screen="ahora">
-    <header class="bar"><h1>Ahora</h1><span class="stamp" id="ahora-stamp">—</span></header>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1>Ahora</h1><span class="stamp" id="ahora-stamp">—</span></div></header>
     <div class="verdict" id="verdict">
+      <span class="eyebrow">Ruta actual</span>
       <span class="verdict-state" id="verdict-state">SIN CERTEZA</span>
       <span class="verdict-reason" id="verdict-reason">esperando al sitio</span>
       <span class="verdict-detail" id="verdict-detail"></span>
     </div>
-    <svg class="map" id="map-now" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
-         role="img" aria-label="Mapa espacial con la trayectoria propuesta"></svg>
-    <ul class="legend">
-      <li><i class="swatch free"></i>libre</li>
-      <li><i class="swatch occupied"></i>ocupado</li>
-      <li><i class="swatch unknown"></i>desconocido</li>
-      <li><i class="swatch route"></i>trayectoria</li>
-    </ul>
-    <button class="ghost" data-goto="evidencia">Ver evidencia</button>
+    <div class="map-card">
+      <div class="section-heading"><span>Plano del espacio</span><button class="text-action" data-goto="evidencia">Evidencia</button></div>
+      <svg class="map" id="map-now" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="Mapa espacial con la trayectoria propuesta"></svg>
+      <ul class="legend">
+        <li><i class="swatch free"></i>libre</li>
+        <li><i class="swatch occupied"></i>ocupado</li>
+        <li><i class="swatch unknown"></i>sin datos</li>
+        <li><i class="swatch route"></i>ruta</li>
+      </ul>
+    </div>
   </section>
 
   <!-- 2 · Modo caminata -->
   <section class="screen" data-screen="caminata" hidden>
-    <header class="bar"><h1>Caminata</h1><span class="stamp" id="walk-stamp">detenido</span></header>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1>Caminata</h1><span class="stamp" id="walk-stamp">detenido</span></div></header>
     <div class="walk" id="walk">
+      <span class="eyebrow">Frente a vos</span>
       <div class="walk-state" id="walk-state">SIN CERTEZA</div>
       <div class="walk-reason" id="walk-reason">la cámara está apagada</div>
       <div class="confidence"><span id="walk-confidence" style="width:0%"></span></div>
@@ -51,9 +63,12 @@
 
   <!-- 3 · Espacio -->
   <section class="screen" data-screen="espacio" hidden>
-    <header class="bar"><h1>Espacio</h1><span class="stamp" id="espacio-stamp">—</span></header>
-    <svg class="map tall" id="map-space" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
-         role="img" aria-label="Mapa de ocupación del sitio"></svg>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1>Espacio</h1><span class="stamp" id="espacio-stamp">—</span></div></header>
+    <div class="map-card">
+      <div class="section-heading"><span>Mapa de ocupación</span><span class="section-meta">tocá una celda</span></div>
+      <svg class="map tall" id="map-space" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="Mapa de ocupación del sitio"></svg>
+    </div>
     <div class="cell-detail" id="cell-detail" hidden></div>
     <p class="group-title">Zonas</p>
     <ul class="zones" id="zones"></ul>
@@ -61,7 +76,7 @@
 
   <!-- 4 · Fuentes -->
   <section class="screen" data-screen="fuentes" hidden>
-    <header class="bar"><h1>Fuentes</h1><span class="stamp" id="fuentes-stamp">—</span></header>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1>Fuentes</h1><span class="stamp" id="fuentes-stamp">—</span></div></header>
     <p class="group-title">Fuentes de observación</p>
     <ul class="sources" id="sources"></ul>
     <div class="panel" id="calibration"></div>
@@ -71,7 +86,7 @@
 
   <!-- 5 · Configurar espacio -->
   <section class="screen" data-screen="configurar" hidden>
-    <header class="bar"><h1>Configurar espacio</h1></header>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1>Configurar</h1><span class="stamp">espacio</span></div></header>
     <p class="hint">Marcá cuatro puntos del suelo y escribí sus medidas reales. El error se muestra
       antes de guardar; si supera el techo declarado, no se guarda.</p>
     <table class="points" id="points"></table>
@@ -86,7 +101,7 @@
 
   <!-- 6 · Evidencia -->
   <section class="screen" data-screen="evidencia" hidden>
-    <header class="bar"><h1>Evidencia</h1><span class="stamp">decisiones, no clips</span></header>
+    <header class="bar"><span class="brand">rangyuu</span><div><h1>Evidencia</h1><span class="stamp">decisiones, no clips</span></div></header>
     <p class="group-title">Últimas decisiones</p>
     <ol class="decisions" id="decisions"></ol>
   </section>
@@ -94,11 +109,11 @@
 </main>
 
 <nav class="tabs" id="tabs">
-  <button data-goto="ahora" class="active">Ahora</button>
-  <button data-goto="caminata">Caminata</button>
-  <button data-goto="espacio">Espacio</button>
-  <button data-goto="fuentes">Fuentes</button>
-  <button data-goto="configurar">Ajustes</button>
+  <button data-goto="ahora" class="active"><svg><use href="#icon-now"></use></svg><span>Ahora</span></button>
+  <button data-goto="caminata"><svg><use href="#icon-walk"></use></svg><span>Caminata</span></button>
+  <button data-goto="espacio"><svg><use href="#icon-space"></use></svg><span>Espacio</span></button>
+  <button data-goto="fuentes"><svg><use href="#icon-sources"></use></svg><span>Fuentes</span></button>
+  <button data-goto="configurar"><svg><use href="#icon-settings"></use></svg><span>Ajustes</span></button>
 </nav>
 
 <script type="module" src="app.js"></script>
