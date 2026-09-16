@@ -4,6 +4,64 @@
 
 # Memoria
 
+## 2026-09-16 — Reconciliación de ramas y CI verde en main
+
+**Qué se hizo**
+
+- `main` avanzó por fast-forward a `a31ba64`, absorbiendo los tres commits de
+  `codex/north-navigation-ci`: simplificación visual de la app, detector ONNX local y el prompt de
+  arranque. La suite siguió en 163 pruebas.
+- **Eso arregló CI.** `Rangyuu CI` y `build-scan` venían fallando en `main` (run `35125517257` y
+  `35125517447`) y pasan en el tip nuevo (`35129388309` y `35129388771`). Era el pendiente de
+  ejecución remota que B12 declaraba sin cerrar; ahora tiene número de run, no una afirmación.
+- `agent-worker.yml` fallaba en cada disparo programado —cada 6 h— porque `RANGYUU_PROVIDER_URL`
+  no está configurado. Ahora una corrida programada sin proveedor sale con aviso y código 0; un
+  `workflow_dispatch` manual sigue fallando fuerte, porque ahí alguien pidió la llamada a propósito.
+- `.claude/worktrees/` entró a `.gitignore`. Los agentes en paralelo escriben ahí y esa es
+  exactamente la forma del accidente que metió un video privado al historial.
+- `docs/setup-dev.md` decía que la suite termina en `43 passed`. El número real es `163`. Corregido.
+
+**Reconciliación de ramas, concepto por concepto**
+
+- `codex/ring-ui-less-is-more`, `codex/block-geometry-dlt` y `codex/north-navigation-ci` quedaron
+  probadas como **contenidas por completo** en `main` (`git merge-base --is-ancestor`). No hay nada
+  que rescatar en ellas.
+- `codex/rangyuu-rebuild` (59 commits atrás) se auditó entera: **nada que portar**. Cada capacidad
+  vive hoy en `main` con otro nombre —la rejilla en `spatial.py`, el pipeline repartido entre
+  `runtime.py` y `api.py`— y en varios casos `main` es **más estricto**: su `observation_from_event`
+  (`ring.py:12-18`) levanta excepción donde el viejo rellenaba con `"unknown"`/`0.0`. Portarlo habría
+  sido una regresión. `path_cells()` y `load_events()` son lo único ausente, y no tienen llamador.
+
+**Qué NO se verificó, y por qué**
+
+- El carril de a bordo (`python -m rangyuu.walk`) no se ejercitó: necesita `av`, un clip y el modelo
+  ONNX, y ninguno se versiona. ⏳ pendiente, sin relación con este lote.
+- Nada de este lote tocó la red: sin token fresco no se ejercitó la API de Ring. ⏳ pendiente.
+
+**Dónde quedan los pendientes:** el hueco de calibración detectado al auditar
+`claude/stellar-project-setup-gd0ba3` viaja en su propio PR y **todavía no está en `main`**; ver
+abajo, en la nota de PR #4.
+
+## PR #4 — abierto, todavía sin mergear
+
+Auditando `claude/stellar-project-setup-gd0ba3` apareció un hueco real y vivo en `main`: `Site.now()`
+autorizaba tránsito con `calibration=None`, y `_calibration()` derivaba `valid` del residuo del
+propio ajuste —el número ~0 que no prueba nada (Lección 3)—. Además, recalibrar desde la interfaz
+conservaba el error medido de la matriz **anterior**, regalándole a una homografía nueva una prueba
+que no se ganó. B9 decía "una prueba por fila, ninguna autoriza": era cierto de la tabla de
+decisión, pero **no de extremo a extremo en la fila de calibración**.
+
+El arreglo vive en `salvage/stellar-degradation-gates` (`4f0f3be`) y está medido: **173 pruebas**
+(163 + 10), y al invertir la puerta para que una calibración sin medir cuente como verificada
+**fallan 5 de ellas**, entre ellas la que retira la medición al sitio que se envía. No hay regresión
+en la app: `serve.py:41` sigue pasando los 0,9 cm reales, bajo el techo de 1,5 cm, así que sigue
+autorizando; la puerta solo muerde cuando el número falta.
+
+⏳ **Pendiente:** mergear. Al cerrar esta entrada el PR está `OPEN`, `MERGEABLE`, estado `CLEAN` y con
+sus cinco chequeos en verde, pero `origin/main` sigue en `64332c4` y el commit no es ancestro de
+`main`. No se documenta como hecho lo que no está en la rama.
+
+
 ## 2026-09-16 — Tres destinos y CI instalable
 
 **Qué se hizo**

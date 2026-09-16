@@ -10,6 +10,10 @@
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
 | Suite completa, 163 pruebas, once de ellas en navegador real | `python -m pytest -q` → `163 passed` | ✅ | 2026-09-16 |
+| CI remota verde en `main` tras la reconciliación de ramas | `gh run list --branch main --limit 4` → `Rangyuu CI` y `build-scan` en `success` (runs `35129388309`, `35129388771`); los previos `35125517257` y `35125517447` están en `failure` | ✅ | 2026-09-16 |
+| Las tres ramas `codex/*` restantes no tienen trabajo único | `git merge-base --is-ancestor origin/<rama> main` → 0 para `ring-ui-less-is-more`, `block-geometry-dlt` y `north-navigation-ci` | ✅ | 2026-09-16 |
+| `codex/rangyuu-rebuild` no aporta nada que `main` no tenga | auditoría concepto por concepto con prueba `archivo:línea`; ver `docs/memoria.md` 2026-09-16 | ✅ | 2026-09-16 |
+| El worker programado ya no falla por un proveedor sin configurar | `GITHUB_EVENT_NAME=schedule` con `RANGYUU_PROVIDER_URL` vacío → salida 0 con aviso; `workflow_dispatch` → salida 1 | ✅ | 2026-09-16 |
 | **Un detector de objetos ONNX local reconoce la moto que la heurística no podía**: en t=49,5 s devuelve `moto 0.69` y `persona 0.94`; en t=20 s y t=40 s no devuelve nada | SSD MobileNet v1 del ONNX Model Zoo con `onnxruntime 1.30`, sobre `walking_video.mp4` | ✅ | 2026-09-16 |
 | **24 ms por frame de media, 34 ms de máximo**, sobre 585 frames a 464x832, en CPU | Misma corrida | ✅ | 2026-09-16 |
 | El carril de visión **no frenó ni una vez** en toda la caminata: nada llegó nunca cerca en el corredor. Emitió 174 avisos, 20 dentro de los tramos marcados | Misma corrida, regla obstáculo = en el corredor **y** cerca | ✅ | 2026-09-16 |
@@ -91,6 +95,11 @@
   en este entorno; la suite corre formalmente.
 
 ## Sin comprobar — ⏳ pendiente
+
+- **La puerta de calibración medida no está en `main`.** El arreglo está medido en su rama
+  (`salvage/stellar-degradation-gates`, `4f0f3be`): `python -m pytest -q` → `173 passed`, y al
+  invertir la puerta fallan 5 pruebas. Pero el PR #4 sigue `OPEN` y el commit no es ancestro de
+  `origin/main` (`64332c4`), así que la fila **no pasa a ✅** hasta que se mergee.
 
 | Qué | Por qué no se pudo | Bloque |
 |---|---|---|
