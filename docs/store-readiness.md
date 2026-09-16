@@ -12,25 +12,70 @@ sigue `⏳ pendiente` hasta que alguien la ejecute.
 **Regla que no cambia por publicar:** una afirmación sin evidencia repetible no entra. En una tienda
 eso además deja de ser higiene interna y pasa a ser lo que se le promete a un desconocido.
 
-## 1. La decisión que bloquea a todas las demás: dónde vive el backend
+## 1. Dónde vive el backend — el dilema era falso
 
-Hoy la app apunta a `python -m rangyuu.serve` por LAN. **Eso no se puede publicar.** Ninguna app de
-tienda puede exigirle a quien la instala que corra un proceso de Python en una máquina de su casa.
-En cuanto esa laptop se suspende, quien probó desde TestFlight no ve nada.
+**Corregido el 2026-09-16.** La primera versión de este documento planteaba "alojado contra a bordo"
+como un lose-lose. Dos hechos del propio repo lo desarman.
 
-Hay dos salidas y **no son equivalentes**:
+**Alojar no es opcional: ya es obligatorio.** `.env.example:19` describe `RANGYUU_WEBHOOK_URL` como
+*"URL pública que recibe los webhooks"*, y `docs/cloud-run.md` ya especifica el despliegue con el
+secreto HMAC en Secret Manager. Ring empuja eventos a un endpoint público: no existe una versión de
+B2 o B5 que viva en una laptop. El fork nunca fue "alojado o no".
 
-| Salida | Qué gana | Qué cuesta |
-|---|---|---|
-| **Backend alojado** | Camino corto: el runtime medido de Python sigue siendo el que decide, tal cual está | **Se pierde el argumento de privacidad.** Los frames salen del dispositivo. B10 afirma *cero inferencia a terceros, probado envenenando `socket`*: alojado, esa frase deja de describir lo que se publica |
-| **Inferencia a bordo** | Conserva la privacidad, que es el diferenciador más fuerte | Hay que reconstruir la detección en el dispositivo. Se pierden los **8,16 ms/frame** ya medidos en Python y hay que volver a medir desde cero |
+**Por el cable ya viajan observaciones, no frames.** `rangyuu/ring.py:4` define
+`Observation(device_id, timestamp, kind, confidence, bbox)`: cinco campos y una caja. Ni un píxel.
+El camino de Ring nunca mandó video a ningún lado.
 
-**Lo que no se puede hacer es no decidir.** Si nadie elige, se elige alojado por inercia —es el
-camino de menor fricción— y el reclamo de privacidad se queda en el material de promoción
-describiendo algo que el producto ya no hace. Eso no es un detalle de marketing: es una afirmación
-sin evidencia, publicada.
+### El diseño que resuelve
 
-⏳ **Pendiente:** decidir, y anotar la decisión aquí con fecha.
+- **Cloud Run** sigue haciendo lo que ya hace: recibir los webhooks de Ring, sostener el mapa
+  espacial y responder `can_traverse`.
+- **El teléfono corre el detector a bordo** y publica `Observation`s — la *misma forma* a la que
+  `api.py` normaliza los eventos de Ring. Sin superficie de API nueva, sin contrato nuevo.
+- **El video nunca sale del dispositivo.** Solo salen cajas.
+
+**El reclamo de privacidad sobrevive literal, no aproximado.** B10 afirma *cero inferencia a
+terceros*, probado envenenando `socket`. Con este diseño la inferencia sigue siendo local —en el
+teléfono en vez de la laptop— y lo que cruza el cable es entrada aritmética, no percepción. La
+frase se puede seguir diciendo y sigue siendo cierta.
+
+**Lo que cuesta:** portar el detector a `onnxruntime-react-native` —el mismo SSD MobileNet ya medido
+en 24 ms/frame en Python— y **volver a medirlo en un teléfono**, porque ese número no se hereda.
+
+**Secuencia:** LAN para el hackathon, que demuestra bien y no cuesta nada. El port a bordo después
+del 10/23, como primera tarea del proyecto de publicación.
+
+⏳ **Pendiente:** el port a bordo y su medición en teléfono.
+
+## 1.b El producto real es pasivo: freno de emergencia, no asistente
+
+**Anotado el 2026-09-16.** La app es la superficie de demostración. En uso real rangyuu es
+tecnología pasiva: corre de fondo y **actúa**, no pregunta. El modelo es el freno de emergencia —si
+hay obstáculo, frena; no pide permiso.
+
+**La buena noticia: el núcleo ya está diseñado así.** `policy.py:34` devuelve `HOLD` salvo que se
+cumpla *todo* —cobertura, sesión, homografía válida, celda libre, sin `unknown`, sin `stale`, sin
+contradicción—. La ausencia de evidencia positiva es una negativa, no una duda. Feed cortado →
+`HOLD` por `feed stale`. Calibración sin medir → `HOLD`. Eso **es** semántica de freno: seguro por
+defecto, y `authorizes` solo se enciende cuando algo se lo ganó.
+
+Que el vehículo consulte `POST /api/rover/can-traverse` (plan, línea 134) en un lazo no contradice
+el modelo pasivo: es cómo se implementa. Quien decide frenar es la respuesta, no una persona
+mirando una pantalla.
+
+**La mala noticia, y es la que manda:** *actuar* exige una precisión que hoy no existe. Esto ya se
+intentó. Lección 5, textual: el carril a bordo se cableó a `PARA`, resultó **22 %** preciso —catorce
+frenadas falsas por minuto— y se degradó a aviso. **"Frenar hay que ganárselo."**
+
+En un vehículo de movilidad el error es peligroso en las dos direcciones: un falso negativo no
+frena ante un obstáculo real; un falso positivo frena solo y puede lanzar hacia adelante a quien
+viaja. Un freno automático no tolera 13-20 % de acierto en ninguna de las dos.
+
+**Conclusión:** el destino pasivo es correcto y el núcleo ya lo soporta. Lo que falta no es
+arquitectura, es **B11**: sin calibración a bordo no hay distancia, sin distancia no hay obstrucción,
+y sin obstrucción medida frenar automáticamente sería inventar una certeza que no se tiene.
+
+⏳ **Pendiente:** B11, y una medición de precisión que justifique pasar de avisar a actuar.
 
 ## 2. La puerta técnica: B11
 
@@ -70,8 +115,10 @@ Descubrirlo en semana uno no es nada; descubrirlo el 22/10 sí.
 ## 4. Lo que la tienda va a pedir y hoy no existe
 
 - **Política de privacidad publicada.** Obligatoria: la app usa cámara y datos de una cuenta Ring.
-- **App Privacy (las etiquetas de datos).** Lo que se declare ahí tiene que coincidir con la
-  decisión del punto 1. Declarar "no se recolectan datos" con un backend alojado es falso.
+- **App Privacy (las etiquetas de datos).** Tienen que describir lo que de verdad cruza el cable.
+  Con el diseño del punto 1 el video no sale del dispositivo, pero las observaciones —caja,
+  confianza, marca de tiempo, identificador de dispositivo— **sí**. "No se recolectan datos" sería
+  falso; lo cierto y defendible es "no sale video".
 - **Cadenas de uso en `Info.plist`**: cámara como mínimo, y las que sume el cliente Expo.
 - **Capturas de pantalla** por tamaño de dispositivo.
 - **Cuenta de demostración o video** para revisión, porque la app no se puede evaluar sin una fuente
@@ -94,7 +141,9 @@ El orden sano: entregar el hackathon, después tratar la publicación como un pr
 | Ítem | Estado |
 |---|---|
 | Cuenta Apple Developer | ✅ existe |
-| Decisión de backend (alojado vs a bordo) | ⏳ sin decidir — **bloquea el resto** |
+| Diseño de backend | ✅ resuelto: Cloud Run + detección a bordo, solo observaciones por el cable |
+| Port del detector a `onnxruntime-react-native` | ⏳ sin hacer, y sin medir en teléfono |
+| Actuación pasiva (freno automático) | ⏳ bloqueada por B11 y por la precisión |
 | B11 calibración a bordo | ⏳ falta la medida de la baldosa |
 | B2 vínculo de cuenta Ring | ⏳ faltan credenciales |
 | Primer build de TestFlight | ⏳ sin hacer |
