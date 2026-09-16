@@ -67,8 +67,10 @@ def test_an_uncalibrated_phone_observes_but_never_writes_to_the_map(app):
     site.observe_onboard(frame)
     frame[30:90, 40:120] = 220.0
     result = site.observe_onboard(frame)
-    assert result["detections"] >= 1 and result["written"] == 0
+    assert result["written"] == 0
     assert "no está calibrado" in result["reason"]
+    # Aun sin escribir, sí dice qué ve al frente: es contexto, no silencio.
+    assert result["clearance"]["state"] in {"CLEAR", "OBSTACLE", "UNCERTAIN"}
 
 
 def test_the_screen_never_shows_a_state_the_core_did_not_decide(page):

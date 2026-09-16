@@ -75,11 +75,16 @@ def test_calibration_reports_the_error_and_refuses_to_store_a_bad_fit(base_url):
 
 
 def test_an_onboard_frame_is_accepted_and_answers_with_the_new_state(base_url):
-    frame = {"width": 8, "height": 8, "gray": [40] * 64}
+    frame = {"width": 32, "height": 32, "gray": [40] * 1024}
     status, payload = post(base_url, "/api/space/observe", frame)
     assert status == 200 and payload["now"]["state"] in {"AVANZA", "CUIDADO", "PARA", "SIN CERTEZA"}
+    assert payload["clearance"]["state"] in {"CLEAR", "OBSTACLE", "UNCERTAIN"}
 
-    status, payload = post(base_url, "/api/space/observe", {"width": 8, "height": 8, "gray": [40] * 10})
+    status, payload = post(base_url, "/api/space/observe", {"width": 32, "height": 32, "gray": [40] * 10})
+    assert status == 422
+
+    # Un frame demasiado pequeño no puede decir nada del camino, y lo dice en vez de inventar.
+    status, payload = post(base_url, "/api/space/observe", {"width": 8, "height": 8, "gray": [40] * 64})
     assert status == 422
 
 

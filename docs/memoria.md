@@ -4,6 +4,38 @@
 
 # Memoria
 
+## 2026-09-15 — El carril de a bordo: la caminata real, con su límite
+
+**Qué se hizo**
+
+- Se recibió `walking_video.mp4`: una caminata real de 58,5 s grabada con el iPhone, 464x832 a 60 fps.
+  Es exactamente el caso que el arreglo de la mañana había dejado al descubierto: **una cámara a
+  bordo sin calibración no puede escribir celdas métricas**. En vez de fingirlas, se le dio su propio
+  carril.
+- `rangyuu/onboard.py`: `ForwardClearance` compara la franja de suelo **bajo los pies** —que se sabe
+  suelo— con la franja de **unos pasos adelante**. No habla de metros ni de profundidad: responde
+  `CLEAR`, `OBSTACLE` o `UNCERTAIN`.
+- **Ese carril degrada pero no autoriza.** Un `OBSTACLE` lleva la pantalla a `PARA` aunque el mapa
+  diga libre; un `UNCERTAIN` la baja a `CUIDADO`. Es la regla de `docs/architecture.md` §3 aplicada.
+- **`ClearanceFilter` con histéresis asimétrica:** empeorar es inmediato, volver a `CLEAR` exige
+  cuatro lecturas de acuerdo y 1,2 s. Sin eso el estado parpadeaba varias veces por segundo, que
+  como ayuda a la caminata es inservible y como aviso háptico, insoportable.
+- `python -m rangyuu.walk <video>` reproduce un clip y responde con números: sobre esta caminata,
+  585 lecturas → 149 `AVANZA`, 256 `CUIDADO`, 180 `PARA`, con 40 cambios de estado (~41 por minuto).
+- Suite en 147 pruebas.
+
+**Qué NO se verificó, y por qué**
+
+- **La tasa de falsos positivos.** El detector reacciona a *cualquier* cambio de superficie: un
+  cambio de baldosa, una sombra dura o una alfombra se leen igual que un obstáculo. Sobre esta
+  caminata no hay etiquetado cuadro a cuadro, así que **no se puede afirmar cuántos de esos 180
+  `PARA` eran reales**. Es el número que falta antes de ponerle esto a una persona.
+- **La cadencia de 41 cambios por minuto no está validada con nadie caminando.** Puede ser correcta o
+  agotadora; se sabrá probándola.
+- Nada de esto se probó en un iPhone en vivo: el clip se reprodujo desde archivo.
+
+**Dónde quedan los pendientes:** B11 y B12 de [plan.md](plan.md).
+
 ## 2026-09-15 — Aviso háptico por estado, con su límite dicho
 
 **Qué se hizo**
