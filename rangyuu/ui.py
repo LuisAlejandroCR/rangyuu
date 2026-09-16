@@ -42,7 +42,8 @@ class Screen:
                 "authorizes": self.authorizes, "detail": self.detail}
 
 
-def to_screen(report: dict, *, confidence=None, age_fraction=None, adjacent_occupied=False) -> Screen:
+def to_screen(report: dict, *, confidence=None, age_fraction=None, adjacent_occupied=False,
+              onboard=None) -> Screen:
     """Map one decision report to the screen state.
 
     `confidence` is the minimum confidence along the path, `age_fraction` how much of the
@@ -57,7 +58,13 @@ def to_screen(report: dict, *, confidence=None, age_fraction=None, adjacent_occu
     if decision != "PROCEED":
         return Screen(SIN_CERTEZA, reason, False)
 
+    # El carril de a bordo es contexto: puede degradar, nunca autorizar por sí solo.
+    if onboard == "OBSTACLE":
+        return Screen(PARA, "la cámara a bordo ve algo al frente", False,
+                      "el mapa autorizaba; la vista a bordo no")
     thin = []
+    if onboard == "UNCERTAIN":
+        thin.append("la cámara a bordo no puede afirmar qué hay al frente")
     if adjacent_occupied:
         thin.append("hay algo ocupado al lado del camino")
     if confidence is not None and confidence < 0.5 + CONFIDENCE_MARGIN:

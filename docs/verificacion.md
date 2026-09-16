@@ -9,7 +9,10 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
-| Suite completa, 132 pruebas, once de ellas en navegador real | `python -m pytest -q` → `132 passed` | ✅ | 2026-09-15 |
+| Suite completa, 147 pruebas, once de ellas en navegador real | `python -m pytest -q` → `147 passed` | ✅ | 2026-09-15 |
+| **Una caminata real de 58,5 s grabada con el iPhone atraviesa el carril de a bordo**: 585 lecturas → 149 `AVANZA`, 256 `CUIDADO`, 180 `PARA`; 40 cambios de estado, unos 41 por minuto | `python -m rangyuu.walk walking_video.mp4` (el video no se versiona) | ✅ | 2026-09-15 |
+| El carril de a bordo **degrada pero no autoriza**: un `OBSTACLE` lleva la pantalla a `PARA` aunque el mapa dijera libre | `python -m pytest tests/test_ui.py tests/test_onboard.py` | ✅ | 2026-09-15 |
+| La histéresis es asimétrica: empeorar es inmediato, volver a `CLEAR` exige cuatro lecturas de acuerdo y 1,2 s | `python -m pytest tests/test_onboard.py::test_going_back_to_clear_needs_agreement_and_time` | ✅ | 2026-09-15 |
 | **Cada estado tiene su patrón háptico** y solo avisa al cambiar: `AVANZA [35]`, `PARA [140,80,140]`; el mismo estado repetido no vuelve a vibrar | `python -m pytest tests/test_haptics_e2e.py` (se instrumenta `navigator.vibrate`) | ✅ | 2026-09-15 |
 | Fuentes declara qué canales de aviso existen en el dispositivo, en vez de prometerlos | `python -m pytest tests/test_haptics_e2e.py::test_the_sources_screen_declares_which_channels_exist` | ✅ | 2026-09-15 |
 | **El momento de la demo, probado en navegador**: una celda ocupada sobre la trayectoria deja la pantalla en `PARA` con la razón visible | `python -m pytest tests/test_app_e2e.py::test_an_occupied_cell_on_the_route_shows_para` | ✅ | 2026-09-15 |
@@ -56,6 +59,14 @@
 | El script del PR upstream corre contra la API real: sin flags da `201`, `H264/90000`, 5 candidatos ICE y `DELETE → 200`; con `--frames 60` da 60 frames a 1280x720 y 23,4 fps | `python scripts/live_view.py --token <token>` en el fork | ✅ | 2026-09-15 |
 
 ## Correcciones a datos ya documentados
+
+- **2026-09-15 — Un objeto oscuro se leía como "demasiado oscuro para juzgar".** En la caminata, un
+  vehículo negro tapando el paso salía `UNCERTAIN` en vez de `OBSTACLE`. Ninguno autoriza, así que
+  nunca fue inseguro, pero la etiqueta mentía. Corregido comparando con el suelo bajo los pies: con
+  suelo iluminado debajo, una franja oscura al frente es un objeto, no falta de luz.
+- **2026-09-15 — El replay corría en tiempo de pared.** Procesaba 58 s de video en 3 s, así que la
+  histéresis temporal no significaba nada y los estados parpadeaban cada 0,1 s. El reloj del sitio
+  ahora sigue al video.
 
 - **2026-09-15 — El modo caminata escribía celdas inventadas.** La revisión con Playwright destapó que
   un frame del iPhone se proyectaba con la homografía de la **cámara fija** y escribía celdas fuera del

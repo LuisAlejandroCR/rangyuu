@@ -6,6 +6,7 @@ import time
 from dataclasses import dataclass
 
 from .calibrate import Calibration
+from .onboard import CLEAR, OBSTACLE, Clearance, ClearanceFilter, ForwardClearance
 from .policy import cell_is_stale
 from .runtime import LocalRuntime
 from .ui import to_screen
@@ -54,6 +55,9 @@ class Site:
         self.error_ceiling_cm = float(error_ceiling_cm)
         self.clock = clock
         self.onboard_homography = None
+        self.onboard = ForwardClearance()
+        self.onboard_filter = ClearanceFilter(clock=self.clock)
+        self.onboard_reading = None
         self.zones: list = []
         self.route: list = []
         self.decisions: list = []
@@ -71,7 +75,8 @@ class Site:
         report = self.runtime.can_traverse([list(c) for c in route], moment)
         screen = to_screen(report, confidence=self._path_confidence(route),
                            age_fraction=self._age_fraction(route, moment),
-                           adjacent_occupied=self._adjacent_occupied(route, moment))
+                           adjacent_occupied=self._adjacent_occupied(route, moment),
+                           onboard=self._onboard_state(moment))
         payload = {**screen.as_dict(), "decision": report["decision"],
                    "route": [list(c) for c in route], "at": moment,
                    "cells": self._cells(moment), "evidence": report.get("evidence", {})}
@@ -97,6 +102,7 @@ class Site:
             "sources": [s.as_dict(moment) for s in self.sources.values()],
             "calibration": self._calibration(),
             "coverage": {"cells_known": len(known), "cells_seen": len(observed)},
+            "onboard": (self.onboard_reading[0].as_dict() if self.onboard_reading else None),
             "budget_ms": self.runtime.budget.as_dict(),
         }
 
@@ -137,13 +143,21 @@ class Site:
         moment = self.clock() if now is None else now
         self.sources["iphone"].active = True
         self.sources["iphone"].last_seen = moment
+        raw = self.onboard.look(gray)
+        # Lo que se muestra es la lectura suavizada: la cruda parpadea varias veces por segundo.
+        steady = self.onboard_filter.push(raw)
+        reading = raw if raw.state == steady else Clearance(steady, raw.confidence, raw.contrast,
+                                                            raw.dark_fraction)
+        self.onboard_reading = (reading, moment)
+        self.sources["iphone"].note = {
+            CLEAR: "camino despejado al frente",
+            OBSTACLE: "algo al frente que no es el suelo",
+        }.get(reading.state, "no puede afirmar qué hay al frente")
         if self.onboard_homography is None:
-            batch = self.runtime.detector.detect(gray)
-            self.sources["iphone"].note = "sin calibrar: observa, no escribe en el mapa"
-            return {"detections": len(batch.detections), "written": 0,
-                    "inference_ms": round(batch.inference_ms, 2),
-                    "reason": "el iPhone no está calibrado contra este suelo"}
-        return self.runtime.on_frame(gray, now=moment, decode_ms=decode_ms)
+            return {"written": 0, "clearance": reading.as_dict(),
+                    "reason": "el iPhone no está calibrado contra este suelo: observa, no escribe"}
+        return {**self.runtime.on_frame(gray, now=moment, decode_ms=decode_ms),
+                "clearance": reading.as_dict()}
 
     # --- internals ---------------------------------------------------------
 
@@ -159,6 +173,13 @@ class Site:
                         "age_s": round(moment - observation.observed_at, 1),
                         "source": observation.source})
         return sorted(out, key=lambda c: (c["cell"][1], c["cell"][0]))
+
+    def _onboard_state(self, moment):
+        """The onboard reading, only while it is fresh. Stale context is no context."""
+        if self.onboard_reading is None:
+            return None
+        reading, at = self.onboard_reading
+        return reading.state if moment - at <= self.runtime.stale_after else None
 
     def _observations(self, route):
         for cell in route:
