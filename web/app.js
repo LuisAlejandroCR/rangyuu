@@ -16,6 +16,11 @@ const api = async (path, body) => {
 
 const clock = (at) => (at ? new Date(at * 1000).toLocaleTimeString("es") : "—");
 
+// El núcleo habla en constantes; la pantalla habla en castellano. El contrato no cambia: acá solo
+// se traduce para mostrar, porque un `RING_INFRASTRUCTURE` en pantalla es una fuga del backend.
+const CELL_WORDS = { FREE: "libre", OCCUPIED: "ocupado", UNKNOWN: "sin datos" };
+const SOURCE_WORDS = { RING_INFRASTRUCTURE: "cámara fija del sitio", IPHONE_ONBOARD: "cámara a bordo" };
+
 // --- navegación entre pantallas ---------------------------------------------
 
 function show(name) {
@@ -42,18 +47,35 @@ function paintVerdict(data) {
   $("verdict-state").textContent = data.state;
   $("verdict-reason").textContent = data.reason || "";
   $("verdict-detail").textContent = data.detail || "";
-  $("ahora-stamp").textContent = clock(data.at);
-  drawMap($("map-now"), data.cells || [], data.route || [], []);
+  // `authorizes` viene resuelto del núcleo: la pantalla lo muestra, no lo deduce del color.
+  $("verdict-gate").textContent = data.authorizes ? "autoriza el paso" : "no autoriza el paso";
+  $("ahora-stamp").textContent = data.at ? clock(data.at) : "sin enlace";
+  if (data.cells) drawMap($("map-now"), data.cells, data.route || []);
   announce(data.state);
+}
+
+/** Perder el enlace con el sitio es quedarse sin evidencia, y sin evidencia no se autoriza.
+ *
+ * Antes la pantalla dejaba el último estado en grande —un AVANZA verde— y solo cambiaba la
+ * razón en letra chica, así que seguía autorizando sobre un dato que ya no tenía. Esto nunca
+ * asciende nada: solo retira la autorización, igual que ya hacía la pantalla de caminata. */
+function paintLinkLost() {
+  paintVerdict({ state: "SIN CERTEZA", reason: "sin enlace con el sitio",
+                 detail: "el último dato en pantalla ya no se puede confirmar", authorizes: false });
 }
 
 // --- mapa ---------------------------------------------------------------------
 
-function drawMap(svg, cells, route, zones) {
+// Las zonas ya no se dibujan dentro del SVG. Su texto se medía en unidades del viewBox, que
+// depende del tamaño de la rejilla, así que el mismo `font-size` salía enorme y desbordando la
+// tarjeta en un mapa de 4 celdas e ilegible en uno grande. Ahora son fichas HTML, en px.
+function drawMap(svg, cells, route) {
   const all = cells.map((c) => c.cell).concat(route);
   if (!all.length) {
     svg.setAttribute("viewBox", "0 0 100 40");
-    svg.innerHTML = '<text x="50" y="22" class="zone-label" text-anchor="middle">sin observaciones</text>';
+    svg.style.aspectRatio = "100 / 40";
+    svg.style.setProperty("--map-ar", 100 / 40);
+    svg.innerHTML = '<text x="50" y="23" class="empty-label" text-anchor="middle">todavía no hay observaciones</text>';
     return;
   }
   const xs = all.map((c) => c[0]), ys = all.map((c) => c[1]);
@@ -62,32 +84,20 @@ function drawMap(svg, cells, route, zones) {
   const minY = Math.min(...ys), maxY = Math.max(...ys);
   const width = maxX - minX + 1, height = maxY - minY + 1;
   const size = 10;
-  // Cada zona ocupa su propia línea: apiladas en una sola se tapan entre ellas.
-  const strip = zones.length ? zones.length * 4 + 2 : 0;
-  const box = [width * size, height * size + strip];
+  const box = [width * size, height * size];
   svg.setAttribute("viewBox", `0 0 ${box[0]} ${box[1]}`);
   svg.style.aspectRatio = `${box[0]} / ${box[1]}`;
-  const px = (cx) => (cx - minX) * size, py = (cy) => (maxY - cy) * size + strip;
+  svg.style.setProperty("--map-ar", box[0] / box[1]);
+  const px = (cx) => (cx - minX) * size, py = (cy) => (maxY - cy) * size;
 
   const parts = cells.map((c) =>
     `<rect class="cell ${c.state.toLowerCase()}" x="${px(c.cell[0])}" y="${py(c.cell[1])}" ` +
     `width="${size}" height="${size}" data-cell="${c.cell}" data-age="${c.age_s}" ` +
-    `data-confidence="${c.confidence}" data-source="${c.source}"><title>${c.state}</title></rect>`);
+    `data-state="${c.state}" data-confidence="${c.confidence}" data-source="${c.source}">` +
+    `<title>${CELL_WORDS[c.state] || c.state}</title></rect>`);
 
   parts.push(...route.map((c) =>
     `<rect class="route" x="${px(c[0]) + 1}" y="${py(c[1]) + 1}" width="${size - 2}" height="${size - 2}" rx="1.5"/>`));
-
-  // Las etiquetas de zona van sobre una tira propia arriba del mapa: encima de las celdas
-  // son ilegibles y tapan el dato.
-  parts.push(...zones.map((z, index) => {
-    const cells = z.cells || [];
-    if (!cells.length) return "";
-    const left = Math.min(...cells.map((c) => c[0])), right = Math.max(...cells.map((c) => c[0]));
-    const y = 4 + index * 4;
-    return `<line class="zone-span${z.risky ? " risky" : ""}" x1="${px(left) + 1}" y1="${y}" ` +
-           `x2="${px(right) + size - 1}" y2="${y}"/>` +
-           `<text class="zone-label" x="${px(left) + 1}" y="${y - 1.4}">${z.name}${z.risky ? " · riesgo" : ""}</text>`;
-  }));
 
   svg.innerHTML = parts.join("");
 }
@@ -96,8 +106,11 @@ function drawMap(svg, cells, route, zones) {
 
 async function loadSpace() {
   const data = await api("/api/space/map");
-  drawMap($("map-now"), data.cells || [], data.route || [], data.zones || []);
-  $("zones").innerHTML = (data.zones || []).map((z) =>
+  const zones = data.zones || [];
+  drawMap($("map-now"), data.cells || [], data.route || []);
+  $("zone-chips").innerHTML = zones.map((z) =>
+    `<li class="${z.risky ? "risky" : ""}">${z.name}${z.risky ? " · riesgo" : ""}</li>`).join("");
+  $("zones").innerHTML = zones.map((z) =>
     `<li><span><span class="label">${z.name}</span>
       <span class="meta">${z.cells.length} celdas${z.risky ? " · zona de riesgo" : ""}</span></span>
       <span class="chevron">›</span></li>`
@@ -108,10 +121,12 @@ $("map-now").addEventListener("click", (event) => {
   const rect = event.target.closest("rect.cell");
   const panel = $("cell-detail");
   if (!rect) { panel.hidden = true; return; }
+  const state = rect.dataset.state;
   panel.hidden = false;
-  panel.innerHTML = `<strong>Celda ${rect.dataset.cell}</strong><br>` +
-    `estado: ${rect.classList[1]} · confianza: ${rect.dataset.confidence} · ` +
-    `observada hace ${rect.dataset.age} s · fuente: ${rect.dataset.source}`;
+  panel.innerHTML = `<strong>Celda ${rect.dataset.cell} · ${CELL_WORDS[state] || state}</strong><br>` +
+    `<span class="meta">Observada hace ${rect.dataset.age} s por la ` +
+    `${SOURCE_WORDS[rect.dataset.source] || rect.dataset.source} ` +
+    `con ${Math.round(rect.dataset.confidence * 100)} % de confianza.</span>`;
 });
 
 // --- 4 · Fuentes -------------------------------------------------------------
@@ -122,7 +137,7 @@ async function loadSources() {
   $("sources").innerHTML = data.sources.map((s) => `
     <li>
       <span><span class="label">${s.label}</span>
-        <span class="kind">${s.note || s.kind}${s.age_s !== null ? ` · hace ${s.age_s} s` : ""}</span>
+        <span class="kind">${s.note || SOURCE_WORDS[s.kind] || s.kind}${s.age_s !== null ? ` · hace ${s.age_s} s` : ""}</span>
       </span>
       <span><span class="status ${s.active ? "" : "off"}">${s.active ? "Conectado" : "Sin señal"}</span>
         <span class="chevron">›</span></span>
@@ -130,11 +145,12 @@ async function loadSources() {
 
   const cal = data.calibration;
   $("calibration").innerHTML = `<h2>Calibración</h2>
-    <div class="row"><span>${cal.reason}</span>
+    <div class="row"><span>error ${cal.measured ? "medido" : "del ajuste"}</span>
       <span class="${cal.valid ? "good" : "bad"}">${cal.error_cm === null ? "—" : cal.error_cm + " cm"}</span></div>
-    <div class="row"><span>${cal.measured ? "medido contra puntos ajenos al ajuste" : "error del ajuste, que no prueba nada"}</span>
-      <span>${cal.measured ? "sí" : (cal.fit_error_cm ?? "—") + " cm"}</span></div>
-    <div class="row"><span>techo declarado</span><span>${cal.ceiling_cm} cm</span></div>`;
+    <div class="row"><span>techo declarado</span><span>${cal.ceiling_cm} cm</span></div>
+    <p class="note">${cal.measured
+      ? "Medido contra puntos que no entraron en el ajuste: el número prueba algo."
+      : "Es el error del propio ajuste, que siempre da casi cero y no prueba nada."}</p>`;
 
   const b = data.budget_ms;
   $("budget").innerHTML = `<h2>Presupuesto por frame</h2>` + (b.frames
@@ -151,7 +167,7 @@ async function loadSources() {
     <div class="row"><span>tono</span><span class="${h.tone ? "good" : "bad"}">${h.tone ? "disponible" : "no disponible"}</span></div>
     <div class="row"><span>voz</span><span class="${h.speech ? "good" : "bad"}">${h.speech ? "disponible" : "no disponible"}</span></div>` +
     (h.note ? `<div class="row"><span>${h.note}</span><span></span></div>` : "") +
-    `<div class="row"><span>avisos</span><span><button class="ghost" id="haptics-toggle" style="width:auto;padding:.35rem .7rem">Probar</button></span></div>`;
+    `<div class="row"><span>avisos</span><span><button class="ghost" id="haptics-toggle">Probar</button></span></div>`;
   $("haptics-toggle").addEventListener("click", () => { unlock(); resetHaptics(); announce($("verdict-state").textContent, { force: true }); });
 }
 
@@ -300,7 +316,7 @@ async function refresh(name) {
     }
     if (name === "sistema") await loadSources();
   } catch (error) {
-    $("verdict-reason").textContent = "sin enlace con el sitio";
+    if (name === "ahora") paintLinkLost();
   }
 }
 

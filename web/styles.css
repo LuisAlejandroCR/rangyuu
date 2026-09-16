@@ -6,27 +6,45 @@
 :root {
   --ink: #273139;
   --ink-2: #59656e;
-  --ink-3: #89949b;
+  /* Medido el 2026-09-16: el gris anterior (#89949b) daba 3,11:1 sobre blanco y 2,91:1 sobre
+     --ground, lejos del 4,5:1 de WCAG AA en los 10–13 px en que se usa. Este da 5,13:1 sobre
+     blanco y 4,80:1 sobre --ground, que es el peor de los dos fondos donde aparece. */
+  --ink-3: #656f77;
   --ground: #f4f8fa;
   --card: #ffffff;
   --line: #e4ebef;
 
-  --blue: #0aa7e8;          /* cian Ring: una sola voz de acción */
+  /* Un solo cian de acción en dos densidades: el claro pinta (relleno, trazo, halo) y el oscuro
+     escribe. Texto blanco sobre #0aa7e8 daba 2,73:1; sobre --blue-ink da 5,29:1, y la pestaña
+     activa —cián sobre --blue-soft, el peor caso— pasa de 2,57:1 a 4,82:1. */
+  --blue: #0aa7e8;
+  --blue-ink: #0a7499;
   --blue-soft: #e7f7fd;
-  --online: #299447;        /* el verde de "Online" */
+  --online: #1f7a39;        /* el verde de "Conectado", a 5,38:1 */
 
-  --avanza: #1f8a4c;
-  --cuidado: #b26a00;
+  --avanza: #1a7a42;
+  --cuidado: #9a5c00;
   --para: #c8372d;
   --incierto: #4a6fa5;
 
   --free: #dff0e4;
-  --occupied: #f7dcd9;
-  --unknown: #e7eaef;
+  --occupied: #f0bdb7;      /* la celda que explica un PARA no puede ser el rosa más pálido */
+  --unknown: #e2e6ec;
   --route: #0aa7e8;
+  /* Translúcido a propósito: con relleno opaco la ruta tapaba justo la celda ocupada que
+     sostiene la decisión, y el mapa dejaba de ser evidencia de nada. */
+  --route-soft: rgba(10, 167, 232, .12);
   --radius: 24px;
+  --tap: 44px;              /* el mínimo que un pulgar acierta sin apuntar */
   --shadow: 0 10px 32px rgba(27, 54, 68, .055);
 }
+
+/* El estado tiñe la tarjeta entera, no solo la palabra: a un metro de distancia el color del
+   riel y del halo se leen antes que el texto. Un tono por estado, ninguno de más. */
+.verdict, .walk, [data-state] { --tone: var(--incierto); --tone-soft: #eaeff7; }
+[data-state="AVANZA"] { --tone: var(--avanza); --tone-soft: #e4f3ea; }
+[data-state="CUIDADO"] { --tone: var(--cuidado); --tone-soft: #fbf0dc; }
+[data-state="PARA"] { --tone: var(--para); --tone-soft: #fbe8e6; }
 
 * { box-sizing: border-box; }
 
@@ -56,41 +74,69 @@ body {
 .verdict {
   position: relative; overflow: hidden; background: var(--card); border-radius: var(--radius);
   padding: 1.5rem 1.35rem 1.4rem; margin-bottom: 1rem; box-shadow: var(--shadow);
+  /* Sin transición, a propósito: con un fundido de 0,25 s el riel se quedaba verde un cuarto de
+     segundo después de que la palabra ya dijera PARA. Una señal de frenar no se desvanece. */
+  border-left: 6px solid var(--tone);
 }
 .verdict::after {
   content: ""; position: absolute; width: 8rem; height: 8rem; right: -3.25rem; top: -3.75rem;
-  border-radius: 50%; background: var(--blue-soft);
+  border-radius: 50%; background: var(--tone-soft);
 }
-.eyebrow { display: block; color: var(--blue); font-size: .6875rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; margin-bottom: .55rem; }
+.eyebrow { display: block; color: var(--blue-ink); font-size: .6875rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; margin-bottom: .55rem; }
 .verdict-state {
   display: block; position: relative; z-index: 1; font-size: clamp(2.4rem, 12vw, 3.5rem); font-weight: 720;
-  letter-spacing: -.055em; line-height: .98; color: var(--incierto);
+  letter-spacing: -.055em; line-height: .98; color: var(--tone);
 }
 .verdict-reason { display: block; margin-top: .65rem; font-size: 1.0625rem; font-weight: 520; color: var(--ink-2); }
-.verdict-detail { display: block; margin-top: .25rem; font-size: .8125rem; color: var(--ink-3); }
+.verdict-detail { display: block; margin-top: .3rem; font-size: .875rem; line-height: 1.35; color: var(--ink-3); }
 
-[data-state="AVANZA"] .verdict-state, [data-state="AVANZA"] .walk-state { color: var(--avanza); }
-[data-state="CUIDADO"] .verdict-state, [data-state="CUIDADO"] .walk-state { color: var(--cuidado); }
-[data-state="PARA"] .verdict-state, [data-state="PARA"] .walk-state { color: var(--para); }
+/* El bit que de verdad importa —autoriza o no— sale del propio contrato (`authorizes`), no de
+   una lectura del color: cuatro estados colapsan en la única pregunta que se hace quien camina. */
+.verdict-gate {
+  position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .4rem;
+  margin-top: 1rem; padding: .4rem .8rem .4rem .65rem; border-radius: 999px;
+  background: var(--tone-soft); color: var(--tone); font-size: .8125rem; font-weight: 650;
+}
+.verdict-gate::before {
+  content: ""; width: .5rem; height: .5rem; border-radius: 50%; background: currentColor;
+}
 
 /* --- mapa --- */
 
 .map-card { background: var(--card); border-radius: var(--radius); padding: .95rem; box-shadow: var(--shadow); }
-.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .15rem .2rem .85rem; font-size: .875rem; font-weight: 620; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .15rem .2rem .35rem; font-size: .875rem; font-weight: 620; }
 .section-meta { color: var(--ink-3); font-size: .6875rem; font-weight: 500; }
-.text-action { border: 0; background: none; color: var(--blue); padding: .2rem; font-size: .8125rem; font-weight: 620; }
-.map { width: 100%; height: auto; background: #f8fbfc; border-radius: 17px; padding: .65rem; display: block; }
+.text-action {
+  border: 0; background: none; color: var(--blue-ink); font-size: .8125rem; font-weight: 620;
+  min-height: var(--tap); padding: 0 .2rem; margin: -.5rem -.2rem;
+}
+/* El mapa es evidencia de la decisión, no la decisión: se le pone techo para que el estado y el
+   plano entren juntos en una pantalla de teléfono en vez de empujarse fuera de cuadro.
+   `--map-ar` lo escribe drawMap junto al aspect-ratio, y sirve para que el techo de alto recorte
+   también el ancho: sin eso la tarjeta quedaba con dos franjas vacías a los lados. */
+.map {
+  display: block; width: 100%; height: auto; margin-inline: auto;
+  max-height: 46vh; max-width: calc(46vh * var(--map-ar, 1));
+  background: #f8fbfc; border-radius: 17px; padding: .65rem;
+}
 .map rect.cell { stroke: var(--card); stroke-width: .5; }
 .map rect.free { fill: var(--free); }
 .map rect.occupied { fill: var(--occupied); }
 .map rect.unknown { fill: var(--unknown); }
-.map rect.route { fill: none; stroke: var(--route); stroke-width: .9; }
-.map .zone-label { fill: var(--ink-2); font-size: 2.6px; letter-spacing: .02em; }
-.map .zone-span { stroke: var(--line); stroke-width: 1.2; stroke-linecap: round; }
-.map .zone-span.risky { stroke: var(--cuidado); }
+.map rect.route { fill: var(--route-soft); stroke: var(--route); stroke-width: .9; }
+.map .empty-label { fill: var(--ink-3); font-size: 5px; }
+
+/* Las zonas salen del SVG: ahí su texto escalaba con la rejilla —2,6 unidades de un viewBox de 40
+   son ~20 px en un mapa de 4 celdas y 4 px en uno de 20— y se desbordaba de la tarjeta. */
+.zone-chips { display: flex; flex-wrap: wrap; gap: .35rem; list-style: none; padding: 0; margin: 0 .2rem .7rem; }
+.zone-chips li {
+  display: inline-flex; align-items: center; gap: .3rem; padding: .25rem .6rem; border-radius: 999px;
+  background: var(--ground); color: var(--ink-2); font-size: .75rem; font-weight: 550;
+}
+.zone-chips li.risky { background: #fbf0dc; color: var(--cuidado); }
 
 .legend { display: flex; justify-content: space-between; gap: .45rem; flex-wrap: nowrap; list-style: none; padding: 0;
-          margin: .8rem .2rem .1rem; color: var(--ink-3); font-size: .6875rem; }
+          margin: .8rem .2rem .1rem; color: var(--ink-3); font-size: .75rem; }
 .legend li { display: flex; align-items: center; gap: .4rem; }
 .swatch { width: .65rem; height: .65rem; border-radius: 50%; display: inline-block; border: 1px solid var(--line); }
 .swatch.free { background: var(--free); }
@@ -100,14 +146,31 @@ body {
 
 /* --- caminata --- */
 
-.walk { background: var(--card); border-radius: var(--radius); text-align: center; padding: 3rem 1.25rem 2rem; box-shadow: var(--shadow); }
-.walk-state { font-size: clamp(2.4rem, 12vw, 3.5rem); font-weight: 720; letter-spacing: -.055em; color: var(--incierto); }
+.walk {
+  background: var(--card); border-radius: var(--radius); text-align: center;
+  padding: 3rem 1.25rem 2.25rem; box-shadow: var(--shadow);
+  border-top: 6px solid var(--tone);
+}
+.walk-state { font-size: clamp(2.4rem, 12vw, 3.5rem); font-weight: 720; letter-spacing: -.055em; color: var(--tone); }
 .walk-reason { margin-top: .5rem; color: var(--ink-2); }
 .walk-note { color: var(--ink-3); font-size: .8125rem; margin: 1.5rem 0 0; }
-.confidence { height: 5px; background: var(--line); border-radius: 3px; margin: 1.5rem auto 0; max-width: 12rem; overflow: hidden; }
-.confidence span { display: block; height: 100%; border-radius: 3px; background: currentColor; transition: width .3s; }
+.confidence { height: 8px; background: var(--line); border-radius: 4px; margin: 1.5rem auto 0; max-width: 12rem; overflow: hidden; }
+.confidence span { display: block; height: 100%; border-radius: 4px; background: var(--tone); transition: width .3s; }
+/* La caminata tiene una sola tarjeta, así que se centra en el alto libre: apoyada arriba dejaba
+   media pantalla en blanco y parecía que faltaba contenido. El `:not([hidden])` es obligatorio:
+   sin él este `display` le gana al del atributo y la pantalla oculta se vería igual. */
+[data-screen="caminata"]:not([hidden]) {
+  display: flex; flex-direction: column; min-height: calc(100vh - 11.5rem);
+}
+[data-screen="caminata"] .walk { margin-block: auto; }
 .walk-actions { display: flex; gap: .75rem; margin-top: 1rem; }
-[data-screen="caminata"] .walk-actions { position: sticky; top: calc(100vh - 11rem); }
+/* El botón de parar vive donde cae el pulgar, no a media pantalla: antes quedaba anclado por un
+   `sticky` que dejaba ~300 px de vacío entre él y la navegación. */
+[data-screen="caminata"] .walk-actions {
+  position: fixed; z-index: 9; left: 50%; transform: translateX(-50%); margin: 0;
+  bottom: calc(4.9rem + env(safe-area-inset-bottom));
+  width: min(42rem, calc(100% - 2rem));
+}
 
 video, canvas { width: 1px; height: 1px; opacity: 0; position: absolute; }
 
@@ -140,6 +203,8 @@ video, canvas { width: 1px; height: 1px; opacity: 0; position: absolute; }
 .panel .row:last-child { border-bottom: none; }
 .panel .row span:first-child { color: var(--ink-2); }
 .panel .row span:last-child { font-variant-numeric: tabular-nums; font-weight: 500; }
+.panel .note { color: var(--ink-3); font-size: .8125rem; line-height: 1.4; margin: .1rem 0 .9rem; }
+.panel .ghost { width: auto; min-width: 5.5rem; padding: .5rem 1rem; }
 .bad { color: var(--para); }
 .good { color: var(--online); }
 
@@ -150,14 +215,16 @@ video, canvas { width: 1px; height: 1px; opacity: 0; position: absolute; }
 .decisions .state[data-state="PARA"] { color: var(--para); }
 .decisions .meta { color: var(--ink-3); font-size: .8125rem; font-variant-numeric: tabular-nums; }
 
-.cell-detail { background: var(--blue-soft); border-radius: 16px; padding: .9rem 1rem; margin: .75rem 0 1rem; font-size: .875rem; }
+.cell-detail { background: var(--blue-soft); border-radius: 16px; padding: .9rem 1rem; margin: .75rem 0 1rem; font-size: .875rem; line-height: 1.5; }
+.cell-detail .meta { color: var(--ink-2); }
 .compact-details { margin-top: .75rem; border-top: 1px solid var(--line); }
 .compact-details summary, .setup summary {
   cursor: pointer; color: var(--ink-2); font-size: .8125rem; font-weight: 620;
-  list-style: none; padding: .85rem .25rem .2rem;
+  list-style: none; padding: .85rem .25rem; min-height: var(--tap);
+  display: flex; align-items: center; justify-content: space-between;
 }
 .compact-details summary::-webkit-details-marker, .setup summary::-webkit-details-marker { display: none; }
-.compact-details summary::after, .setup summary::after { content: "+"; float: right; color: var(--blue); font-size: 1rem; }
+.compact-details summary::after, .setup summary::after { content: "+"; color: var(--blue-ink); font-size: 1.1rem; }
 .compact-details[open] summary::after, .setup[open] summary::after { content: "−"; }
 .compact-details .zones { margin: .65rem 0 .15rem; box-shadow: none; border: 1px solid var(--line); border-radius: 16px; }
 .evidence-panel { margin-top: .75rem; padding-top: .1rem; border-top: 1px solid var(--line); }
@@ -184,12 +251,12 @@ video, canvas { width: 1px; height: 1px; opacity: 0; position: absolute; }
 
 /* --- botones, con el azul de Ring --- */
 
-button { font: inherit; border-radius: 999px; border: 1px solid transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.primary { background: var(--blue); color: #fff; padding: .9rem 1.2rem; font-weight: 650; flex: 1; }
+button { font: inherit; border-radius: 999px; border: 1px solid transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; min-height: var(--tap); }
+.primary { background: var(--blue-ink); color: #fff; padding: .9rem 1.2rem; font-weight: 650; flex: 1; }
 .stop { background: var(--card); color: var(--ink-2); border-color: var(--line);
-        padding: .9rem 1.2rem; font-weight: 650; flex: 1; letter-spacing: .04em; }
+        padding: .9rem 1.2rem; font-weight: 650; flex: 1; letter-spacing: .04em; box-shadow: var(--shadow); }
 .walking .stop { background: var(--para); color: #fff; border-color: transparent; }
-.ghost { background: var(--blue-soft); color: var(--blue); border-color: transparent; padding: .75rem 1rem; width: 100%; font-weight: 620; }
+.ghost { background: var(--blue-soft); color: var(--blue-ink); border-color: transparent; padding: .75rem 1rem; width: 100%; font-weight: 620; }
 
 /* --- navegación inferior, estilo iOS --- */
 
@@ -199,13 +266,13 @@ button { font: inherit; border-radius: 999px; border: 1px solid transparent; cur
   border-top: 1px solid rgba(215, 225, 230, .8); padding: .35rem .35rem env(safe-area-inset-bottom);
 }
 .tabs button {
-  flex: 1; background: none; border: none; color: var(--ink-3);
-  padding: .35rem .1rem .25rem; font-size: .625rem; letter-spacing: .01em; border-radius: 14px;
+  flex: 1; background: none; border: none; color: var(--ink-3); min-height: var(--tap);
+  padding: .45rem .1rem .35rem; font-size: .6875rem; letter-spacing: .01em; border-radius: 14px;
 }
 .tabs button svg { display: block; width: 1.35rem; height: 1.35rem; margin: 0 auto .15rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tabs button:first-child svg { fill: currentColor; stroke: none; }
 .tabs button span { display: block; }
-.tabs button.active { color: var(--blue); font-weight: 650; background: var(--blue-soft); }
+.tabs button.active { color: var(--blue-ink); font-weight: 650; background: var(--blue-soft); }
 
 @media (min-width: 48rem) {
   body { padding-bottom: 6.5rem; }

@@ -43,6 +43,54 @@
 - `python -m rangyuu.walk` no se ejercitó: necesita `av`, un clip y el modelo ONNX, nada de eso se
   versiona. El cambio en ese archivo es un argumento de construcción, cubierto por prueba unitaria.
 
+## 2026-09-16 — La pantalla deja de autorizar cuando se queda sin dato
+
+**Qué se hizo**
+
+Tercera pasada sobre la interfaz, sobre los tres destinos ya consolidados y el lenguaje visual ya
+alineado con Ring. No se tocó el contrato de datos ni la derivación de los cuatro estados.
+
+- **El hallazgo que importa: perder el enlace con el sitio no retiraba la autorización.** Con el
+  proceso caído, `refresh()` solo cambiaba la razón en letra chica y dejaba el `AVANZA` verde en
+  grande, con la hora congelada. La app autorizaba tránsito sobre evidencia que ya no tenía. Ahora
+  cae a `SIN CERTEZA · sin enlace con el sitio` y el sello dice `sin enlace`. Esto **no asciende
+  nada**: solo retira, que es lo que la caminata ya hacía en `paintWalk`.
+- **Los cuatro estados se distinguen sin leer.** La tarjeta lleva riel lateral y halo del color del
+  estado, y una ficha que dice **`autoriza el paso` / `no autoriza el paso`** tomada del campo
+  `authorizes` del propio contrato, no deducida del color. El color del estado cambia **sin
+  transición**: con el fundido de 0,25 s el riel seguía verde un cuarto de segundo después de que
+  la palabra ya dijera `PARA`.
+- **Contraste: todo el texto pequeño estaba por debajo de WCAG AA y ahora pasa.** `--ink-3` daba
+  3,11:1 sobre blanco y 2,91:1 sobre el fondo; el cian de acción daba 2,73:1 como texto y 2,57:1 en
+  la pestaña activa. Medido token por token contra el fondo real de su tarjeta: el peor caso quedó
+  en **4,80:1**. Se separó el cian en dos densidades —`--blue` pinta, `--blue-ink` escribe— para no
+  perder el color de Ring en los rellenos.
+- **Ningún objetivo táctil baja de 44 px.** Antes: `Evidencia` 25 px, `Probar` 33 px, los `summary`
+  36 px. Ahora la sonda no encuentra ninguno por debajo en ninguna pantalla ni viewport.
+- **El mapa dejó de tapar a la decisión.** Medía 500 px contra 154 px del veredicto en un teléfono;
+  ahora 388 contra 204, y ambos entran juntos. El relleno de la ruta pasó a translúcido porque
+  **tapaba justo la celda ocupada que sostiene un `PARA`**, y el rosa de ocupado se oscureció.
+- **Las zonas salieron del SVG.** Su texto se medía en unidades del viewBox, así que el mismo
+  `font-size` salía enorme y desbordando la tarjeta en la rejilla de 4 celdas. Son fichas HTML.
+- **Se fue el panel de depuración.** `RING_INFRASTRUCTURE` e `IPHONE_ONBOARD` aparecían crudos en
+  Sistema; el detalle de celda mostraba `estado: free`. Se traducen en la capa de presentación, con
+  el contrato intacto (`tests/test_webapp.py:56` sigue exigiendo las constantes en el JSON).
+- **La consola quedó limpia.** `navigator.vibrate()` antes del primer gesto lo descarta el navegador
+  y lo anota como **error**; el audio, como advertencia. Ahora ambos canales esperan al gesto que
+  `unlock()` ya recibía, y la vibración pendiente se emite en cuanto llega.
+- **El botón de parar cayó al pulgar.** Estaba clavado con un `sticky` que dejaba ~300 px de vacío
+  entre él y la navegación.
+
+**Qué NO se verificó, y por qué**
+
+- Nada de esto se vio en un **iPhone real**: sigue faltando HTTPS o túnel, y Safari no da cámara en
+  HTTP. Las medidas son de Chromium a 390x844 y 1280x900. ⏳ pendiente, dentro de B12.
+- Las advertencias de `AudioContext` se eliminaron **no reproduciendo** antes del gesto; que el tono
+  suene de verdad en Safari iOS no se comprobó, porque no hay dispositivo. ⏳ pendiente.
+- El contraste se midió con la fórmula WCAG sobre los colores calculados, no con una herramienta
+  externa; el script vive fuera del repo y las cifras están en [verificacion.md](verificacion.md).
+
+**Dónde quedan los pendientes:** B12, en las dos filas de iPhone real y sesión WHEP viva.
 ## 2026-09-16 — Reconciliación de ramas y CI verde en main
 
 **Qué se hizo**
