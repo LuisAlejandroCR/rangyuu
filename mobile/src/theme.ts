@@ -11,4 +11,7 @@ export const COLORS = {
   action: "#0a7499",
   stop: "#c8372d",
   error: "#c8372d",
+  // The SIN CERTEZA blue lightened for small text: #4a6fa5 gives 3.70:1 on `background`, this
+  // gives 4.94:1 (WCAG AA asks 4.5:1 below 18 px). Same hue, so it still reads as "uncertain".
+  uncertainText: "#6084b8",
 } as const;

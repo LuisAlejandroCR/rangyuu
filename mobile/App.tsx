@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   body: { color: COLORS.secondary, fontSize: 15, lineHeight: 21 },
   actionWrap: { marginTop: "auto" },
   backendDown: {
-    color: STATE_COLOR[SIN_CERTEZA],
+    color: COLORS.uncertainText,
     fontSize: 13,
     textAlign: "center",
     marginBottom: 8,
