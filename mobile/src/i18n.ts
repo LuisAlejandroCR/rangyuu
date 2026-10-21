@@ -1,5 +1,6 @@
-// i18n.ts: the small hand-rolled string table, device language first, English as fallback.
-// Same rule as the web app, and deliberately no i18n library for a screen with a dozen strings.
+// i18n.ts: the small hand-rolled string table in Spanish, English and Portuguese. The device
+// language is the default; a choice saved in settings.ts overrides it. No i18n library for a
+// screen with a couple of dozen strings.
 // Distinguished from state.ts: the four state names are NOT translated — they are core values.
 import { getLocales } from "expo-localization";
 
@@ -22,7 +23,17 @@ type Key =
   | "notAuthorized"
   | "linkLost"
   | "capturing"
-  | "idle";
+  | "idle"
+  | "settings"
+  | "languageLabel"
+  | "languageAuto"
+  | "voiceLabel"
+  | "spokenLabel"
+  | "on"
+  | "off"
+  | "test";
+
+export type Lang = "es" | "en" | "pt";
 
 const EN: Record<Key, string> = {
   title: "rangyuu",
@@ -45,6 +56,14 @@ const EN: Record<Key, string> = {
   linkLost: "lost the link to the site",
   capturing: "capturing",
   idle: "stopped",
+  settings: "Voice and language",
+  languageLabel: "Language",
+  languageAuto: "Device",
+  voiceLabel: "Voice",
+  spokenLabel: "Spoken alerts",
+  on: "On",
+  off: "Off",
+  test: "Test voice",
 };
 
 const ES: Record<Key, string> = {
@@ -68,22 +87,68 @@ const ES: Record<Key, string> = {
   linkLost: "se perdió el enlace con el sitio",
   capturing: "capturando",
   idle: "detenido",
+  settings: "Voz e idioma",
+  languageLabel: "Idioma",
+  languageAuto: "Del teléfono",
+  voiceLabel: "Voz",
+  spokenLabel: "Avisos hablados",
+  on: "Sí",
+  off: "No",
+  test: "Probar voz",
 };
 
-/** Spanish only when the device asks for it; anything else falls back to English. */
-function pickTable(): Record<Key, string> {
+const PT: Record<Key, string> = {
+  title: "rangyuu",
+  start: "Iniciar",
+  stop: "Parar",
+  waiting: "Aguardando a primeira decisão",
+  permissionTitle: "É preciso acesso à câmera",
+  permissionBody:
+    "rangyuu lê o caminho à frente com a câmera de bordo. Os quadros vão para o seu próprio backend e para nenhum outro lugar.",
+  permissionGrant: "Permitir câmera",
+  backendLabel: "Backend",
+  backendDown: "Sem conexão com o backend. Iniciar não enviará quadros.",
+  backendLostWhileRunning: "A conexão com o backend caiu. Pare até que volte.",
+  framesLabel: "Quadros enviados",
+  alertsLabel: "Avisos emitidos",
+  decisionLabel: "Decisão do núcleo",
+  onboardLabel: "Câmera de bordo",
+  authorized: "Rota autorizada",
+  notAuthorized: "Rota não autorizada",
+  linkLost: "perdemos a conexão com o local",
+  capturing: "capturando",
+  idle: "parado",
+  settings: "Voz e idioma",
+  languageLabel: "Idioma",
+  languageAuto: "Do telefone",
+  voiceLabel: "Voz",
+  spokenLabel: "Avisos falados",
+  on: "Sim",
+  off: "Não",
+  test: "Testar voz",
+};
+
+const TABLES: Record<Lang, Record<Key, string>> = { es: ES, en: EN, pt: PT };
+
+/** The device language when it is one of ours; anything else falls back to English. */
+export function deviceLanguage(): Lang {
   try {
     const code = getLocales()[0]?.languageCode;
-    return code === "es" ? ES : EN;
+    return code === "es" || code === "pt" ? code : "en";
   } catch {
-    return EN;
+    return "en";
   }
 }
 
-const TABLE = pickTable();
+let current: Lang = deviceLanguage();
+
+/** Switch the strings t() returns. The screen re-renders from its own settings state. */
+export function setLanguage(lang: Lang): void {
+  current = lang;
+}
 
 export function t(key: Key): string {
-  return TABLE[key];
+  return TABLES[current][key];
 }
 
 /** The reason strings arrive already worded by rangyuu/ui.py:15 (REASONS) and are shown as-is. */
