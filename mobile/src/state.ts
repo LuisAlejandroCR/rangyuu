@@ -3,6 +3,8 @@
 // into a state, and duplicating that logic in JavaScript would let the two drift apart.
 // Distinguished from api.ts, which fetches, and i18n.ts, which only translates labels.
 
+import { COLORS } from "./theme";
+
 export const AVANZA = "AVANZA";
 export const CUIDADO = "CUIDADO";
 export const PARA = "PARA";
@@ -36,8 +38,8 @@ export function isRejection(state: ScreenState): boolean {
 }
 
 export const STATE_COLOR: Record<ScreenState, string> = {
-  [AVANZA]: "#2ecc71",
-  [CUIDADO]: "#f1c40f",
-  [PARA]: "#e74c3c",
-  [SIN_CERTEZA]: "#8e9aa6",
+  [AVANZA]: "#1a7a42",
+  [CUIDADO]: "#9a5c00",
+  [PARA]: "#c8372d",
+  [SIN_CERTEZA]: "#4a6fa5",
 };
