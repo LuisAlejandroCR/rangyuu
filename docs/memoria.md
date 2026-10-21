@@ -58,6 +58,30 @@
 - Que cada clip cortado por silencio diga su frase exacta se infirió de duraciones, no se escuchó.
 
 **Dónde quedan los pendientes:** `docs/mobile.md`, "Qué está sin verificar".
+## 2026-10-21 — README público en inglés, licencia MIT y escaneo de secretos
+
+**Qué se hizo**
+
+- `README.md` reescrito en inglés para el jurado. El anterior decía "Todavía no hay código". El nuevo
+  trae la promesa, el contrato `PROCEED`/`HOLD`/`UNKNOWN`, una tabla de permalinks a cada línea donde
+  se usa Ring, el Quickstart desde un clon limpio, las cifras medidas con fecha y una sección de lo
+  no verificado. Los permalinks fijaban `d53ead3`; tras la reescritura del historial apuntan a
+  `0cbd264`, su equivalente con el mismo árbol, así que los números de línea no cambian.
+- `LICENSE` MIT y `license = { text = "MIT" }` en `pyproject.toml`.
+- Escaneo del historial completo: limpio de credenciales. Encontró un video de casa,
+  `test_home_video.mp4`, que se añadió en `371f962` y se borró en `2baabe0`. Sigue en el historial.
+
+**Qué NO se verificó, y por qué**
+
+- **El repo sigue privado, a propósito.** Antes de abrirlo hay que quitar el video del historial.
+  Hay dos opciones y las dos piden confirmación humana: reescribir con `git filter-repo --path
+  test_home_video.mp4 --invert-paths` y hacer force push (también rompe los SHA de los permalinks y
+  las ramas viejas), o publicar un repo nuevo con un solo commit del estado actual.
+- La copia limpia se armó con `git ls-files`, no con `git clone`: el remoto es privado y la rama no
+  estaba subida todavía. Contiene exactamente lo versionado.
+
+**Dónde quedan los pendientes:** B7 (video y submission) en `docs/plan.md`, y la decisión sobre el
+historial antes de hacer público el repo.
 
 ## 2026-09-16 — B11: la puerta de calibración a bordo, conectada al carril
 
