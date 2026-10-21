@@ -1,89 +1,126 @@
-<!-- README.md: portada del repo. Qué es esto, en qué estado está y en qué orden leer.
-     El análisis vive en docs/ring-track.md; el checklist accionable en docs/plan.md;
-     el qué-se-hizo/qué-no-se-verificó en docs/memoria.md. -->
+<!-- README.md: portada pública del repo, en inglés, para el jurado de la pista Ring.
+     Dice qué hace el código, dónde se usa Ring (permalinks), cómo correrlo desde un clon limpio y
+     qué sigue sin verificar. No es el checklist (docs/plan.md) ni la evidencia fechada
+     (docs/verificacion.md) ni la bitácora (docs/memoria.md), que siguen en castellano. -->
 
 # rangyuu
 
-Repo de trabajo para **Build, Ship, Shape: Amazon Developer Hackathon** (2026), **pista Ring**.
+**A safe-by-default spatial layer for assisted mobility.** Rangyuu turns Ring camera observations
+into a floor-plane occupancy map with confidence and expiry, and answers one question for anything
+that moves: *can I traverse this path right now?*
 
-El repositorio de trabajo es privado mientras se desarrolla. La entrega final tendrá que ser pública,
-con licencia open source, instrucciones reproducibles y una demostración funcional.
+The answer is always one of three:
 
-## Estado — 2026-09-14
+| Decision | Meaning | Authorizes transit |
+|---|---|---|
+| `PROCEED` | Every cell on the path was observed free, recently, by a calibrated camera | **yes — the only one** |
+| `HOLD` | Something observed blocks or contradicts the path | no |
+| `UNKNOWN` | Evidence is missing, stale or insufficient | no |
 
-**Todavía no hay código.** Pista escogida: Ring. Rangyuu será una **capa de contexto espacial para
-agentes y dispositivos autónomos**: Ring aporta percepción desde la infraestructura, el iPhone puede
-representar la cámara a bordo y un rover digital consume decisiones `PROCEED`, `HOLD` o `UNKNOWN`.
-No se usará CCTV y no se dependerá de hardware físico para la demo. El alcance y las puertas técnicas
-están en `docs/plan.md`.
+Absence of evidence is never a yes. Cut the feed and the answer drops from `PROCEED` to `UNKNOWN`
+(`feed stale`) without anything else changing.
 
-## Fechas
+Built for **Build, Ship, Shape: Amazon Developer Hackathon 2026 — Ring track**. Priority category:
+**accessibility** (assisted mobility: a wheelchair, a mobility scooter or a robot crossing a space
+its own camera cannot fully see). The visible consumer in the demo is a digital rover; no physical
+hardware is required.
 
-| Cuándo | Qué |
+## Where Ring is used
+
+Ring is the infrastructure sensor. Remove it and the map has no evidence, so every answer is
+`HOLD`/`UNKNOWN`. Permalinks point at the exact lines:
+
+| What | Where |
 |---|---|
-| **2026-10-23, 12:00 PM PT** | Cierre de submission |
-| 2026-11-09 → 11-20 | Judging |
-| ~2026-12-03 | Ganadores |
+| Ring REST client: Playground access token or refresh-token exchange, HTTPS-only | [`rangyuu/ring_client.py` L61–L99](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/ring_client.py#L61-L99) |
+| Device discovery: `/v1/devices`, `/status`, `/capabilities`, `/location`, `/v1/users/me` (JSON:API unwrapped) | [`rangyuu/ring_client.py` L103–L117](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/ring_client.py#L103-L117) |
+| WHEP live view signaling from Python, no browser: `POST` SDP offer, `DELETE` to close | [`rangyuu/whep.py` L12–L60](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/whep.py#L12-L60) |
+| H264 media received and decoded outside the browser (`aiortc`) | [`rangyuu/live.py` L38–L84](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/live.py#L38-L84) |
+| Webhook HMAC-SHA256 over the raw body bytes, constant-time compare | [`rangyuu/ring.py` L6–L11](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/ring.py#L6-L11) |
+| Signature checked **before** JSON is parsed, with a body size cap | [`rangyuu/api.py` L56–L67](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/api.py#L56-L67) |
+| Ring event (`confidence`, `bounding_box`) → observation → floor cell through a homography | [`rangyuu/ring.py` L12–L18](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/ring.py#L12-L18), [`rangyuu/spatial.py` L26–L44](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/spatial.py#L26-L44) |
+| The decision contract: `PROCEED` only when everything holds | [`rangyuu/policy.py` L33–L36](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/policy.py#L33-L36) |
+| `POST /api/rover/can-traverse`: `authorizes` is true only for `PROCEED` | [`rangyuu/api.py` L89–L94](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/api.py#L89-L94) |
+| An unmeasured calibration observes but never authorizes | [`rangyuu/site.py` L253–L275](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/site.py#L253-L275) |
 
-## Orden de lectura
+## Quickstart from a clean clone
 
-1. `AGENTS.md` — cómo se trabaja y cómo se documenta aquí.
-2. `docs/plan.md` — qué está abierto y qué está cerrado hoy.
-3. `docs/perception.md` — el eje: qué se puede sensar con una cámara fija, qué no, y qué pasa cuando falla.
-4. `docs/architecture.md` — dónde corre cada cosa: inferencia local, y la nube solo donde no hay prisa.
-5. `docs/ring-track.md` — la API de Ring, el Playground y las ideas con su riesgo.
-6. `docs/setup-dev.md` — cómo correr el núcleo y cómo entregar las credenciales de Ring.
-7. `docs/verificacion.md` — qué está comprobado, con qué comando, y qué sigue pendiente.
-8. `docs/memoria.md` — qué se hizo y qué quedó sin verificar, por sesión.
-9. `docs/video.md` y `docs/test-rig.md` — producción del video y montaje de pruebas sin hardware.
-
-## La pista, en tres líneas
-
-Se construye contra las **Ring APIs**; **no hace falta un dispositivo físico** porque el
-**Developer Playground** entrega token corto y simula eventos de Package, Vehicle y Motion con
-WebRTC/WHEP. Categorías prioritarias: access control, business systems, IoT home automation,
-accessibility, caretaking. Encima de la pista se puede apilar **un** mini challenge
-(Open Source **o** AWS Builder).
-
-## Producto en una frase
-
-**Rangyuu convierte observaciones de cámaras Ring en un mapa espacial con ocupación, confianza y
-caducidad, para que cualquier dispositivo pueda consultar si una trayectoria es transitable.**
-
-El producto es general; el rover digital es solamente el consumidor visible de la demostración. El
-iPhone, si se usa, representa el sensor a bordo del rover. Los videos grabados son fixtures de prueba,
-no sustituyen la integración real con Ring.
-
-## Código disponible
+Requires Python 3.11+. No Ring credentials and no hardware are needed for the steps below.
 
 ```sh
-python -m pytest        # suite completa del núcleo
-python -m rangyuu.serve # la app en http://localhost:8080, sin credenciales ni hardware
-python -m rangyuu       # demo en terminal: libre → ocupado → duplicado rechazado → caducado
+git clone https://github.com/LuisAlejandroCR/rangyuu.git
+cd rangyuu
+python -m pip install -e . pytest
+python -m pytest -q          # 173 passed, 4 skipped
+python -m rangyuu            # terminal demo: free -> occupied -> duplicate rejected -> expired
+python -m rangyuu.serve      # the app at http://localhost:8080
 ```
 
-| Módulo | Qué hace |
-|---|---|
-| `rangyuu/geometry.py` | DLT normalizado con SVD: lleva píxeles al plano del suelo en metros. |
-| `rangyuu/spatial.py` | Estado espacial por dispositivo: celdas, confianza, caducidad, oclusión y deduplicación. |
-| `rangyuu/policy.py` | El contrato de salida: sin evidencia explícita no hay `PROCEED`. |
-| `rangyuu/ring.py` | Firma HMAC-SHA256 del webhook y conversión de evento Ring a `Observation`. |
-| `rangyuu/ring_client.py` | Cliente de solo lectura de la API de Ring: token, refresco y descubrimiento de dispositivos. |
-| `rangyuu/config.py` | Configuración: entorno primero, `.env.local` después. |
-| `rangyuu/calibrate.py` | Correspondencias medidas → homografía **y error en centímetros** (medido: 0,9 cm sobre 61 cm). |
-| `web/` + `rangyuu/webapp.py` | La app: seis pantallas servidas por el propio proceso ([app.md](docs/app.md)). |
-| `rangyuu/vision.py` | Detección de objetos ONNX en local: nombra lo que ve, 24 ms por frame. |
-| `rangyuu/onboard.py` | La cámara a bordo: despejado, obstáculo o incierto, sin hablar de metros. |
-| `rangyuu/walk.py` | Reproduce una caminata grabada y responde con números (`python -m rangyuu.walk`). |
-| `web/haptics.js` | El aviso sin mirar la pantalla: vibración, tono y voz, uno por estado. |
-| `rangyuu/ui.py` | Los cuatro estados de pantalla, derivados de las tres decisiones del núcleo. |
-| `rangyuu/site.py` | Lo que un sitio sabe: zonas, calibración y bitácora de decisiones. |
-| `rangyuu/detect.py` | Detección de movimiento local, sin red: nunca sale un frame a inferir. |
-| `rangyuu/runtime.py` | El lazo del sitio con presupuesto por tramo y el perro guardián del feed. |
-| `rangyuu/live.py` | Recibe y decodifica la media H264 fuera del navegador (requiere `aiortc`). |
-| `rangyuu/whep.py` | Señalización WHEP: abre y cierra la sesión de live view sin navegador. |
-| `rangyuu/api.py` | El borde HTTP: `POST /api/webhook/ring` y `POST /api/rover/can-traverse`. |
-| `rangyuu/__main__.py` | La demo offline que reproduce `tests/fixtures/b0_events.json`. |
+Three of the four skips are the browser end-to-end modules, which skip cleanly unless Playwright is
+installed (`pip install playwright && python -m playwright install chromium`); with it the suite is
+198 passed, 1 skipped. The remaining skip is the on-board calibration clip (see "Not yet verified").
 
-Las credenciales y el entorno están en [docs/setup-dev.md](docs/setup-dev.md); la evidencia
-repetible, en [docs/verificacion.md](docs/verificacion.md).
+**Against the real Ring API.** Copy `.env.example` to `.env.local` and set
+`RANGYUU_ACCESS_TOKEN` to a [Ring Developer Playground](https://developer.amazon.com/ring/console/playground)
+token (it lasts about 30 minutes). Then:
+
+```sh
+python -c "from rangyuu.ring_client import RingClient; print(RingClient().devices())"
+```
+
+Live media needs `pip install aiortc`. The on-board object detector is optional and needs
+`onnxruntime` plus the model path in `RANGYUU_ONNX_MODEL`; without it the lane falls back to a
+texture heuristic and says so on the Sources screen. `.env.local` is gitignored and never committed.
+
+## What the app shows
+
+Three destinations, served by the same process, in English or Spanish following the browser:
+
+- **Now** — the dominant decision for the current route, the reason, and the map cells behind it.
+- **On board** — the phone camera as the vehicle's own sensor. It can warn; it does not write to the
+  map until its calibration is measured.
+- **System** — sources, calibration (with the measured error, not the fit residual) and language.
+
+## Measured, with dates
+
+Every number below has a repeatable command in [`docs/verificacion.md`](docs/verificacion.md).
+
+| Measurement | Value | Date |
+|---|---|---|
+| Live WHEP session against the Playground device, full loop | 400 frames at 1280x720: decode 7.48 ms, **inference 0.58 ms**, decision 0.10 ms → **8.16 ms/frame** (~122 fps capacity vs ~29 fps delivered) | 2026-09-15 |
+| No third-party inference | the loop keeps working with `socket` poisoned while a frame is processed | 2026-09-15 |
+| Floor calibration error, measured on points **left out of the fit** | **0.9 cm over 61 cm (1.6 %)** | 2026-09-15 |
+| Playground live view | a canned ~40 s clip (1172 frames), H264 only, no audio — so nothing geometric is measured on it | 2026-09-15 |
+| On-board detector precision vs ground truth | **22 %** — so it only warns ("caution"); it is not allowed to brake | 2026-09-16 |
+
+## Not yet verified
+
+Stated plainly so nobody has to discover it:
+
+- **On-board phone calibration (B11).** The gate and wiring are done and tested; the physical tape
+  measurement has not been recorded, so that test is the one skipped.
+- **The webhook path is gated by a fitted homography, not a measured one**
+  ([`spatial.py` L67](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/spatial.py#L67)).
+  The app path is gated by a measured error; the webhook path still needs a per-device measurement.
+- **OAuth app linking (B2).** Webhooks from Ring need a registered app; the token endpoint is
+  configurable (`RANGYUU_TOKEN_URL`) because its exact path was not verified.
+- **Glass-to-glass latency** needs a physical Ring camera; the Playground clip carries its own clock.
+- **Error beyond 1.5 m** and with a Ring camera instead of a phone.
+
+## Repository map
+
+| Path | What it does |
+|---|---|
+| `rangyuu/geometry.py`, `calibrate.py` | Normalized DLT homography; calibration with error in centimetres |
+| `rangyuu/spatial.py`, `policy.py` | Occupancy cells with confidence, expiry, occlusion, dedup; the decision contract |
+| `rangyuu/ring_client.py`, `whep.py`, `live.py`, `ring.py` | Ring REST, WHEP, media, webhook signature |
+| `rangyuu/api.py` | `POST /api/webhook/ring` and `POST /api/rover/can-traverse` |
+| `rangyuu/runtime.py`, `detect.py` | Local loop with per-stage budget and feed watchdog |
+| `rangyuu/site.py`, `ui.py`, `webapp.py`, `serve.py`, `web/` | The app and its four screen states |
+| `rangyuu/onboard.py`, `onboard_calibration.py`, `vision.py`, `walk.py` | The on-board lane and its calibration gate |
+| `mobile/` | Thin Expo client that sends on-board frames to the core |
+| `docs/` | Plan, architecture, perception analysis, verification log (in Spanish) |
+
+## License
+
+[MIT](LICENSE).
