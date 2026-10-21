@@ -32,16 +32,16 @@ Ring is the infrastructure sensor. Remove it and the map has no evidence, so eve
 
 | What | Where |
 |---|---|
-| Ring REST client: Playground access token or refresh-token exchange, HTTPS-only | [`rangyuu/ring_client.py` L61–L99](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/ring_client.py#L61-L99) |
-| Device discovery: `/v1/devices`, `/status`, `/capabilities`, `/location`, `/v1/users/me` (JSON:API unwrapped) | [`rangyuu/ring_client.py` L103–L117](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/ring_client.py#L103-L117) |
-| WHEP live view signaling from Python, no browser: `POST` SDP offer, `DELETE` to close | [`rangyuu/whep.py` L12–L60](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/whep.py#L12-L60) |
-| H264 media received and decoded outside the browser (`aiortc`) | [`rangyuu/live.py` L38–L84](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/live.py#L38-L84) |
-| Webhook HMAC-SHA256 over the raw body bytes, constant-time compare | [`rangyuu/ring.py` L6–L11](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/ring.py#L6-L11) |
-| Signature checked **before** JSON is parsed, with a body size cap | [`rangyuu/api.py` L56–L67](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/api.py#L56-L67) |
-| Ring event (`confidence`, `bounding_box`) → observation → floor cell through a homography | [`rangyuu/ring.py` L12–L18](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/ring.py#L12-L18), [`rangyuu/spatial.py` L26–L44](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/spatial.py#L26-L44) |
-| The decision contract: `PROCEED` only when everything holds | [`rangyuu/policy.py` L33–L36](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/policy.py#L33-L36) |
-| `POST /api/rover/can-traverse`: `authorizes` is true only for `PROCEED` | [`rangyuu/api.py` L89–L94](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/api.py#L89-L94) |
-| An unmeasured calibration observes but never authorizes | [`rangyuu/site.py` L253–L275](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/site.py#L253-L275) |
+| Ring REST client: Playground access token or refresh-token exchange, HTTPS-only | [`rangyuu/ring_client.py` L61–L99](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/ring_client.py#L61-L99) |
+| Device discovery: `/v1/devices`, `/status`, `/capabilities`, `/location`, `/v1/users/me` (JSON:API unwrapped) | [`rangyuu/ring_client.py` L103–L117](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/ring_client.py#L103-L117) |
+| WHEP live view signaling from Python, no browser: `POST` SDP offer, `DELETE` to close | [`rangyuu/whep.py` L12–L60](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/whep.py#L12-L60) |
+| H264 media received and decoded outside the browser (`aiortc`) | [`rangyuu/live.py` L38–L84](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/live.py#L38-L84) |
+| Webhook HMAC-SHA256 over the raw body bytes, constant-time compare | [`rangyuu/ring.py` L6–L11](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/ring.py#L6-L11) |
+| Signature checked **before** JSON is parsed, with a body size cap | [`rangyuu/api.py` L56–L67](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/api.py#L56-L67) |
+| Ring event (`confidence`, `bounding_box`) → observation → floor cell through a homography | [`rangyuu/ring.py` L12–L18](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/ring.py#L12-L18), [`rangyuu/spatial.py` L26–L44](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/spatial.py#L26-L44) |
+| The decision contract: `PROCEED` only when everything holds | [`rangyuu/policy.py` L33–L36](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/policy.py#L33-L36) |
+| `POST /api/rover/can-traverse`: `authorizes` is true only for `PROCEED` | [`rangyuu/api.py` L89–L94](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/api.py#L89-L94) |
+| An unmeasured calibration observes but never authorizes | [`rangyuu/site.py` L253–L275](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/site.py#L253-L275) |
 
 ## Quickstart from a clean clone
 
@@ -100,7 +100,7 @@ Stated plainly so nobody has to discover it:
 - **On-board phone calibration (B11).** The gate and wiring are done and tested; the physical tape
   measurement has not been recorded, so that test is the one skipped.
 - **The webhook path is gated by a fitted homography, not a measured one**
-  ([`spatial.py` L67](https://github.com/LuisAlejandroCR/rangyuu/blob/d53ead38b768aa7f7ca94870f78850e2dd6f681e/rangyuu/spatial.py#L67)).
+  ([`spatial.py` L67](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/spatial.py#L67)).
   The app path is gated by a measured error; the webhook path still needs a per-device measurement.
 - **OAuth app linking (B2).** Webhooks from Ring need a registered app; the token endpoint is
   configurable (`RANGYUU_TOKEN_URL`) because its exact path was not verified.

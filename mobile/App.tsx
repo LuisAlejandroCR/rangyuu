@@ -4,14 +4,24 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { health, observe, type NowPayload } from "./src/api";
-import { announce, reset as resetAlerts } from "./src/alert";
+import { announce, reset as resetAlerts, setSpeaker, speak } from "./src/alert";
 import { baseUrlOrigin, FRAME_INTERVAL_MS, resolveBaseUrl } from "./src/config";
 import { toGraySamples } from "./src/frame";
-import { t } from "./src/i18n";
+import { deviceLanguage, setLanguage, t, type Lang } from "./src/i18n";
+import {
+  DEFAULT_SETTINGS,
+  loadSettings,
+  saveSettings,
+  type LanguageChoice,
+  type Settings,
+} from "./src/settings";
 import { SIN_CERTEZA, STATE_COLOR, type ScreenState } from "./src/state";
+import { VOICE_NAME, VOICES, type Cue } from "./src/voice";
+
+const LANGUAGE_CHOICES: readonly LanguageChoice[] = ["auto", "es", "en", "pt"];
 
 const OFFLINE: NowPayload = {
   state: SIN_CERTEZA,
@@ -31,6 +41,12 @@ export default function App() {
   const [onboard, setOnboard] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [backendUp, setBackendUp] = useState<boolean | null>(null);
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // The language is applied during render so every t() below already speaks it.
+  const lang: Lang = settings.language === "auto" ? deviceLanguage() : settings.language;
+  setLanguage(lang);
 
   const camera = useRef<CameraView | null>(null);
   // A ref, not state: the loop must read the live value without being re-created each tick.
@@ -39,14 +55,30 @@ export default function App() {
 
   useEffect(() => {
     health().then(setBackendUp).catch(() => setBackendUp(false));
+    void loadSettings().then(setSettings);
   }, []);
 
-  const applyState = useCallback(async (next: NowPayload, onboardState: string | null) => {
-    setNow(next);
-    setOnboard(onboardState);
-    // One alert per state change: `announce` returns false when the state did not move.
-    if (await announce(next.state)) setAlerts((n) => n + 1);
+  useEffect(() => {
+    setSpeaker(settings.spoken ? { voice: settings.voice, lang } : null);
+  }, [settings.spoken, settings.voice, lang]);
+
+  const updateSettings = useCallback((patch: Partial<Settings>) => {
+    setSettings((was) => {
+      const next = { ...was, ...patch };
+      void saveSettings(next);
+      return next;
+    });
   }, []);
+
+  const applyState = useCallback(
+    async (next: NowPayload, onboardState: string | null, cue?: Cue) => {
+      setNow(next);
+      setOnboard(onboardState);
+      // One alert per state change: `announce` returns false when the state did not move.
+      if (await announce(next.state, cue)) setAlerts((n) => n + 1);
+    },
+    [],
+  );
 
   const tick = useCallback(async () => {
     if (!runningRef.current || busy.current || !camera.current) return;
@@ -70,7 +102,7 @@ export default function App() {
       setError(caught instanceof Error ? caught.message : String(caught));
       setBackendUp(false);
       // A lost link is not permission to move: it degrades to SIN CERTEZA, never to AVANZA.
-      await applyState({ ...OFFLINE, reason: t("linkLost") }, null);
+      await applyState({ ...OFFLINE, reason: t("linkLost") }, null, "linkLost");
     } finally {
       busy.current = false;
     }
@@ -93,6 +125,7 @@ export default function App() {
       } else {
         setError(null);
       }
+      void speak(next ? "start" : "stop");
       return next;
     });
   }, []);
@@ -133,7 +166,7 @@ export default function App() {
         </Text>
       </View>
 
-      <View style={styles.meta}>
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.meta}>
         <Row label={t("backendLabel")} value={`${resolveBaseUrl()} (${baseUrlOrigin()})`} />
         <Row label={t("decisionLabel")} value={now?.decision ?? "—"} />
         <Row label={t("onboardLabel")} value={onboard ?? "—"} />
@@ -141,13 +174,70 @@ export default function App() {
         <Row label={t("alertsLabel")} value={String(alerts)} />
         {backendUp === false ? <Text style={styles.error}>{t("backendUnreachable")}</Text> : null}
         {error ? <Text style={styles.error}>{error}</Text> : null}
-      </View>
+
+        <Pressable
+          style={styles.disclosure}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: showSettings }}
+          onPress={() => setShowSettings((was) => !was)}
+        >
+          <Text style={styles.disclosureText}>
+            {t("settings")} {showSettings ? "▴" : "▾"}
+          </Text>
+        </Pressable>
+
+        {showSettings ? (
+          <View style={styles.settings}>
+            <Text style={styles.rowLabel}>{t("languageLabel")}</Text>
+            <View style={styles.chips}>
+              {LANGUAGE_CHOICES.map((choice) => (
+                <Chip
+                  key={choice}
+                  label={choice === "auto" ? t("languageAuto") : choice.toUpperCase()}
+                  selected={settings.language === choice}
+                  onPress={() => updateSettings({ language: choice })}
+                />
+              ))}
+            </View>
+            <Text style={styles.rowLabel}>{t("voiceLabel")}</Text>
+            <View style={styles.chips}>
+              {VOICES.map((voice) => (
+                <Chip
+                  key={voice}
+                  label={VOICE_NAME[voice]}
+                  selected={settings.voice === voice}
+                  onPress={() => updateSettings({ voice })}
+                />
+              ))}
+            </View>
+            <Text style={styles.rowLabel}>{t("spokenLabel")}</Text>
+            <View style={styles.chips}>
+              <Chip label={t("on")} selected={settings.spoken} onPress={() => updateSettings({ spoken: true })} />
+              <Chip label={t("off")} selected={!settings.spoken} onPress={() => updateSettings({ spoken: false })} />
+              <Chip label={t("test")} selected={false} onPress={() => void speak("proceed")} />
+            </View>
+          </View>
+        ) : null}
+      </ScrollView>
 
       <Pressable style={[styles.button, running && styles.buttonStop]} onPress={toggle}>
         <Text style={styles.buttonText}>{running ? t("stop") : t("start")}</Text>
       </Pressable>
       <Text style={styles.status}>{running ? t("capturing") : t("idle")}</Text>
     </SafeAreaView>
+  );
+}
+
+function Chip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+  return (
+    <Pressable
+      style={[styles.chip, selected && styles.chipSelected]}
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+      onPress={onPress}
+    >
+      <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text>
+    </Pressable>
   );
 }
 
@@ -171,7 +261,23 @@ const styles = StyleSheet.create({
   reason: { color: "#d7dde5", fontSize: 16 },
   detail: { color: "#98a3b0", fontSize: 13 },
   authorizes: { color: "#98a3b0", fontSize: 13, marginTop: 4 },
-  meta: { marginTop: 12, gap: 6 },
+  scroll: { flex: 1 },
+  meta: { marginTop: 12, gap: 6, paddingBottom: 12 },
+  disclosure: { minHeight: 44, justifyContent: "center", marginTop: 8 },
+  disclosureText: { color: "#9cc1ff", fontSize: 15, fontWeight: "600" },
+  settings: { gap: 8 },
+  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  chip: {
+    minHeight: 44,
+    minWidth: 44,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    justifyContent: "center",
+    backgroundColor: "#1b222c",
+  },
+  chipSelected: { backgroundColor: "#2d6cdf" },
+  chipText: { color: "#d7dde5", fontSize: 15 },
+  chipTextSelected: { color: "#fff", fontWeight: "700" },
   row: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
   rowLabel: { color: "#7e8a97", fontSize: 13 },
   rowValue: { color: "#d7dde5", fontSize: 13, flexShrink: 1 },
@@ -183,7 +289,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
-    marginTop: "auto",
+    marginTop: 8,
   },
   buttonStop: { backgroundColor: "#7a2b2b" },
   buttonText: { color: "#fff", fontSize: 17, fontWeight: "700" },
