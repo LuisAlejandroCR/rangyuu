@@ -36,7 +36,8 @@ la web no puede hacer en iOS:
   8,16 ms por frame sin inferencia de terceros, probado envenenando `socket`. Esa evidencia
   es sostenedora y se queda donde está. Esta app es sensor y pantalla; Python decide.
 - **No agrega rutas ni cambia el API de Python.** No se agregó código Python en este PR.
-- **No agrega una librería de i18n.** La tabla de strings es a mano, en `mobile/src/i18n.ts`.
+- **No agrega una librería de i18n.** La tabla de strings es a mano, en `mobile/src/i18n.ts`,
+  en español, inglés y portugués.
 
 ## Los cuatro estados
 
@@ -55,6 +56,54 @@ Si se pierde el enlace con el backend, la pantalla cae a `SIN CERTEZA`, nunca a 
 El aviso se emite una sola vez por cambio: `mobile/src/alert.ts` recuerda el último estado
 anunciado y compara. Disparar de forma continua es inusable, y el parpadeo de estado diez
 veces por segundo ya fue un bug real acá antes de la histéresis.
+
+## Avisos hablados — voz, idioma y personalización
+
+**Especificado el 2026-10-21.** Quien conduce no mira la pantalla; la háptica dice *que* algo
+cambió, la voz dice *qué*. Por eso cada cambio de estado se anuncia también hablado.
+
+**Qué se dice.** Siete frases, las mismas en los tres idiomas:
+
+| Clave | Cuándo | es | en | pt |
+|---|---|---|---|---|
+| `proceed` | entra `AVANZA` | Despejado. Puedes avanzar. | Clear ahead. You can go. | Caminho livre. Pode avançar. |
+| `caution` | entra `CUIDADO` | Cuidado. Ve despacio. | Caution. Go slowly. | Cuidado. Vá devagar. |
+| `hold` | entra `PARA` | Para. No avances. | Stop. Do not go ahead. | Pare. Não avance. |
+| `unknown` | entra `SIN CERTEZA` | Sin certeza. Espera. | Not certain. Please wait. | Sem certeza. Aguarde. |
+| `linkLost` | se pierde el backend | Se perdió el enlace con el sitio. Espera. | Lost the link to the site. Please wait. | Perdemos a conexão com o local. Aguarde. |
+| `start` | se pulsa Empezar | Empezando. | Starting. | Iniciando. |
+| `stop` | se pulsa Detener | Detenido. | Stopped. | Parado. |
+
+`PARA` dice "no avances" y no "hay un obstáculo": `HOLD` también sale de una contradicción o de
+un feed vencido, y afirmar un obstáculo que nadie vio rompería "sin ancla, no se muestra".
+
+**De dónde sale el audio.** Clips **pregenerados en ElevenLabs** (`eleven_multilingual_v2`) y
+empaquetados en `mobile/assets/voices/<voz>/<idioma>/<clave>.mp3`: 2 voces × 3 idiomas × 7
+frases = 42 clips. ElevenLabs es herramienta de producción, no dependencia del runtime: la app
+no lleva API key, no llama a la red para hablar y habla igual sin conexión, que es justo cuando
+más falta hace un `SIN CERTEZA`. Si un clip falla al reproducirse, cae a la voz del sistema
+(`expo-speech`) con el mismo texto; si eso también falla, queda la háptica.
+
+**Voces.** *Lumina* (femenina, acento colombiano) y *Carlos Andrés* (masculina, paisa). Las dos
+se generan desde el mismo texto; los clips se normalizan al mismo pico (−1 dBFS) para que
+cambiar de voz no cambie el volumen. Cómo se regeneran: `mobile/scripts/build_voices.py`.
+
+**Personalización**, persistida en el teléfono (`AsyncStorage`, clave `rangyuu.settings.v1`):
+idioma (automático, es, en, pt), voz (Lumina o Carlos) y avisos hablados (sí o no). El idioma
+gobierna a la vez la interfaz y la voz. Nada de esto sale del teléfono.
+
+**Reglas que no cambian.** La voz se dispara en el mismo punto que la háptica —una vez por
+cambio de estado, nunca por frame—. Un aviso nuevo **corta** al anterior: si `PARA` llega
+mientras suena "puedes avanzar", lo que queda sonando es `PARA`. Los nombres de los cuatro
+estados en pantalla siguen sin traducirse; lo que se traduce es lo hablado.
+
+**Criterios de aceptación**
+
+1. Existen los 42 clips y cada uno decodifica.
+2. El mapa de clips es completo por tipo: falta uno y `tsc` falla.
+3. El bundle de iOS resuelve los 42 `require`.
+4. Con los avisos apagados no suena nada; con un clip roto suena `expo-speech`.
+5. Idioma, voz y avisos sobreviven a cerrar la app.
 
 ## Cómo se corre
 
@@ -96,6 +145,13 @@ puro → luminancia con los mismos coeficientes que `web/app.js:254`.
   `state='CUIDADO'`, `decision='PROCEED'`, `authorizes=True` — es decir, `CUIDADO` degradando
   un `PROCEED`, exactamente la regla de `ui.py`. `GET /api/health` respondió `{"status":"ok"}`.
 - La suite de Python no se movió: 181 passed, 1 skipped, antes y después.
+- **Avisos hablados, 2026-10-21.** Los 42 clips existen y los 42 decodifican (`miniaudio`, cada
+  uno de más de 0,3 s). Quitar un `require` de `mobile/src/voice.ts` hace fallar `tsc` con
+  `TS2741 ... 'stop' is missing`, así que un clip faltante no llega al teléfono. `npx expo
+  export --platform ios` resuelve 672 módulos y el `metadata.json` del bundle lista 42 assets
+  `mp3`. `npx expo config --type introspect` ya no declara micrófono, `RECORD_AUDIO` ni audio en
+  segundo plano: los traían por defecto los plugins de `expo-camera` y `expo-audio`, y la app
+  no graba nada.
 
 ## Qué está sin verificar
 
@@ -112,5 +168,14 @@ puro → luminancia con los mismos coeficientes que `web/app.js:254`.
   captura → redimensionar → decodificar JPEG en un iPhone no está medido.
 - ⏳ **pendiente — Expo Go.** Que el QR abra y la app arranque en Expo Go SDK 57 no se
   comprobó; lo que sí se comprobó es que el bundle de iOS exporta sin errores.
-- ⏳ **pendiente — el idioma.** La tabla cae a inglés salvo que el dispositivo pida español.
-  No se verificó cambiando el idioma de un dispositivo real.
+- ⏳ **pendiente — el idioma.** Con "Del teléfono" la tabla toma es o pt si el dispositivo los
+  pide y cae a inglés en cualquier otro caso. No se verificó cambiando el idioma de un dispositivo
+  real.
+- ⏳ **pendiente — la voz sonando.** Que el clip suene con el interruptor de silencio puesto
+  (`playsInSilentMode`), que un aviso nuevo corte al anterior, que el respaldo de `expo-speech`
+  hable cuando un clip falla y que los ajustes sobrevivan a cerrar la app son lógica revisada y
+  tipada, no audio escuchado: ningún runtime de este entorno reproduce audio de React Native.
+- ⏳ **pendiente — la calidad de los cortes.** Cuatro tomas (Lumina es/en/pt, Carlos es) se
+  cortaron por silencios; que cada clip diga exactamente su frase se infirió de duraciones
+  coherentes entre voces, no se escuchó uno por uno. Las de Carlos en inglés y portugués se
+  generaron frase por frase y no se cortaron.
