@@ -1,3 +1,20 @@
+## 2026-10-21 — Brief de iteración UX para Lovable
+
+**Qué se hizo**
+
+- `docs/lovable-agent-loop.md` contiene un prompt reutilizable para iterar una fricción UX por ciclo, con evidencia visual, vista previa móvil/escritorio, revisión bilingüe y aprobación humana entre ciclos.
+- El brief conserva el contrato de seguridad existente: la UI no redefine decisiones, no inventa datos y no publica ni despliega.
+- En `web/index.html`, el icono de la pestaña A bordo ahora representa un vehículo, coherente con el alcance de consumidores autónomos descrito en `docs/app.md`; se conservan id, navegación y etiqueta localizada.
+
+**Qué NO se verificó, y por qué**
+
+- No se ejecutó la aplicación en navegador ni se comprobó visualmente el icono en distintos tamaños; esta sesión no levantó el servidor. El cambio SVG es una mejora acotada de presentación.
+- No se aplicó el brief dentro de Lovable: el usuario pidió el loop para usarlo, y este repo no acredita acceso a ese proyecto externo.
+
+**Dónde quedan los pendientes**
+
+- Usar `docs/lovable-agent-loop.md` en Lovable con capturas actuales y revisar cualquier cambio antes de integrarlo.
+- La publicación móvil sigue bloqueada por backend HTTPS y prueba en dispositivo real, según el texto de contexto aportado.
 <!-- docs/memoria.md: bitácora por sesión. Qué se hizo (resultado verificable), qué NO se verificó
      y por qué, y dónde queda cada pendiente. No se documenta lo que se pidió: se documenta lo que
      quedó. -->
@@ -927,3 +944,4 @@ apoyada, cuatro marcas de **alto contraste** en posiciones medidas, y las cuatro
   funciones de prueba pasaron.
 
 **Dónde quedan los pendientes:** B0, B1, B2, B3, B8, B9, B10 y B11.
+

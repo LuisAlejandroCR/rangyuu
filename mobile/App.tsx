@@ -12,6 +12,7 @@ import { baseUrlOrigin, FRAME_INTERVAL_MS, resolveBaseUrl } from "./src/config";
 import { toGraySamples } from "./src/frame";
 import { t } from "./src/i18n";
 import { SIN_CERTEZA, STATE_COLOR, type ScreenState } from "./src/state";
+import { COLORS } from "./src/theme";
 
 const OFFLINE: NowPayload = {
   state: SIN_CERTEZA,
@@ -29,7 +30,6 @@ export default function App() {
   const [frames, setFrames] = useState(0);
   const [alerts, setAlerts] = useState(0);
   const [onboard, setOnboard] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [backendUp, setBackendUp] = useState<boolean | null>(null);
 
   const camera = useRef<CameraView | null>(null);
@@ -63,11 +63,9 @@ export default function App() {
       const { width, height, gray } = await toGraySamples(shot.uri);
       const result = await observe(width, height, gray);
       setFrames((n) => n + 1);
-      setError(null);
       setBackendUp(true);
       await applyState(result.now, result.clearanceState);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : String(caught));
       setBackendUp(false);
       // A lost link is not permission to move: it degrades to SIN CERTEZA, never to AVANZA.
       await applyState({ ...OFFLINE, reason: t("linkLost") }, null);
@@ -90,8 +88,6 @@ export default function App() {
       runningRef.current = next;
       if (!next) {
         resetAlerts();
-      } else {
-        setError(null);
       }
       return next;
     });
@@ -139,13 +135,18 @@ export default function App() {
         <Row label={t("onboardLabel")} value={onboard ?? "—"} />
         <Row label={t("framesLabel")} value={String(frames)} />
         <Row label={t("alertsLabel")} value={String(alerts)} />
-        {backendUp === false ? <Text style={styles.error}>{t("backendUnreachable")}</Text> : null}
-        {error ? <Text style={styles.error}>{error}</Text> : null}
       </View>
 
-      <Pressable style={[styles.button, running && styles.buttonStop]} onPress={toggle}>
-        <Text style={styles.buttonText}>{running ? t("stop") : t("start")}</Text>
-      </Pressable>
+      <View style={styles.actionWrap}>
+        {backendUp === false ? (
+          <Text style={styles.backendDown} accessibilityLiveRegion="polite">
+            {running ? t("backendLostWhileRunning") : t("backendDown")}
+          </Text>
+        ) : null}
+        <Pressable style={[styles.button, running && styles.buttonStop]} onPress={toggle}>
+          <Text style={styles.buttonText}>{running ? t("stop") : t("start")}</Text>
+        </Pressable>
+      </View>
       <Text style={styles.status}>{running ? t("capturing") : t("idle")}</Text>
     </SafeAreaView>
   );
@@ -163,29 +164,35 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#0e1116", paddingHorizontal: 16 },
+  root: { flex: 1, backgroundColor: COLORS.background, paddingHorizontal: 16 },
   centered: { flex: 1, justifyContent: "center", gap: 16 },
-  preview: { height: 200, borderRadius: 12, overflow: "hidden", marginTop: 8 },
+  preview: { height: 200, borderRadius: 12, overflow: "hidden", marginTop: 8, backgroundColor: COLORS.surface },
   banner: { borderWidth: 2, borderRadius: 12, padding: 16, marginTop: 12, gap: 4 },
   state: { fontSize: 38, fontWeight: "800", letterSpacing: 1 },
-  reason: { color: "#d7dde5", fontSize: 16 },
-  detail: { color: "#98a3b0", fontSize: 13 },
-  authorizes: { color: "#98a3b0", fontSize: 13, marginTop: 4 },
+  reason: { color: COLORS.text, fontSize: 16 },
+  detail: { color: COLORS.secondary, fontSize: 13 },
+  authorizes: { color: COLORS.secondary, fontSize: 13, marginTop: 4 },
   meta: { marginTop: 12, gap: 6 },
   row: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
-  rowLabel: { color: "#7e8a97", fontSize: 13 },
-  rowValue: { color: "#d7dde5", fontSize: 13, flexShrink: 1 },
-  error: { color: "#e74c3c", fontSize: 13, marginTop: 4 },
-  heading: { color: "#f2f5f8", fontSize: 24, fontWeight: "700" },
-  body: { color: "#98a3b0", fontSize: 15, lineHeight: 21 },
+  rowLabel: { color: COLORS.muted, fontSize: 13 },
+  rowValue: { color: COLORS.text, fontSize: 13, flexShrink: 1 },
+  heading: { color: COLORS.heading, fontSize: 24, fontWeight: "700" },
+  body: { color: COLORS.secondary, fontSize: 15, lineHeight: 21 },
+  actionWrap: { marginTop: "auto" },
+  backendDown: {
+    color: STATE_COLOR[SIN_CERTEZA],
+    fontSize: 13,
+    textAlign: "center",
+    marginBottom: 8,
+  },
   button: {
-    backgroundColor: "#2d6cdf",
+    backgroundColor: COLORS.action,
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
-    marginTop: "auto",
+    marginTop: 8,
   },
-  buttonStop: { backgroundColor: "#7a2b2b" },
+  buttonStop: { backgroundColor: COLORS.stop },
   buttonText: { color: "#fff", fontSize: 17, fontWeight: "700" },
-  status: { color: "#7e8a97", fontSize: 12, textAlign: "center", paddingVertical: 8 },
+  status: { color: COLORS.muted, fontSize: 12, textAlign: "center", paddingVertical: 8 },
 });
