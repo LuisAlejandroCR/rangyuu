@@ -4,6 +4,61 @@
 
 # Memoria
 
+## 2026-10-21 — El video de casa salió del historial y de GitHub
+
+**Qué se hizo**
+
+- `test_home_video.mp4` (9,3 MB, grabado en casa) estuvo versionado entre `371f962` y `2baabe0`
+  del historial anterior. Se reescribió con `git filter-repo --invert-paths --path
+  test_home_video.mp4` sobre un clon espejo; ningún otro video ni foto había entrado nunca.
+- Decisión escogida: **borrar y recrear** `LuisAlejandroCR/rangyuu` (privado, mismo nombre) en vez
+  de solo hacer force push, porque GitHub conserva `refs/pull/*` como solo lectura y el video
+  habría seguido alcanzable desde los 12 PRs. Se subieron solo `main`, `docs/readme-license` y
+  `feat/mobile-voices`, con el mismo contenido de antes (árbol idéntico, comprobado rama por rama).
+- Verificado desde un clon espejo nuevo: solo existen esas 3 refs, 0 commits tocan el video, 0
+  archivos de video o foto en todo el historial, el pack pasó de 10,9 MB a 1,7 MB, y GitHub
+  responde `No commit found` para el SHA viejo `2baabe0`. `python -m pytest -q` en ese clon:
+  `198 passed, 1 skipped`.
+
+**Qué NO se verificó, y por qué**
+
+- **Se perdieron los 12 PRs, sus comentarios y el historial de corridas de CI.** Los números de run
+  que `docs/verificacion.md` cita como prueba de CI verde del 2026-09-16 ya no abren. La CI vuelve a
+  correr sobre el repo nuevo; no se anotaron runs nuevos todavía.
+- **Las ramas locales viejas** (`codex/*`, `worktree-agent-*`, `salvage/*`, `b11/*`, `docs/film-*`,
+  `ui/*`, `mobile/expo-thin-client`, `docs/elevenlabs-challenge`) siguen apuntando al historial
+  viejo y contienen el video. Están solo en disco; **subir cualquiera lo devolvería a GitHub**.
+- El respaldo del historial original, con el video, vive en un bundle local fuera del repo.
+
+**Dónde quedan los pendientes:** borrar o no las ramas locales viejas; anotar los runs nuevos de CI.
+
+## 2026-10-21 — La app móvil habla: avisos en es/en/pt con dos voces de ElevenLabs
+
+**Qué se hizo**
+
+- Cada cambio de estado de la app Expo se anuncia hablado además de con háptica, en el mismo punto
+  (`mobile/src/alert.ts`) y con la misma regla: una vez por cambio, nunca por frame. Siete frases
+  —los cuatro estados, enlace perdido, empezar y detener— en `mobile/src/voice.ts`.
+- 42 clips (2 voces × 3 idiomas × 7 frases) generados en ElevenLabs con `eleven_multilingual_v2`,
+  normalizados al mismo pico y empaquetados en `mobile/assets/voices/` (648 KB). La app no lleva
+  API key ni llama a la red para hablar. Costo medido: unos 1 590 créditos.
+- Decisión escogida: clips pregenerados y no TTS en vivo, porque el aviso más importante
+  (`SIN CERTEZA` por enlace perdido) ocurre justo cuando no hay red. Respaldo: `expo-speech`.
+- Personalización persistida en el teléfono: idioma (del teléfono, es, en, pt), voz (Lumina o
+  Carlos Andrés) y avisos hablados sí/no. El portugués entró también a la interfaz.
+- `PARA` dice "no avances" y no "hay un obstáculo": `HOLD` también sale de contradicción o de feed
+  vencido, y nombrar un obstáculo no observado rompería "sin ancla, no se muestra".
+- Se apagaron micrófono y audio en segundo plano, que `expo-camera` y `expo-audio` declaraban por
+  defecto. `expo-asset` quedó fijado al SDK 57: `expo-audio` arrastraba la 58 y el bundle fallaba.
+
+**Qué NO se verificó, y por qué**
+
+- Ningún clip se escuchó en un teléfono, ni el respaldo de voz del sistema, ni la persistencia: no
+  hay dispositivo ni runtime de audio de React Native en este entorno.
+- Que cada clip cortado por silencio diga su frase exacta se infirió de duraciones, no se escuchó.
+
+**Dónde quedan los pendientes:** `docs/mobile.md`, "Qué está sin verificar".
+
 ## 2026-09-16 — B11: la puerta de calibración a bordo, conectada al carril
 
 **Qué se hizo**
