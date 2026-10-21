@@ -15,15 +15,29 @@
     },
     "android": {
       "package": "com.rangyuu.mobile",
-      "permissions": ["android.permission.CAMERA", "android.permission.VIBRATE"]
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.VIBRATE"
+      ]
     },
     "plugins": [
       [
         "expo-camera",
         {
-          "cameraPermission": "rangyuu reads the way ahead from the on-board camera to tell the vehicle whether the route is traversable."
+          "cameraPermission": "rangyuu reads the way ahead from the on-board camera to tell the vehicle whether the route is traversable.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
         }
-      ]
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false
+        }
+      ],
+      "expo-asset"
     ]
   }
 }

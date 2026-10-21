@@ -4,6 +4,33 @@
 
 # Memoria
 
+## 2026-10-21 — La app móvil habla: avisos en es/en/pt con dos voces de ElevenLabs
+
+**Qué se hizo**
+
+- Cada cambio de estado de la app Expo se anuncia hablado además de con háptica, en el mismo punto
+  (`mobile/src/alert.ts`) y con la misma regla: una vez por cambio, nunca por frame. Siete frases
+  —los cuatro estados, enlace perdido, empezar y detener— en `mobile/src/voice.ts`.
+- 42 clips (2 voces × 3 idiomas × 7 frases) generados en ElevenLabs con `eleven_multilingual_v2`,
+  normalizados al mismo pico y empaquetados en `mobile/assets/voices/` (648 KB). La app no lleva
+  API key ni llama a la red para hablar. Costo medido: unos 1 590 créditos.
+- Decisión escogida: clips pregenerados y no TTS en vivo, porque el aviso más importante
+  (`SIN CERTEZA` por enlace perdido) ocurre justo cuando no hay red. Respaldo: `expo-speech`.
+- Personalización persistida en el teléfono: idioma (del teléfono, es, en, pt), voz (Lumina o
+  Carlos Andrés) y avisos hablados sí/no. El portugués entró también a la interfaz.
+- `PARA` dice "no avances" y no "hay un obstáculo": `HOLD` también sale de contradicción o de feed
+  vencido, y nombrar un obstáculo no observado rompería "sin ancla, no se muestra".
+- Se apagaron micrófono y audio en segundo plano, que `expo-camera` y `expo-audio` declaraban por
+  defecto. `expo-asset` quedó fijado al SDK 57: `expo-audio` arrastraba la 58 y el bundle fallaba.
+
+**Qué NO se verificó, y por qué**
+
+- Ningún clip se escuchó en un teléfono, ni el respaldo de voz del sistema, ni la persistencia: no
+  hay dispositivo ni runtime de audio de React Native en este entorno.
+- Que cada clip cortado por silencio diga su frase exacta se infirió de duraciones, no se escuchó.
+
+**Dónde quedan los pendientes:** `docs/mobile.md`, "Qué está sin verificar".
+
 ## 2026-09-16 — B11: la puerta de calibración a bordo, conectada al carril
 
 **Qué se hizo**
