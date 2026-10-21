@@ -12,7 +12,8 @@ type Key =
   | "permissionBody"
   | "permissionGrant"
   | "backendLabel"
-  | "backendUnreachable"
+  | "backendDown"
+  | "backendLostWhileRunning"
   | "framesLabel"
   | "alertsLabel"
   | "decisionLabel"
@@ -33,7 +34,8 @@ const EN: Record<Key, string> = {
     "rangyuu reads the way ahead from the on-board camera. Frames are sent to your own backend and nowhere else.",
   permissionGrant: "Allow camera",
   backendLabel: "Backend",
-  backendUnreachable: "Backend unreachable",
+  backendDown: "Backend connection unavailable. Starting won’t send frames.",
+  backendLostWhileRunning: "Backend connection lost. Stop until it is restored.",
   framesLabel: "Frames sent",
   alertsLabel: "Alerts fired",
   decisionLabel: "Core decision",
@@ -55,7 +57,8 @@ const ES: Record<Key, string> = {
     "rangyuu lee el camino adelante con la cámara de a bordo. Los frames van a tu propio backend y a ningún otro lado.",
   permissionGrant: "Permitir cámara",
   backendLabel: "Backend",
-  backendUnreachable: "Backend inalcanzable",
+  backendDown: "Sin conexión con el backend. Empezar no enviará frames",
+  backendLostWhileRunning: "Se perdió la conexión con el backend. Detén la captura hasta que vuelva.",
   framesLabel: "Frames enviados",
   alertsLabel: "Avisos emitidos",
   decisionLabel: "Decisión del núcleo",
