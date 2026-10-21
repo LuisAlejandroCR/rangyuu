@@ -9,6 +9,7 @@
 
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
+| **El video de casa no es alcanzable desde GitHub.** Repo recreado con solo 3 ramas; 0 commits tocan `test_home_video.mp4`; el SHA viejo `2baabe0` da `No commit found` | `git clone --mirror` del repo y `git log --all -- test_home_video.mp4`; `gh api repos/LuisAlejandroCR/rangyuu/commits/2baabe0` | ✅ | 2026-10-21 |
 | **La app móvil habla en es/en/pt con dos voces, sin red.** 42 clips decodifican; un `require` faltante hace fallar `tsc` (TS2741); el bundle de iOS lista 42 assets `mp3`; la config ya no declara micrófono | `cd mobile && npx tsc --noEmit && npx expo export --platform ios` y contar `ext: mp3` en `dist/metadata.json` | ✅ (lógica y bundle; audio sin escuchar en teléfono) | 2026-10-21 |
 | Suite completa, once de ellas en navegador real | `python -m pytest -q` → `186 passed, 1 skipped` (antes de este lote: `181 passed, 1 skipped`; la omitida es el clip de B11, que no existe) | ✅ | 2026-09-16 |
 | **El carril del iPhone escribe en el mapa solo con una calibración medida y bajo el techo de 1,5 cm.** `Site` consulta la puerta de `onboard_calibration.verified_homography()` al construirse; con la plantilla sin llenar la respuesta es `None` y el carril observa sin escribir | `python -m pytest -q tests/test_calibration_onboard.py` → `13 passed, 1 skipped` | ✅ | 2026-09-16 |
