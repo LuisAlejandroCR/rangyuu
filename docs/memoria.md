@@ -21,6 +21,29 @@
 
 # Memoria
 
+## 2026-10-22 — Escenas ilustrativas con personas, separadas de las tomas de prueba
+
+**Qué se hizo**
+
+- §6 de `docs/submission.md` decía que toda toma debía ser captura real, y eso chocaba con usar
+  personas generadas. Decisión escogida: tres orígenes por toma (REAL, ELEVENLABS, COMPOSITE). Todo
+  lo que prueba Ring, el mapa, una medición o el retiro del permiso sigue siendo REAL. Las cuatro
+  escenas con personas van siempre con una captura real en recuadro o con corte inmediato a ella.
+- Los cuatro prompts, suministrados el 2026-10-22, quedan en §7: 7 + 7 + 8 + 6 s. Se revisaron
+  contra las reglas: adultos ficticios, el cuidador no maneja la silla, sin texto, logos, interfaz ni
+  hardware del vehículo, pantallas en blanco.
+- La descripción de Devpost declara que las escenas con personas son recreaciones generadas con
+  ElevenLabs y que toda pantalla del producto es captura real.
+
+**Qué NO se verificó, y por qué**
+
+- No se generó ninguna escena. El conector de ElevenLabs de esta sesión solo hace voz, y cada
+  generación necesita aprobar antes su costo.
+- Los tiempos son estimados a ~140 palabras por minuto, unos 151 s de voz. Las tomas aprobadas no
+  traen duración en el flow; hay que medirlas al descargarlas.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §1 (fila "Illustrative scenes") y §7.
+
 ## 2026-10-22 — Línea de montaje del video y conteos del Quickstart al día
 
 **Qué se hizo**
