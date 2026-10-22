@@ -21,6 +21,28 @@
 
 # Memoria
 
+## 2026-10-22 — Toma 5A ensayada y servidor que se congelaba con un navegador
+
+**Qué se hizo**
+
+- Para la toma de retiro del permiso se escogió la opción A: detener el servidor con la app abierta.
+  El guion de `docs/submission.md` §5 cita ahora las palabras que salieron en pantalla en el ensayo.
+- **El ensayo encontró un fallo real.** `webapp.serve` usaba `HTTPServer`, de un solo hilo. Con el
+  navegador del panel abierto, el servidor dejó de responder: ni `/` ni la API. Un socket ocioso
+  bloquea al único hilo, como el preconnect de Chromium. Con Chrome en el rodaje, la app se habría
+  quedado en "waiting for the site". Se separó `make_server()`, que usa `ThreadingHTTPServer`, y se
+  añadió la prueba de regresión. Falló con `TimeoutError` antes del cambio y pasa después.
+- `docs/video-subtitles.en.srt`: 30 subtítulos borrador sacados del guion, hasta 2:40.
+
+**Qué NO se verificó, y por qué**
+
+- Con varios hilos, dos `POST` simultáneos pueden escribir a la vez sobre `Site`. Antes ya convivía
+  con el hilo de refresco, así que el riesgo no es nuevo, pero no se probó concurrencia de escritura.
+- Los tiempos del SRT son una estimación por bloque; hay que re-sincronizarlos con el montaje.
+- Las zonas sembradas (`entrada`, `pasillo`, `puerta`) siguen en castellano en la interfaz inglesa.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §1 y §6.
+
 ## 2026-10-22 — Cierre de submission: reglas, escaneo, README corregido y paquete de Devpost
 
 **Qué se hizo**

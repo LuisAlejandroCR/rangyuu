@@ -19,7 +19,8 @@ Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline 
 | Repo access | ⏳ **your call** | Public: set visibility + confirm MIT shows in About. Or private: add `testing@devpost.com` and `knmeiss`, `giolaq`, `anishamalde`, `mosesroth`, `emersonsklar` |
 | Old local branches (`codex/rangyuu-rebuild`, …) | ⛔ never push | they still carry the removed home video (docs/memoria.md 2026-10-21) |
 | Open Source contribution | ✅ | fork `LuisAlejandroCR/ring-api-helloworld` (public, MIT), branch `add-whep-live-view-script`, `ed293da` 2026-09-15; PR #23 closed, unmerged — allowed |
-| Video < 3 min, public on YouTube/Vimeo | ⏳ | script §5, shot list §6 |
+| Video < 3 min, public on YouTube/Vimeo | ⏳ | script §5, shot list §6 (shot 5A rehearsed 2026-10-22); draft subtitles `docs/video-subtitles.en.srt`, re-sync after the edit |
+| App survives a browser's idle connection | ✅ fixed 2026-10-22 | the single-threaded server froze under the in-app browser; now threaded, with a regression test |
 | Product feedback per tool | ✅ draft | §3 — confirm the "would build again" answers are yours |
 | Friction log (up to +10 %) | ✅ draft | §4 |
 | Submit on Devpost | ⏳ manual | you press Submit |
@@ -169,9 +170,9 @@ So it warns. It does not stop anyone.
 ✎ Stopping has to be earned.
 
 [2:03]
-✎ (match the shot actually filmed — see §6, shot 5)
-  Option A: We cut the link to the site. PROCEED disappears. The screen refuses to keep authorizing from an old answer.
-  Option B: We cut the feed. When frames stop, PROCEED becomes UNKNOWN. The system refuses to keep authorizing from an old frame.
+✎ Now we stop the site's server, with the app still open.
+GO becomes UNCERTAIN: no link to the site, not clear to proceed.
+The screen refuses to keep authorizing from an old answer.
 
 [2:16 — warm, restrained]
 ✎ ElevenLabs voiced this narration and the app's pre-recorded alerts.
@@ -188,7 +189,9 @@ Why the ✎ lines changed:
 - The 0.9 cm calibration was measured with a phone, not a Ring camera (README "Not yet verified").
 - The 22 % figure is the on-board lane, which can only warn (`rangyuu/ui.py:60-78`). Rangyuu has no
   brake actuator, so "brake" was replaced.
-- The app is not fed by a live WHEP session yet (plan B12). "Cut the feed" is only true for shot 5B.
+- The app is not fed by a live WHEP session yet (plan B12), so "cut the feed" can't be filmed in it.
+  Shot 5A was chosen on 2026-10-22: stop the server. The line quotes what the screen showed in a
+  rehearsal that day.
 - The mobile app ships ElevenLabs-generated clips, so "not part of the runtime" needed precision.
 
 Spoken length is about 1,750 characters with one §2:03 option (counted 2026-10-22), roughly 1,750 credits at about 1 credit per character on
@@ -202,14 +205,17 @@ Eleven v3 before retakes. Check the displayed cost before each generation.
    `RingClient().devices()` one-liner. Crop or blur device IDs and location in the output.
 3. **WHEP from the terminal.** Fork's `scripts/live_view.py --frames` showing the session open,
    resolution and fps. This doubles as the Open Source proof.
-4. **The app** at `localhost:8080` with the browser set to English: Now (decision + map),
-   On board, System (measured calibration error).
-5. **Withdrawal:**
-   - **A** — stop `rangyuu.serve` while the app is open. The screen falls to the no-certainty state
-     (`tests/test_app_e2e.py::test_losing_the_link_to_the_site_withdraws_the_authorisation`).
-   - **B** — run `python -m pytest -v tests/test_runtime.py -k network_cut` on screen.
-   - **C** — a live WHEP loop with a real feed cut. Needs a small capture script and a fresh token.
-     Not built.
+4. **The app** at `localhost:8080`. Set System → Language → English first; the screens follow the
+   browser otherwise. Show Now (decision + map), On board and System (measured calibration error).
+   The screen words map to the contract like this: `GO` = `PROCEED`, `CAUTION` = `PROCEED` with a
+   thin margin, `STOP` = `HOLD`, `UNCERTAIN` = `UNKNOWN` or no link. Add that as a lower third the
+   first time `GO` appears. The seeded zone chips (`entrada`, `pasillo`, `puerta`) stay in Spanish:
+   keep them small in frame or crop them.
+5. **Withdrawal (option A, chosen 2026-10-22).** Two windows side by side: the app on Now showing
+   `GO`, and the terminal running `python -m rangyuu.serve`. Press Ctrl+C in the terminal. In the
+   2026-10-22 rehearsal the next poll showed `UNCERTAIN`, "no link to the site", "not clear to
+   proceed". Covered by
+   `tests/test_app_e2e.py::test_losing_the_link_to_the_site_withdraws_the_authorisation`.
 6. **Evidence.** `python -m pytest -q` → `198 passed, 1 skipped`, then the "Measured, with dates"
    table.
 
