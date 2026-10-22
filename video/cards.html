@@ -7,8 +7,8 @@
 <meta charset="utf-8">
 <style>
   :root {
-    --bg: #1E1714; --surface: #2A201B; --text: #F8EEE3; --muted: #CDB9A6;
-    --accent: #F2A66A; --sand: #E9C9A0;
+    --bg: #241713; --surface: #33211B; --text: #FFF2E8; --muted: #E9C3A5;
+    --accent: #E89B7D; --sand: #E9C3A5; --border: #624637;
   }
   html, body { margin: 0; width: 1920px; height: 1080px; background: var(--bg); overflow: hidden; }
   body { font-family: "Segoe UI", system-ui, sans-serif; color: var(--text); }
@@ -17,6 +17,8 @@
   .label { font-size: 26px; letter-spacing: .14em; font-weight: 600; color: var(--muted); }
   h1 { font-size: 92px; line-height: 1.05; font-weight: 700; margin: 28px 0 34px; }
   p { font-size: 40px; line-height: 1.35; color: var(--sand); margin: 0; }
+  p + p { margin-top: 22px; }
+  p.small { font-size: 30px; margin-top: 30px; }
   .accent { color: var(--accent); }
   .url { font-size: 30px; color: var(--muted); margin-top: 44px; }
   .tilo { position: absolute; left: 1230px; top: 330px; width: 560px; height: 443px; }
@@ -32,8 +34,8 @@
     <div class="copy">
       <div class="label" data-in="0.2">RANGYUU</div>
       <h1 data-in="0.45">For supervised use.</h1>
-      <p data-in="0.8">A parent, caregiver or operator stays responsible.</p>
-      <p data-in="1.1">Rangyuu does not control any vehicle.</p>
+      <p data-in="0.8">Rangyuu assesses the route and alerts the operator.</p>
+      <p class="small" data-in="1.1">The operator remains responsible; Rangyuu never steers or brakes.</p>
     </div>
     <div class="shadow"></div>
     <div class="tilo"><div class="stack"><div class="front"></div></div></div>
@@ -64,9 +66,12 @@
       .forEach(el => el && eyes.appendChild(el));
   }
 
+  // Each copy gets its own gradient ids: a duplicate id resolves to the first copy, and if that
+  // copy sits on a hidden card its gradients do not paint, leaving Tilo as bare outlines.
+  const unique = (svg, n) => svg.replace(/tilo-(front|rest)-/g, `tilo-$1-${n}-`);
   window.setup = (front, rest) => {
-    document.querySelectorAll('.front').forEach(el => { el.innerHTML = front; prepare(el); });
-    document.querySelectorAll('.rest').forEach(el => { el.innerHTML = rest; });
+    document.querySelectorAll('.front').forEach((el, i) => { el.innerHTML = unique(front, i); prepare(el); });
+    document.querySelectorAll('.rest').forEach((el, i) => { el.innerHTML = unique(rest, i); });
     window.__ready = true;
   };
 
@@ -78,13 +83,13 @@
       el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 18}px)`;
     });
 
-    // Entrance, then a slow breath. No pointing, waving or anything that reads as a signal.
-    const enter = ease(t / 0.7);
+    // Complete and fully opaque from the first frame: no fade, no entrance. Only a slow breath.
+    // No pointing, waving or anything that reads as a signal.
     const breath = Math.sin(t * Math.PI * 2 / 3.2);
     const tilo = root.querySelector('.tilo');
-    tilo.style.opacity = enter;
-    tilo.style.transform = `translateY(${(1 - enter) * 40 + breath * 5}px) scale(1, ${1 + breath * 0.012})`;
-    root.querySelector('.shadow').style.opacity = 0.28 * enter * (1 - breath * 0.08);
+    tilo.style.opacity = 1;
+    tilo.style.transform = `translateY(${breath * 5}px) scale(1, ${1 + breath * 0.012})`;
+    root.querySelector('.shadow').style.opacity = 0.28 * (1 - breath * 0.08);
 
     // One blink on the supervised card.
     const eyes = root.querySelector('.front .eyes');

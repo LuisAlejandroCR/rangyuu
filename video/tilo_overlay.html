@@ -1,7 +1,7 @@
 <!doctype html>
 <!-- tilo_overlay.html: small Tilo appearances on a transparent canvas, composited over the video frame.
-     Deterministic: window.render(clip, t). Clips: peek_up (rises from the bottom edge), peek_side
-     (slides in from the right edge), sit (settles in a corner). Decorative only: no pointing or signals. -->
+     Deterministic: window.render(clip, t). Clips: peek_up (cut by the bottom edge), peek_side
+     (cut by the right edge, leaning in), sit (in a corner). Complete and opaque from frame one. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -29,11 +29,10 @@
     window.__ready = true;
   };
 
-  // In for 0.6 s, out over the last 0.6 s.
-  const presence = (t, d) => Math.min(ease(t / 0.6), ease((d - t) / 0.6));
-
+  // Already in place, complete and fully opaque on the first frame; the edit cuts in and out.
+  // Only breath and one blink move.
   window.render = (clip, t) => {
-    const d = window.DURATION[clip], k = presence(t, d);
+    const d = window.DURATION[clip], k = 1;
     const breath = Math.sin(t * Math.PI * 2 / 3.2);
     let x = 0, y = 0, rot = 0, op = 1;
     if (clip === 'peek_up') { y = (1 - k) * 250 + 120; }               // only the top two thirds show
