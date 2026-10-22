@@ -35,6 +35,7 @@ Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline 
 | 2026-10-22 | Voice test, block 0:00, 1 take (2 takes estimated at 206); tone approved, reused as the master for 0:00 | `eleven_v3` / `XW70ikSsadUbinwLMZ5w` (supplied 2026-10-22) | 102.99 | 102.99 |
 | 2026-10-22 | Master, blocks 0:10 → 2:41, 1 take each, every block estimated first. Cap for the master set: 2,500 | same | 135.99 + 249.98 + 132.99 + 254.97 + 350.96 + 172.98 + 178.98 + 247.98 + 147.99 + 56.99 = 1,929.81 | **2,032.80** |
 | 2026-10-22 | Scene 1 (§7), 1 take. Estimates for the same clip: Seedance v2.5 14,003 · Seedance v2 mini 4,581 · Wan 2.6 3,030 · Veo 3.1 lite 2,424 · Kling 2.5 Turbo 2,121 · LTX v2 fast 1,454. Cap for this take: 2,200. **Rejected**: the caregiver touches the wheelchair | `kling-2.5-turbo`, flow `xDHFdeM4AHUxuJCN2BNi` | 2,120.79 | **4,153.59** |
+| 2026-10-22 | Scene 1, take 2: caregiver removed, user drives a power wheelchair alone. Cap 2,200 | same | 2,120.79 | **6,274.38** |
 
 All takes live in ElevenLabs flow `3JggnpjaF01ovynn4QfB`; download them from there into the edit
 project, outside the repo. Spoken numbers are written out in the prompts ("eight point one six",
