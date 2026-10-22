@@ -21,6 +21,31 @@
 
 # Memoria
 
+## 2026-10-22 — Revisión del PR #8: tiempos sin solapes, cifra vieja y estado de merge
+
+**Qué se hizo**
+
+- La tabla de montaje de `docs/submission.md` §6 tenía intervalos solapados: 0:24 + 18 s pasaba de
+  0:37, y 1:56 + 19 s pasaba de 2:14. También tenía un hueco de 4 s antes de 0:24. Ahora cada fila
+  empieza donde termina la anterior, con columnas Start, End y la marca del guion en §5. Suma:
+  160 s = **2:40**, comprobado fila por fila.
+- La escena 3 no llevaba "Illustrative reenactment"; ya lo lleva. Las cuatro escenas tienen etiqueta
+  y captura real asociada; Ring, mapa, mediciones y retiro del permiso siguen en tomas REAL.
+- El checklist citaba `198 passed, 1 skipped`; ahora cita `201 passed, 1 skipped` con Playwright y
+  `174 passed, 4 skipped` sin él. §5 decía "≈2:10 de voz" y §6 "≈151 s"; quedó unificado en ≈2:31.
+- "No mergeable" del PR #8: GitHub responde `mergeable: UNKNOWN`, que es cálculo pendiente tras el
+  merge del #7, no un conflicto. `git merge-tree` contra `main` sale limpio; no hay checks porque
+  Actions no corre, ni protección de rama, que en repo privado gratis no existe.
+
+**Qué NO se verificó, y por qué**
+
+- La duración real de cada toma: el flow de ElevenLabs no la informa.
+- Los tiempos del SRT siguen la marca del guion y terminan en 2:50; hay que re-sincronizarlos a la
+  tabla. No se tocó el SRT en este lote.
+- No se corrió la suite: el cambio es solo documental.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §1 y §6.
+
 ## 2026-10-22 — Escenas ilustrativas con personas, separadas de las tomas de prueba
 
 **Qué se hizo**

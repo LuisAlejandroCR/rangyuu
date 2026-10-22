@@ -13,7 +13,7 @@ Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline 
 
 | Item | State | Evidence / next action |
 |---|---|---|
-| Repo has setup + run instructions | ✅ | `README.md` Quickstart; rerun 2026-10-22: `198 passed, 1 skipped` (now `201 passed, 1 skipped` with Playwright, `174 passed, 4 skipped` without), server `200` + `PROCEED`, port freed |
+| Repo has setup + run instructions | ✅ | `README.md` Quickstart; rerun 2026-10-22: `201 passed, 1 skipped` with Playwright, `174 passed, 4 skipped` without, server `200` + `PROCEED`, port freed |
 | Ring used at runtime, imported and called | ✅ | `rangyuu/ring_client.py`, `whep.py`, `live.py` (README permalinks at `0cbd264`, reachable from `main`) |
 | Secrets in the published history (`origin/main`, 96 commits) | ✅ clean | rescanned 2026-10-22; only variable names; no media except `fixtures/ring/playground_frame_120.png` (Ring Playground output) |
 | Commit author emails | ⚠️ will be public | 2 author emails appear in commit metadata once the repo is public |
@@ -220,7 +220,7 @@ Why the ✎ lines changed:
 - Supervised use and the vehicle unit were added on 2026-10-22. The vehicle unit does not exist
   yet, so it stays in the future tense ("will connect") and is never shown as working.
 
-Spoken length is about 1,900 characters and 326 words (≈2:10 of speech; planned cut ends at 2:50),
+Spoken length is about 1,900 characters and 326 words (≈2:31 of speech at ~140 wpm; the §6 edit timeline totals 2:40),
 counted 2026-10-22, so roughly 1,900 credits at about 1 credit per character on
 Eleven v3 before retakes. Check the displayed cost before each generation.
 
@@ -258,22 +258,24 @@ Every visual has one of three origins:
 - **COMPOSITE** — an ELEVENLABS scene with a REAL capture inset (picture-in-picture or inside a blank
   device screen), or cut immediately to the matching REAL screen.
 
-Times are estimated at ~140 wpm (≈151 s of voice); re-measure once the approved takes are downloaded.
-Target ≤ 2:50.
+Durations are estimated at ~140 wpm plus ~1 s of breath per block (≈151 s of voice); the last row adds a
+10 s outro. Each block starts where the previous one ends: no overlaps, no gaps. Total **2:40**,
+under the 2:50 target and the 3:00 limit. Re-measure once the approved takes are downloaded. The
+§5 cues are script positions, not edit times; re-sync `docs/video-subtitles.en.srt` to this table.
 
-| Time | VO block | Visual | Origin | Real capture tied to it | On-screen text | Dur. |
-|---|---|---|---|---|---|---|
-| 0:00 | Can't see around a corner | Scene 1: approach to a hallway corner, cut to Now at ~6 s | COMPOSITE | Now (`GO` + map) | Supervised-use card · "Illustrative reenactment" | ~10 s |
-| 0:10 | Building may already have cameras | Now: map with the route | REAL | — | — | ~10 s |
-| 0:24 | Ring is the infrastructure source | Shot 1 (Playground) → shot 2 (`ring_client.py` + `devices()`) | REAL | — | "Ring Developer Playground — simulator, demo feed" | ~18 s |
-| 0:37 | Floor map, cells, expiry | Shot 4: tap a cell (state, confidence, age) | REAL | — | — | ~10 s |
-| 0:47 | Route question | Now on `GO` | REAL | — | `GO = PROCEED · STOP = HOLD · UNCERTAIN = UNKNOWN` | ~17 s |
-| 1:05 | Measured 8.16 ms, 0.9 cm | Shot 3 (`live_view.py --frames`) → README "Measured, with dates" | REAL | — | "Measured 2026-09-15" | ~22 s |
-| 1:27 | On-board lane, 22 % | Scene 2: user with a blank mounted phone | COMPOSITE | On board screen inside the blank phone | "Illustrative reenactment" · "22 % precision → warns only" | ~13 s |
-| 1:40 | Stop the server → UNCERTAIN | Shot 5A: app + terminal, Ctrl+C | REAL | — | — | ~15 s |
-| 1:56 | Supervised use; vehicle unit planned | Scene 3: caregiver with blank tablet → labeled diagram | COMPOSITE | System screen inside the blank tablet | Supervised-use card · "Vehicle unit: PLANNED, not built" | ~19 s |
-| 2:14 | ElevenLabs voiced this | Shot 6 (`pytest` → `201 passed`) | REAL | — | "Narration and illustrative reenactments: ElevenLabs" | ~10 s |
-| 2:25 | Evidence there, move | Scene 4: through a doorway → Now on `GO` after restarting the server | COMPOSITE | Now (`GO`) | "Illustrative reenactment" · repo URL once visibility is settled | ~16 s |
+| Start | End | Script cue (§5) | VO block | Visual | Origin | Real capture tied to it | On-screen text | Dur. |
+|---|---|---|---|---|---|---|---|---|
+| 0:00 | 0:10 | 0:00 | Can't see around a corner | Scene 1: approach to a hallway corner, cut to Now at ~6 s | COMPOSITE | Now (`GO` + map) | Supervised-use card · "Illustrative reenactment" | ~10 s |
+| 0:10 | 0:20 | 0:10 | Building may already have cameras | Now: map with the route | REAL | — | — | ~10 s |
+| 0:20 | 0:38 | 0:24 | Ring is the infrastructure source | Shot 1 (Playground) → shot 2 (`ring_client.py` + `devices()`) | REAL | — | "Ring Developer Playground — simulator, demo feed" | ~18 s |
+| 0:38 | 0:48 | 0:45 | Floor map, cells, expiry | Shot 4: tap a cell (state, confidence, age) | REAL | — | — | ~10 s |
+| 0:48 | 1:05 | 1:00 | Route question | Now on `GO` | REAL | — | `GO = PROCEED · STOP = HOLD · UNCERTAIN = UNKNOWN` | ~17 s |
+| 1:05 | 1:27 | 1:22 | Measured 8.16 ms, 0.9 cm | Shot 3 (`live_view.py --frames`) → README "Measured, with dates" | REAL | — | "Measured 2026-09-15" | ~22 s |
+| 1:27 | 1:40 | 1:48 | On-board lane, 22 % | Scene 2: user with a blank mounted phone | COMPOSITE | On board screen inside the blank phone | "Illustrative reenactment" · "22 % precision → warns only" | ~13 s |
+| 1:40 | 1:55 | 2:03 | Stop the server → UNCERTAIN | Shot 5A: app + terminal, Ctrl+C | REAL | — | — | ~15 s |
+| 1:55 | 2:14 | 2:16 | Supervised use; vehicle unit planned | Scene 3: caregiver with blank tablet → labeled diagram | COMPOSITE | System screen inside the blank tablet | Supervised-use card · "Illustrative reenactment" · "Vehicle unit: PLANNED, not built" | ~19 s |
+| 2:14 | 2:24 | 2:31 | ElevenLabs voiced this | Shot 6 (`pytest` → `201 passed`) | REAL | — | "Narration and illustrative reenactments: ElevenLabs" | ~10 s |
+| 2:24 | 2:40 | 2:41 | Evidence there, move | Scene 4: through a doorway → Now on `GO` after restarting the server | COMPOSITE | Now (`GO`) | "Illustrative reenactment" · repo URL once visibility is settled | ~16 s |
 
 If a block runs long, trim the picture, not the claims.
 
