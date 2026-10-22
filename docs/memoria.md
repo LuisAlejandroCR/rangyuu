@@ -21,6 +21,54 @@
 
 # Memoria
 
+## 2026-10-22 — Revisión del PR #8: tiempos sin solapes, cifra vieja y estado de merge
+
+**Qué se hizo**
+
+- La tabla de montaje de `docs/submission.md` §6 tenía intervalos solapados: 0:24 + 18 s pasaba de
+  0:37, y 1:56 + 19 s pasaba de 2:14. También tenía un hueco de 4 s antes de 0:24. Ahora cada fila
+  empieza donde termina la anterior, con columnas Start, End y la marca del guion en §5. Suma:
+  160 s = **2:40**, comprobado fila por fila.
+- La escena 3 no llevaba "Illustrative reenactment"; ya lo lleva. Las cuatro escenas tienen etiqueta
+  y captura real asociada; Ring, mapa, mediciones y retiro del permiso siguen en tomas REAL.
+- El checklist citaba `198 passed, 1 skipped`; ahora cita `201 passed, 1 skipped` con Playwright y
+  `174 passed, 4 skipped` sin él. §5 decía "≈2:10 de voz" y §6 "≈151 s"; quedó unificado en ≈2:31.
+- "No mergeable" del PR #8: GitHub responde `mergeable: UNKNOWN`, que es cálculo pendiente tras el
+  merge del #7, no un conflicto. `git merge-tree` contra `main` sale limpio; no hay checks porque
+  Actions no corre, ni protección de rama, que en repo privado gratis no existe.
+
+**Qué NO se verificó, y por qué**
+
+- La duración real de cada toma: el flow de ElevenLabs no la informa.
+- Los tiempos del SRT siguen la marca del guion y terminan en 2:50; hay que re-sincronizarlos a la
+  tabla. No se tocó el SRT en este lote.
+- No se corrió la suite: el cambio es solo documental.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §1 y §6.
+
+## 2026-10-22 — Escenas ilustrativas con personas, separadas de las tomas de prueba
+
+**Qué se hizo**
+
+- §6 de `docs/submission.md` decía que toda toma debía ser captura real, y eso chocaba con usar
+  personas generadas. Decisión escogida: tres orígenes por toma (REAL, ELEVENLABS, COMPOSITE). Todo
+  lo que prueba Ring, el mapa, una medición o el retiro del permiso sigue siendo REAL. Las cuatro
+  escenas con personas van siempre con una captura real en recuadro o con corte inmediato a ella.
+- Los cuatro prompts, suministrados el 2026-10-22, quedan en §7: 7 + 7 + 8 + 6 s. Se revisaron
+  contra las reglas: adultos ficticios, el cuidador no maneja la silla, sin texto, logos, interfaz ni
+  hardware del vehículo, pantallas en blanco.
+- La descripción de Devpost declara que las escenas con personas son recreaciones generadas con
+  ElevenLabs y que toda pantalla del producto es captura real.
+
+**Qué NO se verificó, y por qué**
+
+- No se generó ninguna escena. El conector de ElevenLabs de esta sesión solo hace voz, y cada
+  generación necesita aprobar antes su costo.
+- Los tiempos son estimados a ~140 palabras por minuto, unos 151 s de voz. Las tomas aprobadas no
+  traen duración en el flow; hay que medirlas al descargarlas.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §1 (fila "Illustrative scenes") y §7.
+
 ## 2026-10-22 — Línea de montaje del video y conteos del Quickstart al día
 
 **Qué se hizo**

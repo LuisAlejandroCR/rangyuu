@@ -1,5 +1,6 @@
 <!-- docs/submission.md: paquete de entrega de Devpost, en inglés: checklist de una pantalla, campos
-     del formulario, feedback por herramienta, friction log, guion de voz verificado y lista de tomas.
+     del formulario, feedback por herramienta, friction log, guion de voz verificado, lista de tomas
+     con su origen (real, ElevenLabs o compuesta) y prompts de las escenas ilustrativas.
      No es la evidencia (docs/verificacion.md) ni el plan de producción ElevenLabs
      (docs/elevenlabs-challenge.md): aquí solo lo que se pega en Devpost o se graba. -->
 
@@ -12,7 +13,7 @@ Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline 
 
 | Item | State | Evidence / next action |
 |---|---|---|
-| Repo has setup + run instructions | ✅ | `README.md` Quickstart; rerun 2026-10-22: `198 passed, 1 skipped` (now `201 passed, 1 skipped` with Playwright, `174 passed, 4 skipped` without), server `200` + `PROCEED`, port freed |
+| Repo has setup + run instructions | ✅ | `README.md` Quickstart; rerun 2026-10-22: `201 passed, 1 skipped` with Playwright, `174 passed, 4 skipped` without, server `200` + `PROCEED`, port freed |
 | Ring used at runtime, imported and called | ✅ | `rangyuu/ring_client.py`, `whep.py`, `live.py` (README permalinks at `0cbd264`, reachable from `main`) |
 | Secrets in the published history (`origin/main`, 96 commits) | ✅ clean | rescanned 2026-10-22; only variable names; no media except `fixtures/ring/playground_frame_120.png` (Ring Playground output) |
 | Commit author emails | ⚠️ will be public | 2 author emails appear in commit metadata once the repo is public |
@@ -24,6 +25,7 @@ Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline 
 | Product feedback per tool | ✅ draft | §3 — confirm the "would build again" answers are yours |
 | Friction log (up to +10 %) | ✅ draft | §4 |
 | Submit on Devpost | ⏳ manual | you press Submit |
+| Illustrative scenes (§7) | ⛔ blocked | needs the full ElevenLabs connector (`https://api.elevenlabs.io/v1/mcp`) and per-scene cost approval |
 | GitHub Actions on the recreated repo | ⚠️ never ran | 0 runs ever (`gh api repos/LuisAlejandroCR/rangyuu/actions/runs` → `total_count: 0`) despite push triggers and Actions enabled, 2026-10-22. Likely private-repo minutes or billing. Not required by the rules; local suite is the evidence |
 
 ### ElevenLabs credit ledger (cap 25,000)
@@ -83,7 +85,8 @@ connects to the Ring devices a building already has. It is planned, not built.
 
 What it is not: Rangyuu does not actuate or brake any vehicle, is not a medical device and does not
 guarantee physical safety. The Playground live view is a canned clip, so it exercises the
-integration; no floor geometry is measured on it. Open items are listed under "Not yet verified" in
+integration; no floor geometry is measured on it. Scenes with people in the video are illustrative
+reenactments generated with ElevenLabs; every product screen shown is a real capture. Open items are listed under "Not yet verified" in
 the README.
 
 **Built with:** Python, Ring API, Ring Developer Playground, WebRTC/WHEP, aiortc, ONNX Runtime,
@@ -217,7 +220,7 @@ Why the ✎ lines changed:
 - Supervised use and the vehicle unit were added on 2026-10-22. The vehicle unit does not exist
   yet, so it stays in the future tense ("will connect") and is never shown as working.
 
-Spoken length is about 1,900 characters and 326 words (≈2:10 of speech; planned cut ends at 2:50),
+Spoken length is about 1,900 characters and 326 words (≈2:31 of speech at ~140 wpm; the §6 edit timeline totals 2:40),
 counted 2026-10-22, so roughly 1,900 credits at about 1 credit per character on
 Eleven v3 before retakes. Check the displayed cost before each generation.
 
@@ -245,26 +248,41 @@ Eleven v3 before retakes. Check the displayed cost before each generation.
 
 ### Edit timeline (narration block → picture)
 
-| VO | Picture | On-screen text |
-|---|---|---|
-| 0:00 | Card on black, then the Now screen at rest | "For supervised use: a parent, caregiver or operator stays responsible. Rangyuu does not control any vehicle." |
-| 0:10 | Now screen: map with the route | — |
-| 0:24 | Shot 1 (Playground), then shot 2 (`ring_client.py` + `devices()`) | "Ring Developer Playground — simulator" |
-| 0:45 | Shot 4: tap a map cell to show state, confidence and age | — |
-| 1:00 | Now screen on `GO` | Lower third: `GO = PROCEED · STOP = HOLD · UNCERTAIN = UNKNOWN` |
-| 1:22 | Shot 3 (`live_view.py --frames`), then the README "Measured, with dates" table | "Measured 2026-09-15" |
-| 1:48 | On board screen | "On-board lane: 22 % precision → warns only" |
-| 2:03 | Shot 5A, split screen: app + terminal, Ctrl+C | — |
-| 2:16 | System screen, then the same card as 0:00 | Card, plus "Vehicle unit: planned, not built" |
-| 2:31 | Shot 6 (`pytest` → `201 passed`) | "Narration: ElevenLabs" |
-| 2:41 | Now screen back on `GO` after restarting the server, fade out | Repo URL |
+Every visual has one of three origins:
 
-Under every block, shots must be real captures. If a block runs long, trim the picture, not the
-claims. The 2:41 card shows the repo URL only after visibility is settled.
+- **REAL** — screen capture of the app, browser, terminal, Ring Developer Playground or test output.
+  Everything that proves Ring, the map, a measurement or the withdrawal of permission is REAL.
+- **ELEVENLABS** — an illustrative scene with fictional adults, generated with ElevenLabs Image &
+  Video (§7). It never shows the Rangyuu UI or vehicle hardware, and is labeled
+  "Illustrative reenactment" on screen.
+- **COMPOSITE** — an ELEVENLABS scene with a REAL capture inset (picture-in-picture or inside a blank
+  device screen), or cut immediately to the matching REAL screen.
+
+Durations are estimated at ~140 wpm plus ~1 s of breath per block (≈151 s of voice); the last row adds a
+10 s outro. Each block starts where the previous one ends: no overlaps, no gaps. Total **2:40**,
+under the 2:50 target and the 3:00 limit. Re-measure once the approved takes are downloaded. The
+§5 cues are script positions, not edit times; re-sync `docs/video-subtitles.en.srt` to this table.
+
+| Start | End | Script cue (§5) | VO block | Visual | Origin | Real capture tied to it | On-screen text | Dur. |
+|---|---|---|---|---|---|---|---|---|
+| 0:00 | 0:10 | 0:00 | Can't see around a corner | Scene 1: approach to a hallway corner, cut to Now at ~6 s | COMPOSITE | Now (`GO` + map) | Supervised-use card · "Illustrative reenactment" | ~10 s |
+| 0:10 | 0:20 | 0:10 | Building may already have cameras | Now: map with the route | REAL | — | — | ~10 s |
+| 0:20 | 0:38 | 0:24 | Ring is the infrastructure source | Shot 1 (Playground) → shot 2 (`ring_client.py` + `devices()`) | REAL | — | "Ring Developer Playground — simulator, demo feed" | ~18 s |
+| 0:38 | 0:48 | 0:45 | Floor map, cells, expiry | Shot 4: tap a cell (state, confidence, age) | REAL | — | — | ~10 s |
+| 0:48 | 1:05 | 1:00 | Route question | Now on `GO` | REAL | — | `GO = PROCEED · STOP = HOLD · UNCERTAIN = UNKNOWN` | ~17 s |
+| 1:05 | 1:27 | 1:22 | Measured 8.16 ms, 0.9 cm | Shot 3 (`live_view.py --frames`) → README "Measured, with dates" | REAL | — | "Measured 2026-09-15" | ~22 s |
+| 1:27 | 1:40 | 1:48 | On-board lane, 22 % | Scene 2: user with a blank mounted phone | COMPOSITE | On board screen inside the blank phone | "Illustrative reenactment" · "22 % precision → warns only" | ~13 s |
+| 1:40 | 1:55 | 2:03 | Stop the server → UNCERTAIN | Shot 5A: app + terminal, Ctrl+C | REAL | — | — | ~15 s |
+| 1:55 | 2:14 | 2:16 | Supervised use; vehicle unit planned | Scene 3: caregiver with blank tablet → labeled diagram | COMPOSITE | System screen inside the blank tablet | Supervised-use card · "Illustrative reenactment" · "Vehicle unit: PLANNED, not built" | ~19 s |
+| 2:14 | 2:24 | 2:31 | ElevenLabs voiced this | Shot 6 (`pytest` → `201 passed`) | REAL | — | "Narration and illustrative reenactments: ElevenLabs" | ~10 s |
+| 2:24 | 2:40 | 2:41 | Evidence there, move | Scene 4: through a doorway → Now on `GO` after restarting the server | COMPOSITE | Now (`GO`) | "Illustrative reenactment" · repo URL once visibility is settled | ~16 s |
+
+If a block runs long, trim the picture, not the claims.
 
 Do not:
 
-- Generate video or imagery for proof shots.
+- Generate video or imagery for proof shots, or let a generated scene stand alone without its REAL capture.
+- Ask ElevenLabs to draw the Rangyuu UI, a Ring device, or vehicle hardware.
 - Fake a network failure with graphics.
 - Use Ring chimes, or put the Ring logo on title cards or the thumbnail.
 - Show raw API JSON or `python -m rangyuu` output: both print Spanish labels (`AVANZA`, `aceptado`).
@@ -274,3 +292,42 @@ parent, caregiver or operator stays responsible. Rangyuu does not control any ve
 vehicle unit appears at all, it is a labeled diagram ("planned"), never footage.
 
 Label any rover drawn on screen as **simulated**. English subtitles: export from the final script.
+
+## 7. Illustrative reenactment prompts (ElevenLabs Image & Video)
+
+Prompts supplied 2026-10-22, checked against §6. Not generated yet: the connector in this session is
+voice-only, and each generation needs its displayed cost approved first. One take each, 16:9.
+
+| # | Slot | Length | Real capture composited |
+|---|---|---|---|
+| 1 | 0:00 | 7 s | cut to Now at ~6 s |
+| 2 | 1:27 | 7 s | On board screen in the blank phone |
+| 3 | 1:56 | 8 s | System screen in the blank tablet |
+| 4 | 2:25 | 6 s | Now (`GO`) as picture-in-picture, right |
+
+**1 — Opening, approach to the hallway**
+
+```
+Create a 7-second, 16:9 cinematic documentary-style video. An adult wheelchair user approaches a hallway corner at a calm, careful pace while a caregiver walks nearby, attentive but not touching or steering the chair. Natural indoor daylight, realistic community building, respectful and matter-of-fact mood. Show the situation as an illustrative reenactment, not as a real user testimonial. No distress, accident, near-collision, medical setting, logos, readable text, or visible product branding. Do not show a phone or any interface. Keep the composition uncluttered, with some open space on the right for a real app-screen inset to be added in editing.
+```
+
+**2 — On board, user with a mounted phone**
+
+```
+Create a 7-second, 16:9 cinematic documentary-style video. An adult wheelchair user pauses safely in a building corridor beside a mounted smartphone, with a caregiver nearby. The phone is clearly visible, facing the camera, but its screen is completely blank, neutral dark gray, and free of reflections, text, icons, or interface. Natural light, realistic setting, calm supervised use. Respectful illustrative reenactment, not a real user testimonial. No logos, readable text, invented hardware, vehicle controls, or dramatic danger. Leave clear space on the left for an editor to composite a real screen recording into the phone display or as a picture-in-picture.
+```
+
+**3 — Supervision, caregiver and tablet**
+
+```
+Create an 8-second, 16:9 cinematic documentary-style video. An adult caregiver stands beside an adult wheelchair user in a quiet hallway; both calmly look at a tablet held by the caregiver. The tablet screen faces the camera and is completely blank, neutral dark gray, with no reflections, text, icons, or interface. The caregiver remains observant and supportive without operating or steering the wheelchair. Natural indoor daylight, dignified and realistic. Illustrative reenactment only, not a real testimonial. No logos, medical setting, distress, vehicle hardware, or claims of autonomous control. Leave room on the right for a real Rangyuu app capture to be composited during editing.
+```
+
+**4 — Closing, through a doorway**
+
+```
+Create a 6-second, 16:9 cinematic documentary-style video. An adult wheelchair user calmly passes through a wide interior doorway while a caregiver stays nearby and attentive. Smooth, unhurried movement, realistic community building, natural light, respectful documentary tone. This is an illustrative reenactment, not footage of a real Rangyuu user or product test. No danger, dramatic rescue, logos, readable text, app screens, vehicle hardware, or suggestion that software controls the wheelchair. Compose the subjects on the left and leave open space on the right for a real app-screen capture to appear as a picture-in-picture during editing.
+```
+
+Reject a take that shows readable text, a logo, a device screen that isn't blank, distress, or anyone
+steering the chair; regenerate only after its cost is approved.
