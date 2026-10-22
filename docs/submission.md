@@ -12,7 +12,7 @@ Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline 
 
 | Item | State | Evidence / next action |
 |---|---|---|
-| Repo has setup + run instructions | ✅ | `README.md` Quickstart; rerun 2026-10-22: `198 passed, 1 skipped`, server `200` + `PROCEED`, port freed |
+| Repo has setup + run instructions | ✅ | `README.md` Quickstart; rerun 2026-10-22: `198 passed, 1 skipped` (now `201 passed, 1 skipped` with Playwright, `174 passed, 4 skipped` without), server `200` + `PROCEED`, port freed |
 | Ring used at runtime, imported and called | ✅ | `rangyuu/ring_client.py`, `whep.py`, `live.py` (README permalinks at `0cbd264`, reachable from `main`) |
 | Secrets in the published history (`origin/main`, 96 commits) | ✅ clean | rescanned 2026-10-22; only variable names; no media except `fixtures/ring/playground_frame_120.png` (Ring Playground output) |
 | Commit author emails | ⚠️ will be public | 2 author emails appear in commit metadata once the repo is public |
@@ -240,8 +240,27 @@ Eleven v3 before retakes. Check the displayed cost before each generation.
    2026-10-22 rehearsal the next poll showed `UNCERTAIN`, "no link to the site", "not clear to
    proceed". Covered by
    `tests/test_app_e2e.py::test_losing_the_link_to_the_site_withdraws_the_authorisation`.
-6. **Evidence.** `python -m pytest -q` → `198 passed, 1 skipped`, then the "Measured, with dates"
+6. **Evidence.** `python -m pytest -q` → `201 passed, 1 skipped`, then the "Measured, with dates"
    table.
+
+### Edit timeline (narration block → picture)
+
+| VO | Picture | On-screen text |
+|---|---|---|
+| 0:00 | Card on black, then the Now screen at rest | "For supervised use: a parent, caregiver or operator stays responsible. Rangyuu does not control any vehicle." |
+| 0:10 | Now screen: map with the route | — |
+| 0:24 | Shot 1 (Playground), then shot 2 (`ring_client.py` + `devices()`) | "Ring Developer Playground — simulator" |
+| 0:45 | Shot 4: tap a map cell to show state, confidence and age | — |
+| 1:00 | Now screen on `GO` | Lower third: `GO = PROCEED · STOP = HOLD · UNCERTAIN = UNKNOWN` |
+| 1:22 | Shot 3 (`live_view.py --frames`), then the README "Measured, with dates" table | "Measured 2026-09-15" |
+| 1:48 | On board screen | "On-board lane: 22 % precision → warns only" |
+| 2:03 | Shot 5A, split screen: app + terminal, Ctrl+C | — |
+| 2:16 | System screen, then the same card as 0:00 | Card, plus "Vehicle unit: planned, not built" |
+| 2:31 | Shot 6 (`pytest` → `201 passed`) | "Narration: ElevenLabs" |
+| 2:41 | Now screen back on `GO` after restarting the server, fade out | Repo URL |
+
+Under every block, shots must be real captures. If a block runs long, trim the picture, not the
+claims. The 2:41 card shows the repo URL only after visibility is settled.
 
 Do not:
 
