@@ -17,6 +17,12 @@ playwright_api = pytest.importorskip("playwright.sync_api")
 STUB = """
 window.__vibrations = [];
 navigator.vibrate = (pattern) => { window.__vibrations.push(pattern); return true; };
+window.__clips = [];
+window.Audio = function (src) {
+  this.src = src;
+  this.play = () => { window.__clips.push(src); return Promise.resolve(); };
+  this.pause = () => {};
+};
 """
 
 
@@ -74,6 +80,24 @@ def test_para_has_its_own_stronger_pattern(app, page):
                            timeout=8000)
     page.wait_for_function("window.__vibrations.at(-1)?.join(',') === '140,80,140'", timeout=8000)
     assert vibrations(page)[-1] == [140, 80, 140]
+
+
+def test_the_voice_is_the_bundled_elevenlabs_clip_for_the_state(page):
+    """Same clips as the mobile app: one per state, in the active language (es in this page)."""
+    page.wait_for_function("window.__clips.some(c => c.endsWith('/es/hold.mp3'))", timeout=8000)
+    clips = page.evaluate("window.__clips")
+    assert any(c.endswith("/voices/lumina/es/proceed.mp3") for c in clips)
+    assert clips[-1].endswith("/voices/lumina/es/hold.mp3")
+
+
+def test_losing_the_link_says_so_with_its_own_clip(page):
+    """Shot 5A of the demo: the server stops and the voice says the link was lost, not just 'uncertain'."""
+    page.evaluate("() => { window.__fetch = window.fetch;"
+                  "        window.fetch = () => Promise.reject(new Error('down')); return true; }")
+    try:
+        page.wait_for_function("window.__clips.at(-1)?.endsWith('/es/linkLost.mp3')", timeout=8000)
+    finally:
+        page.evaluate("() => { window.fetch = window.__fetch; return true; }")
 
 
 def test_the_sources_screen_declares_which_channels_exist(page):

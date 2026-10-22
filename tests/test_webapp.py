@@ -114,6 +114,21 @@ def test_traversal_outside_the_web_root_is_refused(base_url):
     assert error.value.code in (400, 404)
 
 
+def test_the_bundled_elevenlabs_clips_are_served_to_the_web_app(base_url):
+    """The web app speaks with the same pre-recorded clips the mobile app ships, not the system voice."""
+    with urllib.request.urlopen(base_url + "/voices/lumina/en/proceed.mp3", timeout=5) as response:
+        body = response.read()
+        assert response.status == 200
+        assert response.headers["Content-Type"] == "audio/mpeg"
+        assert body[:3] == b"ID3" or body[:2] in (b"\xff\xfb", b"\xff\xf3", b"\xff\xf2")
+
+
+def test_traversal_outside_the_voices_folder_is_refused(base_url):
+    with pytest.raises(urllib.error.HTTPError) as error:
+        get(base_url, "/voices/../../pyproject.toml")
+    assert error.value.code in (400, 404)
+
+
 def test_an_idle_connection_does_not_freeze_the_app_for_everyone_else():
     """Chromium opens a preconnect socket and may never send on it. A single-threaded server
     blocks reading that socket's request line, and the screen sits on 'waiting for the site'."""

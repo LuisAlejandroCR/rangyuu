@@ -61,7 +61,7 @@ function paintVerdict(data) {
   $("verdict-gate").textContent = data.authorizes ? t("gate.yes") : t("gate.no");
   $("ahora-stamp").textContent = data.at ? clock(data.at) : t("link.stamp");
   if (data.cells) drawMap($("map-now"), data.cells, data.route || []);
-  announce(data.state);
+  announce(data.state, { cue: data.cue });
 }
 
 /** Perder el enlace con el sitio es quedarse sin evidencia, y sin evidencia no se autoriza.
@@ -71,7 +71,7 @@ function paintVerdict(data) {
  * asciende nada: solo retira la autorización, igual que ya hacía la pantalla de caminata. */
 function paintLinkLost() {
   paintVerdict({ state: "SIN CERTEZA", reason: t("link.reason"),
-                 detail: t("link.detail"), authorizes: false });
+                 detail: t("link.detail"), authorizes: false, cue: "linkLost" });
 }
 
 // --- mapa ---------------------------------------------------------------------

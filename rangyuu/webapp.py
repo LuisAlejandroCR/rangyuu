@@ -10,6 +10,8 @@ from pathlib import Path
 from .calibrate import Correspondence, calibrate
 
 WEB_ROOT = Path(__file__).resolve().parent.parent / "web"
+# The ElevenLabs clips the mobile app bundles; served at /voices/ so the web app speaks with them.
+VOICES_ROOT = Path(__file__).resolve().parent.parent / "mobile" / "assets" / "voices"
 MAX_BODY = 262_144
 CACHE = "no-store"
 
@@ -74,9 +76,12 @@ def make_handler(site, web_root: Path = WEB_ROOT):
         do_HEAD = do_GET
 
         def _static(self, path: str):
+            root = web_root
+            if path.startswith("/voices/"):
+                root, path = VOICES_ROOT, path[len("/voices"):]
             relative = "index.html" if path in ("/", "") else path.lstrip("/")
-            target = (web_root / relative).resolve()
-            if web_root.resolve() not in target.parents or not target.is_file():
+            target = (root / relative).resolve()
+            if root.resolve() not in target.parents or not target.is_file():
                 self._send(404, {"error": "not found"})
                 return
             kind = mimetypes.guess_type(target.name)[0] or "application/octet-stream"
