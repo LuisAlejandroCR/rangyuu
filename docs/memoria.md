@@ -49,6 +49,24 @@
 
 - Decidir en qué pantalla no crítica va Tilo y versionar `docs/brand/` (no hay commit todavía).
 
+## 2026-10-22 — La escena 1 generada se descarta; el video abre con material real
+
+**Qué se hizo**
+
+- Escena 1 con `kling-2.5-turbo`, dos tomas de 2.120,79 créditos cada una y las dos rechazadas. En
+  la primera, el cuidador empuja la silla. En la segunda, el encuadre corta la cabeza y la silla
+  mezcla ruedas manuales con joystick.
+- Decisión escogida: no intentar una tercera toma. La apertura (0:00–0:10) pasa a REAL: tarjeta de
+  uso supervisado y pantalla Ahora. La duración sigue en 2:40 y el prompt queda en §7 como registro.
+- Gasto total: 6.274,38 de 25.000. El registro de créditos está en `docs/submission.md` §1.
+
+**Qué NO se verificó, y por qué**
+
+- Las escenas 2–4 siguen sin generar. Llevan cuidador y pueden fallar igual que la 1; hay que
+  ajustar sus prompts antes de estimarlas.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §6 y §7.
+
 ## 2026-10-22 — Revisión del PR #8: tiempos sin solapes, cifra vieja y estado de merge
 
 **Qué se hizo**
