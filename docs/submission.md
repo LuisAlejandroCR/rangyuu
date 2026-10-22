@@ -34,7 +34,7 @@ Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline 
 |---|---|---|---|---|
 | 2026-10-22 | Voice test, block 0:00, 1 take (2 takes estimated at 206); tone approved, reused as the master for 0:00 | `eleven_v3` / `XW70ikSsadUbinwLMZ5w` (supplied 2026-10-22) | 102.99 | 102.99 |
 | 2026-10-22 | Master, blocks 0:10 → 2:41, 1 take each, every block estimated first. Cap for the master set: 2,500 | same | 135.99 + 249.98 + 132.99 + 254.97 + 350.96 + 172.98 + 178.98 + 247.98 + 147.99 + 56.99 = 1,929.81 | **2,032.80** |
-| 2026-10-22 | Scene 1 (§7), 1 take. Estimates for the same clip: Seedance v2.5 14,003 · Seedance v2 mini 4,581 · Wan 2.6 3,030 · Veo 3.1 lite 2,424 · Kling 2.5 Turbo 2,121 · LTX v2 fast 1,454. Cap for this take: 2,200 | `kling-2.5-turbo`, flow `xDHFdeM4AHUxuJCN2BNi` | 2,120.79 | **4,153.59** |
+| 2026-10-22 | Scene 1 (§7), 1 take. Estimates for the same clip: Seedance v2.5 14,003 · Seedance v2 mini 4,581 · Wan 2.6 3,030 · Veo 3.1 lite 2,424 · Kling 2.5 Turbo 2,121 · LTX v2 fast 1,454. Cap for this take: 2,200. **Rejected**: the caregiver touches the wheelchair | `kling-2.5-turbo`, flow `xDHFdeM4AHUxuJCN2BNi` | 2,120.79 | **4,153.59** |
 
 All takes live in ElevenLabs flow `3JggnpjaF01ovynn4QfB`; download them from there into the edit
 project, outside the repo. Spoken numbers are written out in the prompts ("eight point one six",
@@ -307,6 +307,15 @@ voice-only, and each generation needs its displayed cost approved first. One tak
 | 4 | 2:25 | 6 s | Now (`GO`) as picture-in-picture, right |
 
 **1 — Opening, approach to the hallway**
+
+Revised 2026-10-22 after take 1 was rejected (the caregiver touched the chair): the caregiver is
+removed and the user drives alone. Use this version; the original stays below for reference.
+
+```
+Create a 7-second, 16:9 cinematic documentary-style video. An adult using a power wheelchair drives it on their own toward a hallway corner at a calm, careful pace. Only one person is in the frame; nobody else is present, and no one touches, pushes or steers the chair. Natural indoor daylight, realistic community building, respectful and matter-of-fact mood. Illustrative reenactment, not a real user testimonial. No distress, accident, near-collision, medical setting, logos, readable text, or visible product branding. Do not show a phone or any interface. Keep the composition uncluttered, with open space on the right for a real app-screen inset to be added in editing.
+```
+
+Original:
 
 ```
 Create a 7-second, 16:9 cinematic documentary-style video. An adult wheelchair user approaches a hallway corner at a calm, careful pace while a caregiver walks nearby, attentive but not touching or steering the chair. Natural indoor daylight, realistic community building, respectful and matter-of-fact mood. Show the situation as an illustrative reenactment, not as a real user testimonial. No distress, accident, near-collision, medical setting, logos, readable text, or visible product branding. Do not show a phone or any interface. Keep the composition uncluttered, with some open space on the right for a real app-screen inset to be added in editing.
