@@ -1,0 +1,119 @@
+1
+00:00:00,000 --> 00:00:06,639
+A camera on a mobility vehicle can see what is in front of it.
+
+2
+00:00:06,739 --> 00:00:09,900
+It cannot see around a corner.
+
+3
+00:00:10,000 --> 00:00:16,330
+The building may already have cameras looking into that space.
+
+4
+00:00:16,430 --> 00:00:23,900
+Rangyuu asks whether those observations can support one route, right now.
+
+5
+00:00:24,000 --> 00:00:28,841
+Ring is the infrastructure source in this demonstration.
+
+6
+00:00:28,941 --> 00:00:34,841
+The Ring Developer Playground provides the simulator flow we tested.
+
+7
+00:00:34,941 --> 00:00:44,900
+Its video is a canned clip, so we use it to exercise the integration, not to claim a real-world floor measurement.
+
+8
+00:00:45,000 --> 00:00:49,938
+Rangyuu turns observations into a floor map.
+
+9
+00:00:50,038 --> 00:00:54,633
+Cells carry a state, confidence, and age.
+
+10
+00:00:54,733 --> 00:00:59,900
+Evidence expires. Unknown does not mean clear.
+
+11
+00:01:00,000 --> 00:01:02,547
+The route question is simple:
+
+12
+00:01:02,647 --> 00:01:05,012
+Can this path be traversed?
+
+13
+00:01:05,112 --> 00:01:11,859
+PROCEED requires evidence for the path that is calibrated, free, and fresh.
+
+14
+00:01:11,959 --> 00:01:19,161
+When evidence is missing, stale, or contradictory, Rangyuu withdraws permission.
+
+15
+00:01:19,261 --> 00:01:21,900
+The answer is HOLD or UNKNOWN.
+
+16
+00:01:22,000 --> 00:01:25,697
+We measured the system, not just described it.
+
+17
+00:01:25,797 --> 00:01:35,437
+Across four hundred frames from a live WHEP session, decode, inference, and decision took 8.16 milliseconds per frame.
+
+18
+00:01:35,537 --> 00:01:47,900
+On a tape-measured floor, filmed with a phone, calibration error was 0.9 centimeters across 61 centimeters, checked against points left out of the fit.
+
+19
+00:01:48,000 --> 00:01:51,847
+The on-board camera is a different lane.
+
+20
+00:01:51,947 --> 00:01:56,683
+In a measured walk, its precision was 22 percent.
+
+21
+00:01:56,783 --> 00:02:00,334
+So it warns. It does not stop anyone.
+
+22
+00:02:00,434 --> 00:02:02,900
+Stopping has to be earned.
+
+23
+00:02:03,000 --> 00:02:06,940
+Now we stop the site's server, with the app still open.
+
+24
+00:02:07,040 --> 00:02:11,640
+GO becomes UNCERTAIN: no link to the site, not clear to proceed.
+
+25
+00:02:11,740 --> 00:02:15,900
+The screen refuses to keep authorizing from an old answer.
+
+26
+00:02:16,000 --> 00:02:21,164
+ElevenLabs voiced this narration and the app's pre-recorded alerts.
+
+27
+00:02:21,264 --> 00:02:26,900
+Nothing calls it at runtime, and it makes none of the system's decisions.
+
+28
+00:02:27,000 --> 00:02:34,844
+When the evidence is there, move.
+
+29
+00:02:34,944 --> 00:02:38,696
+When it is not —
+
+30
+00:02:38,796 --> 00:02:39,900
+hold.
