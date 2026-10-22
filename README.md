@@ -43,6 +43,29 @@ Ring is the infrastructure sensor. Remove it and the map has no evidence, so eve
 | `POST /api/rover/can-traverse`: `authorizes` is true only for `PROCEED` | [`rangyuu/api.py` L89–L94](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/api.py#L89-L94) |
 | An unmeasured calibration observes but never authorizes | [`rangyuu/site.py` L253–L275](https://github.com/LuisAlejandroCR/rangyuu/blob/0cbd2640df36f6b4b251646ab459aa16a866c00c/rangyuu/site.py#L253-L275) |
 
+## Where AWS is used: Amazon Bedrock, outside the control loop
+
+[`rangyuu/briefing.py`](rangyuu/briefing.py) calls the **Amazon Bedrock Converse API**
+(`bedrock-runtime`, boto3) to turn a decision the core already made into one or two plain sentences
+for the supervising caregiver, in English or Spanish. The cloud belongs where it helps, not where it
+could hurt:
+
+- **It never decides.** `decision` and `authorizes` are copied from the core; the model only writes
+  words.
+- **It can't say "go" on a stop.** On `HOLD` or `UNKNOWN`, a reply containing a permission word
+  (`proceed`, `clear`, `safe to`, `avanza`, …) is rejected and the fixed template is used instead.
+- **It fails closed and stays fast.** Timeouts of 3 s connect / 10 s read, `maxTokens` 120, two
+  retries; any error, empty or over-long reply falls back to the template. Unset
+  `RANGYUU_BEDROCK_MODEL` and no network call is made at all.
+
+```sh
+pip install -e ".[bedrock]"
+aws login                                   # or any standard AWS credential source
+RANGYUU_BEDROCK_MODEL=<model or inference profile id> python -m rangyuu.briefing   # add --es for Spanish
+```
+
+Tests use a stub client and need no AWS account: `tests/test_briefing.py`.
+
 ## Quickstart from a clean clone
 
 Requires Python 3.11+. No Ring credentials and no hardware are needed for the steps below.
@@ -116,6 +139,7 @@ Stated plainly so nobody has to discover it:
 | `rangyuu/ring_client.py`, `whep.py`, `live.py`, `ring.py` | Ring REST, WHEP, media, webhook signature |
 | `rangyuu/api.py` | `POST /api/webhook/ring` and `POST /api/rover/can-traverse` |
 | `rangyuu/runtime.py`, `detect.py` | Local loop with per-stage budget and feed watchdog |
+| `rangyuu/briefing.py` | Amazon Bedrock operator briefing; never decides, falls back to a template |
 | `rangyuu/site.py`, `ui.py`, `webapp.py`, `serve.py`, `web/` | The app and its four screen states |
 | `rangyuu/onboard.py`, `onboard_calibration.py`, `vision.py`, `walk.py` | The on-board lane and its calibration gate |
 | `mobile/` | Thin Expo client that sends on-board frames to the core |
