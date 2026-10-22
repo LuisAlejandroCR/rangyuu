@@ -33,7 +33,7 @@
 
 **Qué NO se verificó, y por qué**
 
-- El tono de la toma: lo aprueba quien escucha, no este registro.
+- El tono de la prueba se aprobó el 2026-10-22 y con esa voz se generó la narración completa: 10 bloques más, 1.929,81 créditos, total 2.032,80. Las tomas maestras no se han escuchado aquí ni se ha medido su duración real contra el montaje.
 - La causa de que Actions no corra: no se revisó la facturación de la cuenta.
 
 **Dónde quedan los pendientes:** `docs/submission.md` §1.
