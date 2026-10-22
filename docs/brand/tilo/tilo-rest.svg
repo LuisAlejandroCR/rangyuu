@@ -1,0 +1,53 @@
+<!-- tilo-rest.svg: Tilo en pose secundaria de descanso, inclinado y con los ojos cerrados.
+     Los brazos descansan sobre la capa marfil; no señala, no saluda ni sostiene nada.
+     Misma paleta y contorno que tilo-front.svg; sin scripts, filtros ni recursos externos. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 190" role="img" aria-labelledby="tilo-rest-title">
+  <title id="tilo-rest-title">Tilo descansando, mascota decorativa de Rangyuu</title>
+  <defs>
+    <linearGradient id="tilo-rest-lav" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b6a9d2"/>
+      <stop offset="1" stop-color="#9c8dbd"/>
+    </linearGradient>
+    <linearGradient id="tilo-rest-lav-deep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a090c0"/>
+      <stop offset="1" stop-color="#87789f"/>
+    </linearGradient>
+    <linearGradient id="tilo-rest-ivory" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#faf3e5"/>
+      <stop offset="1" stop-color="#eadfca"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="rotate(-6 120 120) translate(0 6) scale(1 .96)">
+    <g stroke="#4b3f60" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+      <!-- aletas ahusadas, la izquierda algo más caída: postura relajada -->
+      <path d="M38 124 C26 118 14 112 8 115 C5 126 18 144 38 154 Z" fill="url(#tilo-rest-lav-deep)"/>
+      <path d="M202 122 C214 114 226 104 233 106 C237 117 224 140 202 154 Z" fill="url(#tilo-rest-lav-deep)"/>
+      <path d="M32 134 Q21 126 13 119 M32 144 Q21 137 14 130 M208 132 Q220 122 228 112 M208 142 Q220 134 227 124" fill="none" stroke="#7a6c95" stroke-width="2" opacity=".55"/>
+
+      <rect x="30" y="114" width="180" height="50" rx="24" fill="url(#tilo-rest-lav-deep)"/>
+      <path d="M90 124 V156 M150 124 V156" stroke="#7a6c95" stroke-width="2" opacity=".55"/>
+
+      <rect x="42" y="84" width="156" height="44" rx="21" fill="url(#tilo-rest-ivory)"/>
+
+      <!-- brazos recogidos sobre la capa marfil -->
+      <ellipse cx="102" cy="112" rx="7" ry="10.5" transform="rotate(-58 102 112)" fill="url(#tilo-rest-lav)"/>
+      <ellipse cx="138" cy="112" rx="7" ry="10.5" transform="rotate(58 138 112)" fill="url(#tilo-rest-lav)"/>
+
+      <rect x="54" y="28" width="132" height="70" rx="30" fill="url(#tilo-rest-lav)"/>
+    </g>
+
+    <ellipse cx="90" cy="41" rx="22" ry="6" fill="#ffffff" opacity=".22"/>
+    <path d="M162 104 q5 -4 10 0 t10 0 M166 112 q4 -3 8 0 t8 0" fill="none" stroke="#3fb0c6" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+
+    <ellipse cx="83" cy="78" rx="9" ry="5" fill="#dba8c2" opacity=".65"/>
+    <ellipse cx="157" cy="78" rx="9" ry="5" fill="#dba8c2" opacity=".65"/>
+
+    <!-- ojos cerrados, iguales -->
+    <g fill="none" stroke="#4b3f60" stroke-width="3" stroke-linecap="round">
+      <path d="M92 63 Q102 71 112 63"/>
+      <path d="M128 63 Q138 71 148 63"/>
+      <path d="M114 83 Q120 87 126 83"/>
+    </g>
+  </g>
+</svg>
