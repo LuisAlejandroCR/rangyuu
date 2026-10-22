@@ -267,7 +267,7 @@ under the 2:50 target and the 3:00 limit. Re-measure once the approved takes are
 
 | Start | End | Script cue (§5) | VO block | Visual | Origin | Real capture tied to it | On-screen text | Dur. |
 |---|---|---|---|---|---|---|---|---|
-| 0:00 | 0:10 | 0:00 | Can't see around a corner | Scene 1: approach to a hallway corner, cut to Now at ~6 s | COMPOSITE | Now (`GO` + map) | Supervised-use card · "Illustrative reenactment" | ~10 s |
+| 0:00 | 0:10 | 0:00 | Can't see around a corner | Supervised-use card on black (~5 s), then Now at rest (`GO` + map) | REAL | — | Supervised-use card | ~10 s |
 | 0:10 | 0:20 | 0:10 | Building may already have cameras | Now: map with the route | REAL | — | — | ~10 s |
 | 0:20 | 0:38 | 0:24 | Ring is the infrastructure source | Shot 1 (Playground) → shot 2 (`ring_client.py` + `devices()`) | REAL | — | "Ring Developer Playground — simulator, demo feed" | ~18 s |
 | 0:38 | 0:48 | 0:45 | Floor map, cells, expiry | Shot 4: tap a cell (state, confidence, age) | REAL | — | — | ~10 s |
@@ -302,12 +302,12 @@ voice-only, and each generation needs its displayed cost approved first. One tak
 
 | # | Slot | Length | Real capture composited |
 |---|---|---|---|
-| 1 | 0:00 | 7 s | cut to Now at ~6 s |
+| 1 | 0:00 | — | **Dropped 2026-10-22** after two rejected takes; 0:00 opens on REAL footage |
 | 2 | 1:27 | 7 s | On board screen in the blank phone |
 | 3 | 1:56 | 8 s | System screen in the blank tablet |
 | 4 | 2:25 | 6 s | Now (`GO`) as picture-in-picture, right |
 
-**1 — Opening, approach to the hallway**
+**1 — Opening, approach to the hallway (dropped, kept for the record)**
 
 Revised 2026-10-22 after take 1 was rejected (the caregiver touched the chair): the caregiver is
 removed and the user drives alone. Use this version; the original stays below for reference.
