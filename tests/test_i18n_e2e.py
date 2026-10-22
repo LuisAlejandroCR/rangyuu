@@ -155,3 +155,21 @@ def test_a_reason_with_no_translation_is_shown_as_is_rather_than_hidden(app, bro
         assert shown == ["something is on the path", "una razón que nadie tradujo"]
     finally:
         context.close()
+
+
+@pytest.mark.parametrize("locale,names", [
+    ("en-US", ["entrance", "hallway", "door"]),
+    ("es-ES", ["entrada", "pasillo", "puerta"]),
+])
+def test_the_seeded_zones_are_named_in_the_interface_language(app, browser, locale, names):
+    """Los nombres de zona son dato y viajan en castellano; se traducen al mostrarlos, en los
+    chips del mapa y en la lista de zonas, sin cambiar lo que guarda el servidor."""
+    context, page = open_app(browser, app[1], locale)
+    try:
+        chips = page.locator("#zone-chips li").all_text_contents()
+        listed = page.locator("#zones .label").all_text_contents()
+        assert [chip.split(" · ")[0] for chip in chips] == names
+        assert listed == names
+        assert [zone.name for zone in app[0].zones] == ["entrada", "pasillo", "puerta"]
+    finally:
+        context.close()

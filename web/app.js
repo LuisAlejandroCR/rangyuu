@@ -125,9 +125,9 @@ async function loadSpace() {
 function paintZones(zones) {
   lastZones = zones;
   $("zone-chips").innerHTML = zones.map((z) =>
-    `<li class="${z.risky ? "risky" : ""}">${z.name}${z.risky ? ` · ${t("now.risk")}` : ""}</li>`).join("");
+    `<li class="${z.risky ? "risky" : ""}">${s(z.name)}${z.risky ? ` · ${t("now.risk")}` : ""}</li>`).join("");
   $("zones").innerHTML = zones.map((z) =>
-    `<li><span><span class="label">${z.name}</span>
+    `<li><span><span class="label">${s(z.name)}</span>
       <span class="meta">${t("now.cells", z.cells.length)}${z.risky ? ` · ${t("now.riskZone")}` : ""}</span></span>
       <span class="chevron">›</span></li>`
   ).join("") || `<li><span class="meta">${t("now.noZones")}</span></li>`;
@@ -230,7 +230,7 @@ $("calibrate").addEventListener("click", async () => {
       <div class="row"><span>${t("setup.ceiling")}</span><span>${result.ceiling_cm} cm</span></div>${perPoint}`;
   } catch (error) {
     $("calibration-result").hidden = false;
-    $("calibration-result").innerHTML = `<h2 class="bad">${t("setup.failed")}</h2><div class="row"><span>${error.message}</span></div>`;
+    $("calibration-result").innerHTML = `<h2 class="bad">${t("setup.failed")}</h2><div class="row"><span>${s(error.message)}</span></div>`;
   }
 });
 
@@ -245,7 +245,7 @@ $("cell-size").addEventListener("change", async (event) => {
       <div class="row"><span>${t("setup.dropped")}</span><span>${result.cleared}</span></div>
       <p class="note">${t("setup.gridWarning")}</p>`;
   } catch (error) {
-    panel.innerHTML = `<h2 class="bad">${t("setup.gridFailed")}</h2><div class="row"><span>${error.message}</span></div>`;
+    panel.innerHTML = `<h2 class="bad">${t("setup.gridFailed")}</h2><div class="row"><span>${s(error.message)}</span></div>`;
   }
 });
 

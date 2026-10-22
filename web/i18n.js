@@ -296,8 +296,24 @@ const SERVER = {
     "cercana derecha": "near right",
     "lejana derecha": "far right",
     "lejana izquierda": "far left",
+    // nombres de las zonas sembradas en `rangyuu/serve.py`: son dato, viajan en castellano y se
+    // traducen solo al mostrarlos. Una zona que nombre el usuario se muestra tal cual.
+    "entrada": "entrance",
+    "pasillo": "hallway",
+    "puerta": "door",
+    // errores del servidor que la pantalla de Sistema muestra
+    "se necesitan cuatro puntos medidos": "four measured points are needed",
+    "el tamaño de celda debe estar entre 0,05 y 5 m": "cell size must be between 0.05 and 5 m",
   },
-  es: {},
+  // el núcleo geométrico falla en inglés; en castellano se traduce lo que Sistema puede mostrar
+  es: {
+    "need at least four measured correspondences": "se necesitan al menos cuatro puntos medidos",
+    "need at least four matching points": "se necesitan al menos cuatro puntos que coincidan",
+    "degenerate correspondences": "los puntos no forman un cuadrilátero válido",
+    "degenerate homography": "la homografía es degenerada",
+    "point projects to infinity": "un punto se proyecta al infinito",
+    "rectangle sides must be positive": "los lados del rectángulo deben ser positivos",
+  },
 };
 
 let language = FALLBACK;
