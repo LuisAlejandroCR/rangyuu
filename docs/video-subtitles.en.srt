@@ -99,21 +99,33 @@ GO becomes UNCERTAIN: no link to the site, not clear to proceed.
 The screen refuses to keep authorizing from an old answer.
 
 26
-00:02:16,000 --> 00:02:21,164
-ElevenLabs voiced this narration and the app's pre-recorded alerts.
+00:02:16,000 --> 00:02:21,811
+Rangyuu is meant for supervised use. A parent, a caregiver, or an operator stays responsible.
 
 27
-00:02:21,264 --> 00:02:26,900
-Nothing calls it at runtime, and it makes none of the system's decisions.
+00:02:21,911 --> 00:02:25,180
+It adds evidence. It does not replace their judgment.
 
 28
-00:02:27,000 --> 00:02:34,844
-When the evidence is there, move.
+00:02:25,280 --> 00:02:30,900
+Next, a small unit on the vehicle will connect to the Ring devices a building already has.
 
 29
-00:02:34,944 --> 00:02:38,696
-When it is not —
+00:02:31,000 --> 00:02:35,686
+ElevenLabs voiced this narration and the app's pre-recorded alerts.
 
 30
-00:02:38,796 --> 00:02:39,900
+00:02:35,786 --> 00:02:40,900
+Nothing calls it at runtime, and it makes none of the system's decisions.
+
+31
+00:02:41,000 --> 00:02:46,400
+When the evidence is there, move.
+
+32
+00:02:46,500 --> 00:02:49,067
+When it is not —
+
+33
+00:02:49,167 --> 00:02:49,900
 hold.
