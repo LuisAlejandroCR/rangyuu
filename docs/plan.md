@@ -103,7 +103,8 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
 - [ ] **B10 · Runtime de inferencia local.** Cerrado salvo un tramo. El lazo completo corrió contra
       una **sesión WHEP viva**: 400 frames a 1280x720, decodificación 7,48 ms, **inferencia 0,58 ms**,
       decisión 0,10 ms → 8,16 ms por frame, ~122 fps de capacidad contra los 29 fps que entrega la
-      cámara. Con el feed vivo autoriza; al cortarlo cae a `HOLD` por `feed stale`. Que no haya
+      cámara. Con el feed vivo autoriza; al cortarlo cae a `UNKNOWN` por `feed stale` (`rangyuu/runtime.py:87`;
+      corregido el 2026-10-22, antes decía `HOLD`). Que no haya
       inferencia de terceros está probado envenenando `socket`.
       *Falta solo:* el tramo de **actuación por LAN**, que no se puede medir hasta que el consumidor
       viva fuera del proceso.
