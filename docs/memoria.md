@@ -21,6 +21,32 @@
 
 # Memoria
 
+## 2026-10-22 — Amazon Bedrock en el carril asíncrono (AWS Builder)
+
+**Qué se hizo**
+
+- Se revierte la elección del 2026-09-15 de no entrar a AWS Builder: el usuario pidió Bedrock con el
+  cierre a un día. Se mantiene el criterio de `docs/architecture.md` §7: la nube solo en el carril
+  asíncrono, nunca en el lazo de control.
+- `rangyuu/briefing.py` llama a la Converse API de Bedrock (boto3, `bedrock-runtime`) para redactar
+  una o dos frases al cuidador sobre una decisión ya tomada. `decision` y `authorizes` se copian del
+  núcleo; una respuesta con palabra de permiso sobre `HOLD`/`UNKNOWN` se rechaza y queda la
+  plantilla. `maxTokens` 120, timeouts 3/10 s.
+- `boto3` va como extra opcional (`pip install -e ".[bedrock]"`); el núcleo sigue con solo `numpy`.
+- `tests/test_briefing.py`: 11 pruebas con cliente simulado. Suite: `212 passed, 1 skipped`.
+
+**Qué NO se verificó, y por qué**
+
+- La llamada real a Bedrock: sin credenciales AWS activas en esta máquina (`NoCredentials`). Queda en
+  `docs/verificacion.md` → Sin comprobar.
+- El filtro de palabras rechaza también frases correctas como "not clear to proceed". Es a propósito:
+  fallar cerrado cuesta una plantilla.
+
+**Dónde quedan los pendientes**
+
+- Correr `python -m rangyuu.briefing` con credenciales y un modelo habilitado; anotar el resultado.
+- Responder "Yes" en el formulario de Devpost solo después de esa llamada real.
+
 ## 2026-10-22 — Revisión del PR #8: tiempos sin solapes, cifra vieja y estado de merge
 
 **Qué se hizo**
