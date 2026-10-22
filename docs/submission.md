@@ -1,0 +1,223 @@
+<!-- docs/submission.md: paquete de entrega de Devpost, en inglés: checklist de una pantalla, campos
+     del formulario, feedback por herramienta, friction log, guion de voz verificado y lista de tomas.
+     No es la evidencia (docs/verificacion.md) ni el plan de producción ElevenLabs
+     (docs/elevenlabs-challenge.md): aquí solo lo que se pega en Devpost o se graba. -->
+
+# Submission pack — Rangyuu, Ring track
+
+Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline **Fri 2026-10-23,
+12:00 PT (14:00 Colombia)**. Drafts can be saved on Devpost before submitting.
+
+## 1. One-screen checklist
+
+| Item | State | Evidence / next action |
+|---|---|---|
+| Repo has setup + run instructions | ✅ | `README.md` Quickstart; rerun 2026-10-22: `198 passed, 1 skipped`, server `200` + `PROCEED`, port freed |
+| Ring used at runtime, imported and called | ✅ | `rangyuu/ring_client.py`, `whep.py`, `live.py` (README permalinks at `0cbd264`, reachable from `main`) |
+| Secrets in the published history (`origin/main`, 96 commits) | ✅ clean | rescanned 2026-10-22; only variable names; no media except `fixtures/ring/playground_frame_120.png` (Ring Playground output) |
+| Commit author emails | ⚠️ will be public | 2 author emails appear in commit metadata once the repo is public |
+| Repo access | ⏳ **your call** | Public: set visibility + confirm MIT shows in About. Or private: add `testing@devpost.com` and `knmeiss`, `giolaq`, `anishamalde`, `mosesroth`, `emersonsklar` |
+| Old local branches (`codex/rangyuu-rebuild`, …) | ⛔ never push | they still carry the removed home video (docs/memoria.md 2026-10-21) |
+| Open Source contribution | ✅ | fork `LuisAlejandroCR/ring-api-helloworld` (public, MIT), branch `add-whep-live-view-script`, `ed293da` 2026-09-15; PR #23 closed, unmerged — allowed |
+| Video < 3 min, public on YouTube/Vimeo | ⏳ | script §5, shot list §6 |
+| Product feedback per tool | ✅ draft | §3 — confirm the "would build again" answers are yours |
+| Friction log (up to +10 %) | ✅ draft | §4 |
+| Submit on Devpost | ⏳ manual | you press Submit |
+
+## 2. Devpost fields
+
+**Project name:** Rangyuu
+
+**Tagline:** A safe-by-default spatial layer: Ring cameras tell a mobility device whether a path is
+clear, and silence never counts as yes.
+
+**Primary track:** Ring · **Mini challenge:** Open Source
+
+**Description**
+
+A wheelchair, a mobility scooter or a small robot sees what is in front of it, not what is around
+the corner. The building often already has cameras looking into that space. Rangyuu turns those
+observations into a floor-plane occupancy map and answers one question for anything that moves:
+*can I traverse this path right now?*
+
+- **Ring as the infrastructure sensor.** Rangyuu calls the Ring API from Python (device discovery,
+  status, capabilities), opens a WHEP live-view session without a browser, decodes the H264 media
+  with `aiortc`, and verifies Ring webhook signatures (HMAC-SHA256 over the raw body, before parsing).
+- **A floor map, not a picture.** A homography projects detections onto floor cells. Each cell
+  carries a state, a confidence and an age, and expires.
+- **A three-word contract.** `PROCEED` is the only answer that authorizes transit, and only when
+  every cell on the path is observed free, fresh and calibrated, with enough confidence. Otherwise
+  the answer is `HOLD` (occupied, contradicted, uncovered, uncalibrated, unobserved or expired) or
+  `UNKNOWN` (low confidence, or the live feed went silent).
+- **Calibration has to be measured.** An uncalibrated or merely fitted camera observes but never
+  authorizes. Error is checked on points left out of the fit.
+- **An app with three screens** (Now, On board, System) in English and Spanish, plus a thin Expo
+  client that speaks state changes in English, Spanish and Portuguese with pre-recorded clips, so
+  the "link lost" alert works offline.
+
+Measured (dates and commands in `docs/verificacion.md`):
+
+- Full loop on a live WHEP session from the Ring Developer Playground: 400 frames at 1280x720,
+  **8.16 ms per frame** (decode 7.48, inference 0.58, decision 0.10), 2026-09-15.
+- Floor calibration: **0.9 cm error over 61 cm**, on a tape-measured floor filmed with a phone,
+  checked on points left out of the fit, 2026-09-15.
+- On-board camera lane: **22 % precision** against a labeled walk, so it can only warn
+  (`CAUTION`); it is never allowed to stop anyone, 2026-09-16.
+
+What it is not: Rangyuu does not actuate or brake any vehicle, is not a medical device and does not
+guarantee physical safety. The Playground live view is a canned clip, so it exercises the
+integration; no floor geometry is measured on it. Open items are listed under "Not yet verified" in
+the README.
+
+**Built with:** Python, Ring API, Ring Developer Playground, WebRTC/WHEP, aiortc, ONNX Runtime,
+Expo / React Native, ElevenLabs (pre-recorded voice clips and demo narration).
+
+**Repository URL:** https://github.com/LuisAlejandroCR/rangyuu
+
+**Open Source mini challenge**
+
+- Contribution URL: https://github.com/LuisAlejandroCR/ring-api-helloworld/tree/add-whep-live-view-script
+  (pull request, closed unmerged: https://github.com/AmazonAppDev/ring-api-helloworld/pull/23)
+- Project repository URL: https://github.com/LuisAlejandroCR/rangyuu
+- GitHub username: LuisAlejandroCR
+- What / how / why: `scripts/live_view.py` adds a terminal path to Ring live view in the official
+  hello-world sample. It posts the SDP offer to the WHEP endpoint, receives the answer, keeps the
+  session `Location` and closes it with `DELETE`; with `--frames` it reports the real resolution and
+  frame rate. The sample only showed live view inside a browser. A terminal path lets developers
+  confirm their token and device can stream, and measure what they get, before writing any UI or
+  computer-vision code. Written and tested against the real API on 2026-09-15.
+
+## 3. Product feedback (per tool)
+
+**Ring API + Ring Developer Playground**
+
+- *Used for:* device discovery, status and capabilities; WHEP live view; webhook signature format.
+- *Worked well:* the `ring-api-helloworld` sample was readable enough to derive the full flow.
+  WHEP is standard signaling, so a Python client (`aiortc`) worked outside the browser. The
+  Playground token gave hardware-free access to real endpoints on day one.
+- *Needs work:* the Playground live view is a canned ~40 s clip (1172 frames, H264, no audio). It
+  is the same content in every session and has no floor geometry, so you can't calibrate against it.
+  The Playground token lasts about 30 minutes. We could not confirm whether the Playground delivers
+  webhooks, or the exact refresh-token endpoint path, so ours is configurable.
+- *Onboarding:* repo seeded 2026-09-14; first real `/v1/devices` call, WHEP session and decoded
+  frame on 2026-09-15.
+- *Build again:* Yes. A live view you can get from a server process makes Ring cameras usable as
+  infrastructure sensors, not just doorbells. *(Confirm in your own words.)*
+
+**ElevenLabs**
+
+- *Used for:* 42 pre-recorded alert clips (2 voices × en/es/pt × 7 phrases, `eleven_multilingual_v2`,
+  about 1,590 credits) bundled in the mobile app, and this video's narration. No ElevenLabs call
+  happens at runtime and it makes no decisions.
+- *Worked well / needs work / build again:* *(fill after the narration session)*
+
+**aiortc / ONNX Runtime / Expo** — WebRTC media outside the browser; optional local object detector
+(24 ms/frame on CPU); thin mobile client. *(Optional: one line each.)*
+
+## 4. Friction log
+
+| Task | Steps | Expected vs actual | Severity | Workaround | Suggestion |
+|---|---|---|---|---|---|
+| Calibrate a camera from the Playground | Opened two WHEP sessions, decoded frames, compared them | Expected a live or synthetic scene; got the same canned ~40 s clip in both sessions, cut at 1172 frames | Important | Calibrated on our own tape-measured phone footage instead | Offer a Playground scene with known floor markers, or publish the clip's camera intrinsics |
+| Keep a long test running | Pasted a Playground access token into `.env.local` | Expected a dev token for a session; it expires in ~30 min | Nice-to-have | Re-paste tokens during measurement runs | A longer-lived sandbox token, or a refresh flow for the Playground |
+| Plan webhooks before app approval | Searched sample and docs for Playground webhook delivery | Could not determine whether the Playground emits webhooks | Important | Built and tested the HMAC receiver against fixtures | State in the Playground docs which events it can deliver, and how |
+| Refresh-token exchange | Implemented the OAuth refresh path | Exact token endpoint path not confirmed | Important | Made it configurable (`RANGYUU_TOKEN_URL`), no default | Show the token URL in the sample's `.env.example` |
+
+## 5. Voice-over script (verified 2026-10-22)
+
+Direction: documentary, neutral American English, warm but restrained. Eleven v3, generated in
+blocks. Timecodes and headings are not spoken. Target 2:20–2:40.
+
+Each claim was checked against code or `docs/verificacion.md`. Changes from the supplied draft are
+marked ✎.
+
+```
+[0:00 — curious]
+A camera on a mobility vehicle can see what is in front of it.
+It cannot see around a corner.
+
+[0:10]
+The building may already have cameras looking into that space.
+Rangyuu asks whether those observations can support one route, right now.
+
+[0:24 — serious]
+Ring is the infrastructure source in this demonstration.
+The Ring Developer Playground provides the simulator flow we tested.
+Its video is a canned clip, so we use it to exercise the integration, not to claim a real-world floor measurement.
+
+[0:45]
+Rangyuu turns observations into a floor map.
+Cells carry a state, confidence, and age.
+Evidence expires. Unknown does not mean clear.
+
+[1:00 — serious]
+The route question is simple:
+Can this path be traversed?
+PROCEED requires evidence for the path that is calibrated, free, and fresh.
+When evidence is missing, stale, or contradictory, Rangyuu withdraws permission.
+The answer is HOLD or UNKNOWN.
+
+[1:22]
+We measured the system, not just described it.
+Across four hundred frames from a live WHEP session, decode, inference, and decision took 8.16 milliseconds per frame.
+✎ On a tape-measured floor, filmed with a phone, calibration error was 0.9 centimeters across 61 centimeters, checked against points left out of the fit.
+
+[1:48 — serious]
+✎ The on-board camera is a different lane.
+In a measured walk, its precision was 22 percent.
+So it warns. It does not stop anyone.
+✎ Stopping has to be earned.
+
+[2:03]
+✎ (match the shot actually filmed — see §6, shot 5)
+  Option A: We cut the link to the site. PROCEED disappears. The screen refuses to keep authorizing from an old answer.
+  Option B: We cut the feed. When frames stop, PROCEED becomes UNKNOWN. The system refuses to keep authorizing from an old frame.
+
+[2:16 — warm, restrained]
+✎ ElevenLabs voiced this narration and the app's pre-recorded alerts.
+✎ Nothing calls it at runtime, and it makes none of the system's decisions.
+
+[2:27]
+When the evidence is there, move.
+When it is not —
+hold.
+```
+
+Why the ✎ lines changed:
+
+- The 0.9 cm calibration was measured with a phone, not a Ring camera (README "Not yet verified").
+- The 22 % figure is the on-board lane, which can only warn (`rangyuu/ui.py:60-78`). Rangyuu has no
+  brake actuator, so "brake" was replaced.
+- The app is not fed by a live WHEP session yet (plan B12). "Cut the feed" is only true for shot 5B.
+- The mobile app ships ElevenLabs-generated clips, so "not part of the runtime" needed precision.
+
+Spoken length is about 1,750 characters with one §2:03 option (counted 2026-10-22), roughly 1,750 credits at about 1 credit per character on
+Eleven v3 before retakes. Check the displayed cost before each generation.
+
+## 6. Shot list (real footage only)
+
+1. **Playground.** Ring Developer Playground in the browser with the simulated device. Hide the token
+   field.
+2. **Ring call in code.** `rangyuu/ring_client.py` L103–L117 on screen, then the README's
+   `RingClient().devices()` one-liner. Crop or blur device IDs and location in the output.
+3. **WHEP from the terminal.** Fork's `scripts/live_view.py --frames` showing the session open,
+   resolution and fps. This doubles as the Open Source proof.
+4. **The app** at `localhost:8080` with the browser set to English: Now (decision + map),
+   On board, System (measured calibration error).
+5. **Withdrawal:**
+   - **A** — stop `rangyuu.serve` while the app is open. The screen falls to the no-certainty state
+     (`tests/test_app_e2e.py::test_losing_the_link_to_the_site_withdraws_the_authorisation`).
+   - **B** — run `python -m pytest -v tests/test_runtime.py -k network_cut` on screen.
+   - **C** — a live WHEP loop with a real feed cut. Needs a small capture script and a fresh token.
+     Not built.
+6. **Evidence.** `python -m pytest -q` → `198 passed, 1 skipped`, then the "Measured, with dates"
+   table.
+
+Do not:
+
+- Generate video or imagery for proof shots.
+- Fake a network failure with graphics.
+- Use Ring chimes, or put the Ring logo on title cards or the thumbnail.
+- Show raw API JSON or `python -m rangyuu` output: both print Spanish labels (`AVANZA`, `aceptado`).
+
+Label any rover drawn on screen as **simulated**. English subtitles: export from the final script.

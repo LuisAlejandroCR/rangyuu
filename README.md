@@ -14,8 +14,8 @@ The answer is always one of three:
 | Decision | Meaning | Authorizes transit |
 |---|---|---|
 | `PROCEED` | Every cell on the path was observed free, recently, by a calibrated camera | **yes — the only one** |
-| `HOLD` | Something observed blocks or contradicts the path | no |
-| `UNKNOWN` | Evidence is missing, stale or insufficient | no |
+| `HOLD` | The path is occupied or contradicted, or a precondition fails: no coverage, no valid calibration, a cell never observed or already expired | no |
+| `UNKNOWN` | Cells were observed but confidence is missing or below 0.5, or the live feed went silent (`feed stale`) | no |
 
 Absence of evidence is never a yes. Cut the feed and the answer drops from `PROCEED` to `UNKNOWN`
 (`feed stale`) without anything else changing.

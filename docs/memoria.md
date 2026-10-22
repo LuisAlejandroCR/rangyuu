@@ -21,6 +21,34 @@
 
 # Memoria
 
+## 2026-10-22 — Cierre de submission: reglas, escaneo, README corregido y paquete de Devpost
+
+**Qué se hizo**
+
+- Reglas oficiales leídas el 2026-10-22 en <https://amazonappdev2026.devpost.com/rules>. Cierre el
+  viernes 2026-10-23 a las 12:00 PT. No se exige URL pública desplegada. Repo público con licencia
+  visible en About, o privado compartido con `testing@devpost.com` y cinco usuarios de Amazon. Video
+  de menos de 3 min, público en YouTube o Vimeo, mostrando Ring vía simulador o dispositivo. Sin
+  marcas de terceros. Feedback por herramienta. Open Source acepta fork, rama o PR sin merge. Un
+  friction log da hasta 10 % de bonus.
+- Escaneo de secretos sobre `origin/main` (`f57c92c`): limpio. Suite y Quickstart repetidos. Evidencia
+  en `docs/verificacion.md`.
+- **El README describía mal `UNKNOWN`.** Decía que evidencia ausente o caducada daba `UNKNOWN`; el
+  código da `HOLD`, y `UNKNOWN` solo sale de baja confianza o feed vencido. Se corrigió la tabla del
+  README al código. B10 en `docs/plan.md` decía `HOLD` al cortar el feed; se corrigió a `UNKNOWN`.
+- `docs/submission.md`: checklist, campos de Devpost, feedback, friction log, guion de voz verificado
+  con cuatro correcciones y lista de tomas con material real.
+
+**Qué NO se verificó, y por qué**
+
+- No hay script versionado que reproduzca el lazo WHEP vivo con corte de feed. La medición del
+  2026-09-15 usó un arnés ad hoc. Filmarla pide un script nuevo y un token del Playground (~30 min).
+- No se cambió visibilidad ni colaboradores, no se generó audio en ElevenLabs, no se publicó video y
+  no se tocó Devpost: son acciones externas que esperan aprobación.
+- Las respuestas "would build again" del feedback están redactadas como borrador para confirmar.
+
+**Dónde quedan los pendientes:** B7 en `docs/plan.md` y la tabla de `docs/submission.md` §1.
+
 ## 2026-10-21 — El video de casa salió del historial y de GitHub
 
 **Qué se hizo**
