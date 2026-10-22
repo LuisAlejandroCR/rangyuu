@@ -65,6 +65,10 @@ Measured (dates and commands in `docs/verificacion.md`):
 - On-board camera lane: **22 % precision** against a labeled walk, so it can only warn
   (`CAUTION`); it is never allowed to stop anyone, 2026-09-16.
 
+Rangyuu is meant for supervised use: a parent, caregiver or operator stays responsible, and the
+app adds evidence to their judgment. Next on the roadmap is a small unit on the vehicle that
+connects to the Ring devices a building already has. It is planned, not built.
+
 What it is not: Rangyuu does not actuate or brake any vehicle, is not a medical device and does not
 guarantee physical safety. The Playground live view is a canned clip, so it exercises the
 integration; no floor geometry is measured on it. Open items are listed under "Not yet verified" in
@@ -174,11 +178,16 @@ So it warns. It does not stop anyone.
 GO becomes UNCERTAIN: no link to the site, not clear to proceed.
 The screen refuses to keep authorizing from an old answer.
 
-[2:16 — warm, restrained]
+[2:16 — serious]
+✎ Rangyuu is meant for supervised use. A parent, a caregiver, or an operator stays responsible.
+✎ It adds evidence. It does not replace their judgment.
+✎ Next, a small unit on the vehicle will connect to the Ring devices a building already has.
+
+[2:31 — warm, restrained]
 ✎ ElevenLabs voiced this narration and the app's pre-recorded alerts.
 ✎ Nothing calls it at runtime, and it makes none of the system's decisions.
 
-[2:27]
+[2:41]
 When the evidence is there, move.
 When it is not —
 hold.
@@ -193,8 +202,11 @@ Why the ✎ lines changed:
   Shot 5A was chosen on 2026-10-22: stop the server. The line quotes what the screen showed in a
   rehearsal that day.
 - The mobile app ships ElevenLabs-generated clips, so "not part of the runtime" needed precision.
+- Supervised use and the vehicle unit were added on 2026-10-22. The vehicle unit does not exist
+  yet, so it stays in the future tense ("will connect") and is never shown as working.
 
-Spoken length is about 1,750 characters with one §2:03 option (counted 2026-10-22), roughly 1,750 credits at about 1 credit per character on
+Spoken length is about 1,900 characters and 326 words (≈2:10 of speech; planned cut ends at 2:50),
+counted 2026-10-22, so roughly 1,900 credits at about 1 credit per character on
 Eleven v3 before retakes. Check the displayed cost before each generation.
 
 ## 6. Shot list (real footage only)
@@ -225,5 +237,9 @@ Do not:
 - Fake a network failure with graphics.
 - Use Ring chimes, or put the Ring logo on title cards or the thumbnail.
 - Show raw API JSON or `python -m rangyuu` output: both print Spanish labels (`AVANZA`, `aceptado`).
+
+On-screen card for the first 5 seconds and again under the 2:16 block: **"For supervised use: a
+parent, caregiver or operator stays responsible. Rangyuu does not control any vehicle."** If the
+vehicle unit appears at all, it is a labeled diagram ("planned"), never footage.
 
 Label any rover drawn on screen as **simulated**. English subtitles: export from the final script.
