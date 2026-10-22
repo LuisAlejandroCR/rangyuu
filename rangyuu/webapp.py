@@ -4,7 +4,7 @@
 
 import json
 import mimetypes
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from .calibrate import Correspondence, calibrate
@@ -148,7 +148,14 @@ def _observe(site, value) -> dict:
     return {**result, "now": site.now()}
 
 
+def make_server(site, host="0.0.0.0", port=8080):
+    # Threaded: a browser's idle preconnect socket would otherwise block every other request.
+    server = ThreadingHTTPServer((host, port), make_handler(site))
+    server.daemon_threads = True
+    return server
+
+
 def serve(site, host="0.0.0.0", port=8080):  # pragma: no cover - the blocking entry point
-    server = HTTPServer((host, port), make_handler(site))
+    server = make_server(site, host, port)
     print(f"rangyuu en http://localhost:{port}")
     server.serve_forever()

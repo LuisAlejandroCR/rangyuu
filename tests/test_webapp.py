@@ -112,3 +112,21 @@ def test_traversal_outside_the_web_root_is_refused(base_url):
     with pytest.raises(urllib.error.HTTPError) as error:
         get(base_url, "/../pyproject.toml")
     assert error.value.code in (400, 404)
+
+
+def test_an_idle_connection_does_not_freeze_the_app_for_everyone_else():
+    """Chromium opens a preconnect socket and may never send on it. A single-threaded server
+    blocks reading that socket's request line, and the screen sits on 'waiting for the site'."""
+    import socket
+
+    from rangyuu.webapp import make_server
+
+    server = make_server(build_site(), host="127.0.0.1", port=0)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    idle = socket.create_connection(("127.0.0.1", server.server_port))
+    try:
+        status, body = get(f"http://127.0.0.1:{server.server_port}", "/api/space/now")
+        assert status == 200 and "decision" in body
+    finally:
+        idle.close()
+        server.shutdown()
