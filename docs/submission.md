@@ -24,6 +24,18 @@ Rules read 2026-10-22 at <https://amazonappdev2026.devpost.com/rules>. Deadline 
 | Product feedback per tool | ✅ draft | §3 — confirm the "would build again" answers are yours |
 | Friction log (up to +10 %) | ✅ draft | §4 |
 | Submit on Devpost | ⏳ manual | you press Submit |
+| GitHub Actions on the recreated repo | ⚠️ never ran | 0 runs ever (`gh api repos/LuisAlejandroCR/rangyuu/actions/runs` → `total_count: 0`) despite push triggers and Actions enabled, 2026-10-22. Likely private-repo minutes or billing. Not required by the rules; local suite is the evidence |
+
+### ElevenLabs credit ledger (cap 25,000)
+
+| Date | What | Model / voice | Credits | Running total |
+|---|---|---|---|---|
+| 2026-10-22 | Voice test, block 0:00, 1 take (2 takes estimated at 206); tone approved, reused as the master for 0:00 | `eleven_v3` / `XW70ikSsadUbinwLMZ5w` (supplied 2026-10-22) | 102.99 | 102.99 |
+| 2026-10-22 | Master, blocks 0:10 → 2:41, 1 take each, every block estimated first. Cap for the master set: 2,500 | same | 135.99 + 249.98 + 132.99 + 254.97 + 350.96 + 172.98 + 178.98 + 247.98 + 147.99 + 56.99 = 1,929.81 | **2,032.80** |
+
+All takes live in ElevenLabs flow `3JggnpjaF01ovynn4QfB`; download them from there into the edit
+project, outside the repo. Spoken numbers are written out in the prompts ("eight point one six",
+"zero point nine", "sixty-one", "twenty-two") so the model reads them as the script says.
 
 ## 2. Devpost fields
 

@@ -21,6 +21,23 @@
 
 # Memoria
 
+## 2026-10-22 — Prueba de voz para el video y CI que nunca corrió
+
+**Qué se hizo**
+
+- Prueba de voz del bloque 0:00 con `eleven_v3` y la voz `XW70ikSsadUbinwLMZ5w`, suministrada el
+  2026-10-22. Se pidió el estimado antes de generar: 206 créditos por dos tomas. Se generó una sola,
+  por 102,99 créditos. El registro de gasto está en `docs/submission.md` §1.
+- El repo recreado tiene **0 corridas de Actions**, aunque Actions está habilitado y `ci.yml` se
+  dispara con cada push. La evidencia de pruebas para la entrega es la suite local.
+
+**Qué NO se verificó, y por qué**
+
+- El tono de la prueba se aprobó el 2026-10-22 y con esa voz se generó la narración completa: 10 bloques más, 1.929,81 créditos, total 2.032,80. Las tomas maestras no se han escuchado aquí ni se ha medido su duración real contra el montaje.
+- La causa de que Actions no corra: no se revisó la facturación de la cuenta.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §1.
+
 ## 2026-10-22 — La interfaz inglesa ya no muestra zonas en castellano; guion con uso supervisado
 
 **Qué se hizo**
