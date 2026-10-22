@@ -1,0 +1,104 @@
+<!doctype html>
+<!-- cards.html: title cards of the demo video (supervised-use card and end card) with Tilo animated.
+     Deterministic: window.render(card, t) draws the frame at t seconds; render_cards.py screenshots it.
+     Tilo's SVG is injected by the renderer; it stays decorative and never sits next to a decision word. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #1E1714; --surface: #2A201B; --text: #F8EEE3; --muted: #CDB9A6;
+    --accent: #F2A66A; --sand: #E9C9A0;
+  }
+  html, body { margin: 0; width: 1920px; height: 1080px; background: var(--bg); overflow: hidden; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; color: var(--text); }
+  .card { position: absolute; inset: 0; display: none; }
+  .copy { position: absolute; left: 160px; top: 300px; width: 1000px; }
+  .label { font-size: 26px; letter-spacing: .14em; font-weight: 600; color: var(--muted); }
+  h1 { font-size: 92px; line-height: 1.05; font-weight: 700; margin: 28px 0 34px; }
+  p { font-size: 40px; line-height: 1.35; color: var(--sand); margin: 0; }
+  .accent { color: var(--accent); }
+  .url { font-size: 30px; color: var(--muted); margin-top: 44px; }
+  .tilo { position: absolute; left: 1230px; top: 330px; width: 560px; height: 443px; }
+  .tilo svg { width: 100%; height: 100%; overflow: visible; }
+  .stack { position: relative; width: 100%; height: 100%; }
+  .stack > div { position: absolute; inset: 0; }
+  .shadow { position: absolute; left: 1290px; top: 728px; width: 440px; height: 36px;
+            border-radius: 50%; background: #000; opacity: .28; }
+</style>
+</head>
+<body>
+  <section class="card" id="supervised">
+    <div class="copy">
+      <div class="label" data-in="0.2">RANGYUU</div>
+      <h1 data-in="0.45">For supervised use.</h1>
+      <p data-in="0.8">A parent, caregiver or operator stays responsible.</p>
+      <p data-in="1.1">Rangyuu does not control any vehicle.</p>
+    </div>
+    <div class="shadow"></div>
+    <div class="tilo"><div class="stack"><div class="front"></div></div></div>
+  </section>
+
+  <section class="card" id="end">
+    <div class="copy">
+      <div class="label" data-in="0.1">RANGYUU · RING TRACK</div>
+      <h1 data-in="0.25">Rangyuu</h1>
+      <p class="accent" data-in="0.5">Silence never counts as yes.</p>
+      <div class="url" data-in="0.75">github.com/LuisAlejandroCR/rangyuu</div>
+    </div>
+    <div class="shadow"></div>
+    <div class="tilo"><div class="stack"><div class="front"></div><div class="rest"></div></div></div>
+  </section>
+
+<script>
+  const ease = x => 1 - Math.pow(1 - Math.min(Math.max(x, 0), 1), 3);
+  window.DURATION = { supervised: 4.0, end: 3.0 };
+
+  // Group Tilo's eyes so they can blink: the eye-white group plus every circle (pupils, highlights).
+  function prepare(front) {
+    const svg = front.querySelector('svg');
+    const eyes = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    eyes.setAttribute('class', 'eyes');
+    svg.appendChild(eyes);
+    [svg.querySelector('g[stroke-width="2.5"]'), ...svg.querySelectorAll('circle')]
+      .forEach(el => el && eyes.appendChild(el));
+  }
+
+  window.setup = (front, rest) => {
+    document.querySelectorAll('.front').forEach(el => { el.innerHTML = front; prepare(el); });
+    document.querySelectorAll('.rest').forEach(el => { el.innerHTML = rest; });
+    window.__ready = true;
+  };
+
+  window.render = (card, t) => {
+    document.querySelectorAll('.card').forEach(c => c.style.display = c.id === card ? 'block' : 'none');
+    const root = document.getElementById(card);
+    root.querySelectorAll('[data-in]').forEach(el => {
+      const k = ease((t - +el.dataset.in) / 0.5);
+      el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 18}px)`;
+    });
+
+    // Entrance, then a slow breath. No pointing, waving or anything that reads as a signal.
+    const enter = ease(t / 0.7);
+    const breath = Math.sin(t * Math.PI * 2 / 3.2);
+    const tilo = root.querySelector('.tilo');
+    tilo.style.opacity = enter;
+    tilo.style.transform = `translateY(${(1 - enter) * 40 + breath * 5}px) scale(1, ${1 + breath * 0.012})`;
+    root.querySelector('.shadow').style.opacity = 0.28 * enter * (1 - breath * 0.08);
+
+    // One blink on the supervised card.
+    const eyes = root.querySelector('.front .eyes');
+    const b = card === 'supervised' ? Math.max(0, 1 - Math.abs(t - 2.3) / 0.09) : 0;
+    eyes.setAttribute('transform', `translate(0 62) scale(1 ${1 - 0.9 * b}) translate(0 -62)`);
+
+    // End card: Tilo settles into the rest pose, the closest thing to "the end".
+    const rest = root.querySelector('.rest');
+    if (rest) {
+      const k = ease((t - 1.5) / 0.6);
+      rest.style.opacity = k;
+      root.querySelector('.front').style.opacity = 1 - k;
+    }
+  };
+</script>
+</body>
+</html>
