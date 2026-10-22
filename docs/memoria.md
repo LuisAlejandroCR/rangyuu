@@ -21,6 +21,33 @@
 
 # Memoria
 
+## 2026-10-22 — La interfaz inglesa ya no muestra zonas en castellano; guion con uso supervisado
+
+**Qué se hizo**
+
+- Las zonas sembradas (`entrada`, `pasillo`, `puerta`) salían en castellano con la interfaz en
+  inglés: `web/app.js` pintaba `z.name` sin pasar por `s()`. Su propia cabecera dice que todo texto
+  del servidor pasa por `s()`. Ahora se traducen al mostrarlas (entrance, hallway, door) y el
+  servidor sigue guardando el mismo dato.
+- Los paneles de error de Sistema también pasan por `s()`: dos errores en castellano tienen
+  traducción inglesa, y los errores geométricos en inglés tienen traducción castellana.
+- Barrido en navegador real de las tres pantallas en inglés: lo único en castellano eran las zonas,
+  más "Español" en el selector de idioma, que es correcto. Prueba nueva en `tests/test_i18n_e2e.py`:
+  pasa con el cambio y falla en inglés sin él. Suite: `201 passed, 1 skipped`.
+- Guion del video: bloque nuevo a las 2:16. Dice que el uso es supervisado, con padre, cuidador u
+  operador responsable. También anuncia, en futuro, una unidad en el vehículo que se conectará a los
+  dispositivos Ring ya instalados. Hay tarjeta en pantalla y el mismo texto en Devpost. SRT
+  regenerado: 33 subtítulos hasta 2:50.
+
+**Qué NO se verificó, y por qué**
+
+- La unidad del vehículo no existe: va en futuro y nunca se muestra como funcionando.
+- Una zona que nombre el usuario se muestra tal cual, sin traducir, a propósito.
+- Los errores de la API del frame a bordo (`webapp.py:143-145`) siguen en castellano. Los consume
+  el cliente Expo, no esta interfaz.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §1.
+
 ## 2026-10-22 — Toma 5A ensayada y servidor que se congelaba con un navegador
 
 **Qué se hizo**
