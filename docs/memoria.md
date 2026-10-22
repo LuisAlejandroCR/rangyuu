@@ -21,6 +21,23 @@
 
 # Memoria
 
+## 2026-10-22 — Línea de montaje del video y conteos del Quickstart al día
+
+**Qué se hizo**
+
+- Las tomas de narración se aprobaron tras escucharlas.
+- `docs/submission.md` §6 tiene una tabla de montaje que asigna a cada bloque de narración su imagen
+  y su texto en pantalla, con la tarjeta de uso supervisado al inicio y a las 2:16.
+- El README citaba `173 passed, 4 skipped` y `198 passed, 1 skipped`. Medido de nuevo:
+  `174 passed, 4 skipped` sin Playwright y `201 passed, 1 skipped` con él.
+
+**Qué NO se verificó, y por qué**
+
+- No se grabó metraje ni se montó: lo graba quien tiene sesión en el Playground y el editor.
+- La tarjeta final muestra la URL del repo solo después de decidir la visibilidad, que está pendiente.
+
+**Dónde quedan los pendientes:** `docs/submission.md` §1.
+
 ## 2026-10-22 — Prueba de voz para el video y CI que nunca corrió
 
 **Qué se hizo**
