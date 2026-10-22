@@ -21,6 +21,34 @@
 
 # Memoria
 
+## 2026-10-22 — Tilo, mascota decorativa: primera versión en SVG
+
+**Qué se hizo**
+
+- `docs/brand/tilo/tilo-front.svg` (frontal) y `tilo-rest.svg` (descanso), más la ficha
+  `docs/brand/tilo/README.md` con paleta, contraste y reglas de uso.
+- Revisado en render headless a 260, 64, 32 y 24 px sobre `--ground` y sobre el fondo móvil: la
+  silueta de tres capas se lee a 24 px. Contorno 9,02:1 sobre `--ground`; lavanda 6,27:1 sobre
+  #0e1116. Sin scripts, filtros ni referencias externas (búsqueda en el texto de ambos SVG).
+- No se tocó ninguna pantalla, lógica, color de estado ni texto de la app.
+- Segunda pasada tras revisión: se quitaron las patas y las aletas redondas (se leían como ruedas
+  de vehículo); las aletas pasan a ser ahusadas con nervios y los brazos, curvos. El punto cian se
+  reemplazó por dos curvas de nivel de solo trazo. Decisión escogida: la pose despierta es la
+  principal y la de descanso es una variante. Re-renderizado y revisado en los mismos tamaños.
+- Diseño v2 adoptado el 2026-10-22. Reglas añadidas al README de Tilo: la pose de descanso, solo
+  en estados inactivos o en la página de la mascota; las curvas cian, lejos de estados operativos
+  y de "Conectado".
+
+**Qué NO se verificó, y por qué**
+
+- Ninguna prueba con personas sobre si se confunde con un estado: fuera del alcance de un primer
+  diseño. La distancia de tono con `--incierto` está medida, la percepción no.
+- La comparación con personajes existentes es revisión visual propia, no búsqueda de marcas.
+
+**Dónde quedan los pendientes**
+
+- Decidir en qué pantalla no crítica va Tilo y versionar `docs/brand/` (no hay commit todavía).
+
 ## 2026-10-22 — Revisión del PR #8: tiempos sin solapes, cifra vieja y estado de merge
 
 **Qué se hizo**
