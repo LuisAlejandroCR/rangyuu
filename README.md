@@ -58,7 +58,7 @@ python -m rangyuu.serve      # the app at http://localhost:8080
 
 Three of the four skips are the browser end-to-end modules, which skip cleanly unless Playwright is
 installed (`pip install playwright && python -m playwright install chromium`); with it the suite is
-205 passed, 1 skipped. The remaining skip is the on-board calibration clip (see "Not yet verified").
+206 passed, 1 skipped. The remaining skip is the on-board calibration clip (see "Not yet verified").
 
 **Against the real Ring API.** Copy `.env.example` to `.env.local` and set
 `RANGYUU_ACCESS_TOKEN` to a [Ring Developer Playground](https://developer.amazon.com/ring/console/playground)

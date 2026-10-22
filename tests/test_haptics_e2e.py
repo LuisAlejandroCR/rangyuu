@@ -100,6 +100,30 @@ def test_losing_the_link_says_so_with_its_own_clip(page):
         page.evaluate("() => { window.fetch = window.__fetch; return true; }")
 
 
+def test_a_queued_clip_is_replaced_by_the_latest_state_before_the_first_gesture(app, page):
+    """Loads on a state (GO when the floor is clear), loses the link before anyone touches the
+    screen, then gets the gesture: the voice must say linkLost, never the old state's clip."""
+    cue = {"AVANZA": "proceed", "CUIDADO": "caution", "PARA": "hold"}
+    fresh = page.context.browser.new_page(viewport={"width": 390, "height": 844}, locale="es-ES")
+    try:
+        fresh.add_init_script(STUB)
+        fresh.goto(app[1], wait_until="networkidle")
+        fresh.wait_for_function(
+            "document.getElementById('verdict-state').textContent !== 'SIN CERTEZA'", timeout=8000)
+        first = fresh.inner_text("#verdict-state")
+        fresh.evaluate("() => { window.fetch = () => Promise.reject(new Error('down')); return true; }")
+        fresh.wait_for_function(
+            "document.getElementById('verdict-state').textContent === 'SIN CERTEZA'", timeout=8000)
+        assert fresh.evaluate("window.__clips") == []      # nothing can sound before the gesture
+        fresh.click(".tabs button[data-goto='ahora']")
+        fresh.wait_for_function("window.__clips.length > 0", timeout=8000)
+        clips = fresh.evaluate("window.__clips")
+        assert clips[0].endswith("/es/linkLost.mp3")
+        assert not any(c.endswith(f"/{cue[first]}.mp3") for c in clips)
+    finally:
+        fresh.close()
+
+
 def test_the_sources_screen_declares_which_channels_exist(page):
     page.click(".tabs button[data-goto='sistema']")
     page.wait_for_timeout(800)
