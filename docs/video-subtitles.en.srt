@@ -1,131 +1,131 @@
 1
-00:00:00,000 --> 00:00:06,639
+00:00:00,000 --> 00:00:03,541
 A camera on a mobility vehicle can see what is in front of it.
 
 2
-00:00:06,739 --> 00:00:09,900
+00:00:04,270 --> 00:00:06,000
 It cannot see around a corner.
 
 3
-00:00:10,000 --> 00:00:16,330
+00:00:06,500 --> 00:00:09,522
 The building may already have cameras looking into that space.
 
 4
-00:00:16,430 --> 00:00:23,900
+00:00:10,334 --> 00:00:14,660
 Rangyuu asks whether those observations can support one route, right now.
 
 5
-00:00:24,000 --> 00:00:28,841
+00:00:15,160 --> 00:00:18,039
 Ring is the infrastructure source in this demonstration.
 
 6
-00:00:28,941 --> 00:00:34,841
+00:00:18,758 --> 00:00:22,307
 The Ring Developer Playground provides the simulator flow we tested.
 
 7
-00:00:34,941 --> 00:00:44,900
+00:00:22,968 --> 00:00:29,480
 Its video is a canned clip, so we use it to exercise the integration, not to claim a real-world floor measurement.
 
 8
-00:00:45,000 --> 00:00:49,938
+00:00:29,980 --> 00:00:32,587
 Rangyuu turns observations into a floor map.
 
 9
-00:00:50,038 --> 00:00:54,633
+00:00:33,376 --> 00:00:36,247
 Cells carry a state, confidence, and age.
 
 10
-00:00:54,733 --> 00:00:59,900
+00:00:37,029 --> 00:00:40,780
 Evidence expires. Unknown does not mean clear.
 
 11
-00:01:00,000 --> 00:01:02,547
+00:00:41,280 --> 00:00:42,773
 The route question is simple:
 
 12
-00:01:02,647 --> 00:01:05,012
+00:00:43,274 --> 00:00:45,062
 Can this path be traversed?
 
 13
-00:01:05,112 --> 00:01:11,859
+00:00:45,773 --> 00:00:50,784
 PROCEED requires evidence for the path that is calibrated, free, and fresh.
 
 14
-00:01:11,959 --> 00:01:19,161
+00:00:51,637 --> 00:00:56,690
 When evidence is missing, stale, or contradictory, Rangyuu withdraws permission.
 
 15
-00:01:19,261 --> 00:01:21,900
+00:00:57,319 --> 00:00:59,520
 The answer is HOLD or UNKNOWN.
 
 16
-00:01:22,000 --> 00:01:25,697
+00:01:00,020 --> 00:01:02,593
 We measured the system, not just described it.
 
 17
-00:01:25,797 --> 00:01:35,437
+00:01:03,526 --> 00:01:12,520
 Across four hundred frames from a live WHEP session, decode, inference, and decision took 8.16 milliseconds per frame.
 
 18
-00:01:35,537 --> 00:01:47,900
+00:01:13,362 --> 00:01:23,620
 On a tape-measured floor, filmed with a phone, calibration error was 0.9 centimeters across 61 centimeters, checked against points left out of the fit.
 
 19
-00:01:48,000 --> 00:01:51,847
+00:01:24,120 --> 00:01:26,456
 The on-board camera is a different lane.
 
 20
-00:01:51,947 --> 00:01:56,683
+00:01:27,052 --> 00:01:30,233
 In a measured walk, its precision was 22 percent.
 
 21
-00:01:56,783 --> 00:02:00,334
+00:01:30,940 --> 00:01:33,825
 So it warns. It does not stop anyone.
 
 22
-00:02:00,434 --> 00:02:02,900
+00:01:34,421 --> 00:01:36,280
 Stopping has to be earned.
 
 23
-00:02:03,000 --> 00:02:06,940
+00:01:36,780 --> 00:01:39,881
 Now we stop the site's server, with the app still open.
 
 24
-00:02:07,040 --> 00:02:11,640
+00:01:40,780 --> 00:01:45,223
 GO becomes UNCERTAIN: no link to the site, not clear to proceed.
 
 25
-00:02:11,740 --> 00:02:15,900
+00:01:46,079 --> 00:01:49,340
 The screen refuses to keep authorizing from an old answer.
 
 26
-00:02:16,000 --> 00:02:21,811
+00:01:49,840 --> 00:01:56,759
 Rangyuu is meant for supervised use. A parent, a caregiver, or an operator stays responsible.
 
 27
-00:02:21,911 --> 00:02:25,180
+00:01:57,355 --> 00:02:01,201
 It adds evidence. It does not replace their judgment.
 
 28
-00:02:25,280 --> 00:02:30,900
+00:02:01,991 --> 00:02:07,600
 Next, a small unit on the vehicle will connect to the Ring devices a building already has.
 
 29
-00:02:31,000 --> 00:02:35,686
+00:02:08,100 --> 00:02:12,224
 ElevenLabs voiced this narration and the app's pre-recorded alerts.
 
 30
-00:02:35,786 --> 00:02:40,900
+00:02:12,865 --> 00:02:16,740
 Nothing calls it at runtime, and it makes none of the system's decisions.
 
 31
-00:02:41,000 --> 00:02:46,400
+00:02:17,240 --> 00:02:19,257
 When the evidence is there, move.
 
 32
-00:02:46,500 --> 00:02:49,067
+00:02:19,913 --> 00:02:20,702
 When it is not —
 
 33
-00:02:49,167 --> 00:02:49,900
+00:02:21,464 --> 00:02:23,400
 hold.

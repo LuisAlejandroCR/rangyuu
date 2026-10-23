@@ -1,7 +1,8 @@
 <!-- README.md: portada pública del repo, en inglés, para el jurado de la pista Ring.
      Dice qué hace el código, dónde se usa Ring (permalinks), cómo correrlo desde un clon limpio y
-     qué sigue sin verificar. No es el checklist (docs/plan.md) ni la evidencia fechada
-     (docs/verificacion.md) ni la bitácora (docs/memoria.md), que siguen en castellano. -->
+     qué sigue sin verificar, más los datos de entrega del hackathon (pista, mini challenge).
+     No es el checklist (docs/plan.md) ni la evidencia fechada (docs/verificacion.md), que siguen
+     en castellano. -->
 
 # rangyuu
 
@@ -20,10 +21,39 @@ The answer is always one of three:
 Absence of evidence is never a yes. Cut the feed and the answer drops from `PROCEED` to `UNKNOWN`
 (`feed stale`) without anything else changing.
 
-Built for **Build, Ship, Shape: Amazon Developer Hackathon 2026 — Ring track**. Priority category:
-**accessibility** (assisted mobility: a wheelchair, a mobility scooter or a robot crossing a space
-its own camera cannot fully see). The visible consumer in the demo is a digital rover; no physical
-hardware is required.
+Formally, for a path $P$ made of floor cells:
+
+$$
+\texttt{PROCEED} \iff \forall c \in P:\ \text{free}(c) \land \text{fresh}(c) \land \text{calibrated}(c) \land \text{conf}(c) \ge 0.5
+$$
+
+Rangyuu is meant for **supervised use**: a parent, caregiver or operator stays responsible. It never
+steers or brakes anything.
+
+## Hackathon submission
+
+| | |
+|---|---|
+| Event | Amazon Developer Hackathon 2026 |
+| Primary track | **Ring** — priority category **accessibility** (assisted mobility: a wheelchair, a mobility scooter or a robot crossing a space its own camera cannot fully see) |
+| How Ring is shown | Ring Developer Playground (simulator) through the Ring API and a live WHEP session; no physical Ring device needed. The visible consumer in the demo is a digital rover |
+| Mini challenges | **Open Source** (below) and **AWS Builder** (Amazon Bedrock, see "Where AWS is used") |
+| Built during the window | Everything: the first commit is 2026-09-14; the project did not exist before the hackathon |
+| License | [MIT](LICENSE) |
+
+**Open Source contribution.** A terminal WHEP live-view script for Ring's own hello-world sample.
+
+- Contribution: fork branch
+  [`LuisAlejandroCR/ring-api-helloworld@add-whep-live-view-script`](https://github.com/LuisAlejandroCR/ring-api-helloworld/tree/add-whep-live-view-script)
+  (commit `ed293da`); pull request opened upstream as
+  [AmazonAppDev/ring-api-helloworld#23](https://github.com/AmazonAppDev/ring-api-helloworld/pull/23)
+  (closed, unmerged).
+- This repo: <https://github.com/LuisAlejandroCR/rangyuu> · GitHub user: `LuisAlejandroCR`.
+- What it does: `scripts/live_view.py` opens a WHEP live-view session against a Ring device from
+  the terminal (SDP offer/answer, session `Location`, `DELETE` teardown) and, with `--frames`,
+  reports the real resolution and fps.
+- Why it matters: the official sample only shows live view in a browser. Doing it from a plain
+  process is what lets a Ring camera act as an infrastructure sensor, which is what Rangyuu needs.
 
 ## Where Ring is used
 
@@ -74,14 +104,14 @@ Requires Python 3.11+. No Ring credentials and no hardware are needed for the st
 git clone https://github.com/LuisAlejandroCR/rangyuu.git
 cd rangyuu
 python -m pip install -e . pytest
-python -m pytest -q          # 174 passed, 4 skipped
+python -m pytest -q          # 187 passed, 4 skipped
 python -m rangyuu            # terminal demo: free -> occupied -> duplicate rejected -> expired
 python -m rangyuu.serve      # the app at http://localhost:8080
 ```
 
 Three of the four skips are the browser end-to-end modules, which skip cleanly unless Playwright is
 installed (`pip install playwright && python -m playwright install chromium`); with it the suite is
-201 passed, 1 skipped. The remaining skip is the on-board calibration clip (see "Not yet verified").
+217 passed, 1 skipped. The remaining skip is the on-board calibration clip (see "Not yet verified").
 
 **Against the real Ring API.** Copy `.env.example` to `.env.local` and set
 `RANGYUU_ACCESS_TOKEN` to a [Ring Developer Playground](https://developer.amazon.com/ring/console/playground)
@@ -103,6 +133,10 @@ Three destinations, served by the same process, in English or Spanish following 
 - **On board** — the phone camera as the vehicle's own sensor. It can warn; it does not write to the
   map until its calibration is measured.
 - **System** — sources, calibration (with the measured error, not the fit residual) and language.
+
+The demo site runs on a **simulated floor feed** and says so on screen; the live Ring path is
+measured separately (below). A thin Expo client in `mobile/` speaks state changes with
+pre-recorded ElevenLabs voice clips, so the "link lost" alert still plays offline.
 
 ## Measured, with dates
 
@@ -130,6 +164,16 @@ Stated plainly so nobody has to discover it:
 - **Glass-to-glass latency** needs a physical Ring camera; the Playground clip carries its own clock.
 - **Error beyond 1.5 m** and with a Ring camera instead of a phone.
 
+## What's next
+
+- Feed the app directly from a live Ring WHEP session instead of the simulated floor feed.
+- A measured, per-device calibration for the webhook path, and calibration with a physical Ring
+  camera beyond 1.5 m.
+- OAuth app linking so real Ring webhooks reach Rangyuu.
+- Glass-to-glass latency on physical hardware.
+- A small on-vehicle unit that connects to the Ring devices a building already has (planned, not
+  built).
+
 ## Repository map
 
 | Path | What it does |
@@ -143,7 +187,7 @@ Stated plainly so nobody has to discover it:
 | `rangyuu/site.py`, `ui.py`, `webapp.py`, `serve.py`, `web/` | The app and its four screen states |
 | `rangyuu/onboard.py`, `onboard_calibration.py`, `vision.py`, `walk.py` | The on-board lane and its calibration gate |
 | `mobile/` | Thin Expo client that sends on-board frames to the core |
-| `docs/` | Plan, architecture, perception analysis, verification log (in Spanish) |
+| `docs/` | Architecture, perception analysis, app and mobile specs, setup, plan and verification evidence (in Spanish) |
 
 ## License
 

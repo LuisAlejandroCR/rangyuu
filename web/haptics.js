@@ -31,7 +31,7 @@ let gestured = false;
 let pending = null;
 
 /** Una sola forma de decir el estado por los canales que el dispositivo tenga. */
-export function announce(state, { force = false } = {}) {
+export function announce(state, { force = false, cue = null } = {}) {
   const pattern = PATTERNS[state];
   if (!pattern || !enabled) return { skipped: true };
   if (state === last && !force) return { skipped: true };
@@ -43,8 +43,32 @@ export function announce(state, { force = false } = {}) {
     else pending = pattern.vibrate;
   }
   if (playTone(pattern.tone)) used.push("tone");
-  if (speak(t(`say.${state}`))) used.push("speech");
+  if (playClip(cue || CUES[state], t(`say.${state}`))) used.push("voice");
   return { state, used };
+}
+
+// Los mismos clips de ElevenLabs que trae la app móvil (mobile/assets/voices), servidos en
+// /voices/. Si un clip no suena, las mismas palabras van a la voz del sistema.
+const CUES = { AVANZA: "proceed", CUIDADO: "caution", PARA: "hold", "SIN CERTEZA": "unknown" };
+const VOICE = "lumina";
+let clip = null;
+
+// Igual que la vibración: antes del gesto el clip no puede sonar, así que se guarda y suena
+// en cuanto llega el gesto, en vez de perder el aviso del estado vigente.
+let pendingClip = null;
+
+function playClip(cue, fallback) {
+  if (typeof window.Audio !== "function") return speak(fallback);
+  if (!gestured) { pendingClip = [cue, fallback]; return false; }
+  try {
+    if (clip) clip.pause();
+    clip = new window.Audio(`/voices/${VOICE}/${language_() === "es" ? "es" : "en"}/${cue}.mp3`);
+    const played = clip.play();
+    if (played && played.catch) played.catch(() => speak(fallback));
+    return true;
+  } catch {
+    return speak(fallback);
+  }
 }
 
 /** El tono es el respaldo real en iPhone, donde no hay vibración desde el navegador. */
@@ -89,6 +113,7 @@ export function unlock() {
   const first = !gestured;
   gestured = true;
   if (first && pending && support.vibrate) { navigator.vibrate(pending); pending = null; }
+  if (first && pendingClip) { const [cue, words] = pendingClip; pendingClip = null; playClip(cue, words); }
   if (!support.audio) return false;
   try {
     context = context || new (window.AudioContext || window.webkitAudioContext)();
@@ -108,6 +133,7 @@ export function setEnabled(value) {
 export function reset() {
   last = "";
   pending = null;
+  pendingClip = null;
 }
 
 /** Lo que este dispositivo puede hacer de verdad, para mostrarlo en Fuentes sin prometer de más. */

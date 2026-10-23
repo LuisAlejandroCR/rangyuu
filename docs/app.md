@@ -1,6 +1,6 @@
 <!-- docs/app.md: la aplicación — qué pantallas tiene, qué muestra cada una y de qué dato vive.
      Es la especificación de producto y de interfaz; el estado de los bloques está en docs/plan.md
-     y lo que se hizo, en docs/memoria.md. No repite la arquitectura de carriles, que vive en
+     y la evidencia, en docs/verificacion.md. No repite la arquitectura de carriles, que vive en
      docs/architecture.md. -->
 
 # La app
@@ -147,7 +147,7 @@ tomadas y no vale la churn dentro de un PR de interfaz.
 ## 4. Dónde corre
 
 **Aplicación web servida por el propio proceso de Rangyuu**, no app nativa. El motivo está medido y
-escrito en `docs/test-rig.md`: la compilación nativa de iOS exige un Mac, y aquí no hay uno. Safari en
+probado en el montaje de pruebas: la compilación nativa de iOS exige un Mac, y aquí no hay uno. Safari en
 iOS da cámara por `getUserMedia`, vibración limitada y voz, que es lo que la pantalla de caminata
 necesita.
 

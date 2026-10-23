@@ -1,0 +1,49 @@
+<!doctype html>
+<!-- tilo_overlay.html: small Tilo appearances on a transparent canvas, composited over the video frame.
+     Deterministic: window.render(clip, t). Clips: peek_up (cut by the bottom edge), peek_side
+     (cut by the right edge, leaning in), sit (in a corner). Complete and opaque from frame one. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 480px; height: 400px; background: transparent; overflow: hidden; }
+  .tilo { position: absolute; left: 90px; top: 130px; width: 300px; height: 238px; transform-origin: 50% 100%; }
+  .tilo svg { width: 100%; height: 100%; overflow: visible; }
+</style>
+</head>
+<body>
+  <div class="tilo"></div>
+<script>
+  const ease = x => 1 - Math.pow(1 - Math.min(Math.max(x, 0), 1), 3);
+  window.DURATION = { peek_up: 4.0, peek_side: 4.0, sit: 5.0 };
+
+  window.setup = (front) => {
+    const box = document.querySelector('.tilo');
+    box.innerHTML = front;
+    const svg = box.querySelector('svg');
+    const eyes = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    svg.appendChild(eyes);
+    [svg.querySelector('g[stroke-width="2.5"]'), ...svg.querySelectorAll('circle')]
+      .forEach(el => el && eyes.appendChild(el));
+    window.eyes = eyes;
+    window.__ready = true;
+  };
+
+  // Already in place, complete and fully opaque on the first frame; the edit cuts in and out.
+  // Only breath and one blink move.
+  window.render = (clip, t) => {
+    const d = window.DURATION[clip], k = 1;
+    const breath = Math.sin(t * Math.PI * 2 / 3.2);
+    let x = 0, y = 0, rot = 0, op = 1;
+    if (clip === 'peek_up') { y = (1 - k) * 250 + 120; }               // only the top two thirds show
+    if (clip === 'peek_side') { x = (1 - k) * 260 + 140; rot = -8 * k; } // leans in from the right edge
+    if (clip === 'sit') { y = (1 - k) * 24; op = k; }
+    const box = document.querySelector('.tilo');
+    box.style.opacity = op;
+    box.style.transform = `translate(${x}px, ${y + breath * 3}px) rotate(${rot}deg) scale(1, ${1 + breath * 0.012})`;
+    const b = Math.max(0, 1 - Math.abs(t - d * 0.55) / 0.09);
+    window.eyes.setAttribute('transform', `translate(0 62) scale(1 ${1 - 0.9 * b}) translate(0 -62)`);
+  };
+</script>
+</body>
+</html>
