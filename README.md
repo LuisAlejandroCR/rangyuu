@@ -4,6 +4,8 @@
      No es el checklist (docs/plan.md) ni la evidencia fechada (docs/verificacion.md), que siguen
      en castellano. -->
 
+![Meet Rangyuu: the Tilo mascot next to the project name](docs/brand/rangyuu-banner.jpg)
+
 # rangyuu
 
 **A safe-by-default spatial layer for assisted mobility.** Rangyuu turns Ring camera observations
