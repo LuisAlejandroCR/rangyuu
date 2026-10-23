@@ -1,6 +1,6 @@
 <!-- docs/verificacion.md: qué está comprobado, con qué comando, y qué sigue sin comprobar.
      Una fila pasa a ✅ solo cuando alguien que no la escribió puede repetir la comprobación.
-     No es el plan (docs/plan.md) ni la bitácora (docs/memoria.md): es la evidencia.
+     No es el plan (docs/plan.md): es la evidencia.
      Toda corrección a un dato ya documentado entra aquí, fechada. -->
 
 # Verificación
@@ -44,14 +44,14 @@
 | La pantalla **dice** si autoriza, tomándolo del campo `authorizes`, en vez de dejarlo solo en el color | `python -m pytest tests/test_app_e2e.py::test_the_screen_says_whether_it_authorises_rather_than_only_colouring_it` | ✅ | 2026-09-16 |
 | **La app carga sin un solo error de consola**, con el oyente puesto antes de `goto` | `python -m pytest tests/test_app_e2e.py::test_the_app_loads_without_a_single_console_error` | ✅ | 2026-09-16 |
 | Las etiquetas de zona no se desbordan de la tarjeta ni quedan dentro del SVG | `python -m pytest tests/test_app_e2e.py::test_zone_names_are_legible_html_instead_of_svg_text_that_scales_with_the_grid` | ✅ | 2026-09-16 |
-| **Todo el texto pequeño cumple WCAG AA contra el fondo real de su tarjeta**: peor caso 4,80:1 (`stamp` y `group-title`, 11-12 px, sobre `--ground`); antes 2,91:1. La pestaña activa pasó de 2,57:1 a 4,81:1 | Sonda con Playwright a 390x844 y 1280x900 que calcula la razón de contraste WCAG sobre los colores computados de cada token; cifras en `docs/memoria.md` 2026-09-16 | ✅ | 2026-09-16 |
+| **Todo el texto pequeño cumple WCAG AA contra el fondo real de su tarjeta**: peor caso 4,80:1 (`stamp` y `group-title`, 11-12 px, sobre `--ground`); antes 2,91:1. La pestaña activa pasó de 2,57:1 a 4,81:1 | Sonda con Playwright a 390x844 y 1280x900 que calcula la razón de contraste WCAG sobre los colores computados de cada token | ✅ | 2026-09-16 |
 | **Ningún objetivo táctil baja de 44 px** en las tres pantallas y los dos viewports; antes `Evidencia` 25 px, `Probar` 33 px, los `summary` 36 px | Misma sonda: recorre botones y `summary` visibles y lista los de altura < 44 px | ✅ | 2026-09-16 |
 | El mapa dejó de tapar la decisión: en teléfono pasó de 500 px contra 154 del veredicto a **388 contra 204**, sin scroll horizontal en ningún viewport | Misma sonda (`getBoundingClientRect` de `.verdict` y `#map-now`) | ✅ | 2026-09-16 |
 | Consola limpia en las tres pantallas a 390x844 **y** a 1280x900 | Misma sonda, escuchando `console` y `pageerror` desde antes de cargar | ✅ | 2026-09-16 || Un sitio sin calibración **medida** no autoriza | `python -m pytest -q tests/test_degradation_gates.py` → `10 passed`; invertir la puerta (`calibration_is_verified` devolviendo `True` sin medición) hace caer 5 pruebas | ✅ | 2026-09-16 |
 | Recalibrar desde la interfaz retira la medición anterior | `rangyuu/webapp.py:127` pone `measured_error_cm = None`; prueba `test_recalibrating_drops_the_previous_measurement_and_the_authority` | ✅ | 2026-09-16 |
 | CI remota verde en `main` tras la reconciliación de ramas | `gh run list --branch main --limit 4` → `Rangyuu CI` y `build-scan` en `success` (runs `35129388309`, `35129388771`); los previos `35125517257` y `35125517447` están en `failure` | ✅ | 2026-09-16 |
 | Las tres ramas `codex/*` restantes no tienen trabajo único | `git merge-base --is-ancestor origin/<rama> main` → 0 para `ring-ui-less-is-more`, `block-geometry-dlt` y `north-navigation-ci` | ✅ | 2026-09-16 |
-| `codex/rangyuu-rebuild` no aporta nada que `main` no tenga | auditoría concepto por concepto con prueba `archivo:línea`; ver `docs/memoria.md` 2026-09-16 | ✅ | 2026-09-16 |
+| `codex/rangyuu-rebuild` no aporta nada que `main` no tenga | auditoría concepto por concepto con prueba `archivo:línea` | ✅ | 2026-09-16 |
 | El worker programado ya no falla por un proveedor sin configurar | `GITHUB_EVENT_NAME=schedule` con `RANGYUU_PROVIDER_URL` vacío → salida 0 con aviso; `workflow_dispatch` → salida 1 | ✅ | 2026-09-16 |
 | **Un detector de objetos ONNX local reconoce la moto que la heurística no podía**: en t=49,5 s devuelve `moto 0.69` y `persona 0.94`; en t=20 s y t=40 s no devuelve nada | SSD MobileNet v1 del ONNX Model Zoo con `onnxruntime 1.30`, sobre `walking_video.mp4` | ✅ | 2026-09-16 |
 | **24 ms por frame de media, 34 ms de máximo**, sobre 585 frames a 464x832, en CPU | Misma corrida | ✅ | 2026-09-16 |

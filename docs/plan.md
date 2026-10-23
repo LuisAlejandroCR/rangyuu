@@ -1,5 +1,5 @@
 <!-- docs/plan.md: bloques de trabajo con criterio de aceptación, abiertos vs cerrados.
-     No es la bitácora (docs/memoria.md) ni el análisis (docs/ring-track.md): aquí solo el checklist.
+     No es la evidencia (docs/verificacion.md) ni el análisis (docs/perception.md): aquí solo el checklist.
      Se actualiza en el mismo lote que cualquier cambio de estado. -->
 
 # Plan — pista Ring
@@ -65,9 +65,9 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       decisión escogida; reabrirlo es un clic y conserva la URL.
 
 - [ ] **B1 · Cerrar las cinco incógnitas contra la doc oficial.** `developer.amazon.com/docs/ring`
-      no se pudo leer desde el entorno donde se escribió `docs/ring-track.md`.
-      *Criterio de aceptación:* las cinco preguntas de `docs/ring-track.md` §6 respondidas en
-      `docs/memoria.md`, cada una con URL y fecha de lectura. La que decide el calendario:
+      no se pudo leer desde el entorno donde se escribió el análisis inicial de la pista.
+      *Criterio de aceptación:* las cinco preguntas abiertas sobre la API respondidas en
+      `docs/verificacion.md`, cada una con URL y fecha de lectura. La que decide el calendario:
       **si el Playground entrega webhooks o solo eventos por el flujo de live view.**
 
 - [ ] **B2 · Registro de app y account linking.** La app quedó creada el 2026-09-15 con nombre
@@ -144,7 +144,7 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
 - [ ] **B7 · Video y submission.** Producir el video en inglés, menor de tres minutos, usando
       ElevenLabs MCP solo como herramienta de narración/producción y documentando su feedback.
       *Criterio:* Ring aparece funcionando en código y pantalla; el video se envía con margen, no el
-      10/23 a las 11:50. Guion y montaje: `docs/video.md` y `docs/test-rig.md`.
+      10/23 a las 11:50.
 
 ## Reparto por semana
 
@@ -193,6 +193,6 @@ iPhone opcional como cámara a bordo, rover digital como consumidor; CCTV exclui
       (profundidad, sincronía, intrínsecos, streaming continuo, actuador), la homografía al plano del
       suelo como puente de píxeles a metros, dónde se rompe, y el contrato de degradación.
 
-- [x] **2026-09-14 — Análisis de la pista.** `docs/ring-track.md`: superficie de la API leída del
+- [x] **2026-09-14 — Análisis de la pista.** Superficie de la API leída del
       sample oficial clonado, el papel real del Playground, el corte entre modo access token y modo
       refresh token, cuatro ideas con riesgo y los dos mini challenges.

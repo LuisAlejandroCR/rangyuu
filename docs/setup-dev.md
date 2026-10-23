@@ -1,6 +1,6 @@
 <!-- docs/setup-dev.md: cómo dejar el entorno corriendo y cómo entregar las credenciales de Ring.
      Es el archivo operativo: pasos ejecutables, no análisis. El análisis de la API vive en
-     docs/ring-track.md y el estado de los bloques en docs/plan.md. -->
+     docs/perception.md y el estado de los bloques en docs/plan.md. -->
 
 # Setup — entorno y credenciales
 
