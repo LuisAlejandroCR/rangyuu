@@ -10,6 +10,7 @@
 | Qué | Cómo se repite | Estado | Fecha |
 |---|---|---|---|
 | La app web habla con los mismos clips de ElevenLabs que la móvil: `/voices/<voz>/<idioma>/<cue>.mp3` sale de `mobile/assets/voices/` como `audio/mpeg`, sin salirse de esa carpeta; cada estado suena con su clip y perder el enlace suena `linkLost`. Antes del primer gesto solo queda en cola el clip del estado más reciente: carga en un estado, pierde el enlace sin gesto y al llegar el gesto suena `linkLost`, nunca el clip anterior (la prueba falla si la cola guarda el primero). Suite: `206 passed, 1 skipped` con Playwright, `176 passed, 4 skipped` sin él | `tests/test_webapp.py` (2 pruebas), `tests/test_haptics_e2e.py` (3 pruebas); en el navegador, "Test" en Sistema → `GET /voices/lumina/en/proceed.mp3` 200 | ✅ | 2026-10-22 |
+| Carril Bedrock (`rangyuu/briefing.py`): la decisión se copia del núcleo; una respuesta con palabra de permiso sobre `HOLD`/`UNKNOWN`, vacía, larga o con error cae a la plantilla; sin `RANGYUU_BEDROCK_MODEL` no hay llamada de red. Suite completa: `212 passed, 1 skipped` con Playwright | `python -m pytest -q tests/test_briefing.py` (cliente simulado, sin cuenta AWS) y `python -m pytest -q` | ✅ | 2026-10-22 |
 | Conteo del Quickstart tras las pruebas nuevas: `201 passed, 1 skipped` con Playwright; `174 passed, 4 skipped` sin él (los tres módulos de navegador más el clip de B11) | `python -m pytest -q`; sin Playwright, con un paquete `playwright` vacío por delante en `PYTHONPATH` para que `importorskip("playwright.sync_api")` salte | ✅ | 2026-10-22 |
 | **Una conexión ociosa ya no congela la app.** Con `HTTPServer` de un hilo, un socket abierto sin petición (como el preconnect de Chromium) bloqueaba toda respuesta: `GET /` y `/api/space/now` sin respuesta en el navegador del panel. La prueba nueva falló con `TimeoutError` antes del cambio y pasa con `ThreadingHTTPServer`. Suite: `199 passed, 1 skipped` | `python -m pytest -q tests/test_webapp.py -k idle` | ✅ | 2026-10-22 |
 | **Toma 5A ensayada en navegador real**, con la app en inglés: `GO` / "clear to proceed"; al detener el servidor, `UNCERTAIN` / "no link to the site" / "not clear to proceed" en el siguiente sondeo; puertos 8099 y 8080 libres después | `python -m rangyuu.serve 8099`, abrir `/`, idioma English en Sistema y detener el proceso | ✅ | 2026-10-22 |
@@ -135,6 +136,10 @@
 
 ## Sin comprobar — ⏳ pendiente
 
+- **Llamada real a Amazon Bedrock.** El código y las pruebas con cliente simulado pasan, pero el
+  2026-10-22 esta máquina no tenía credenciales AWS activas (`NoCredentials`). Falta correr
+  `python -m rangyuu.briefing` con un modelo habilitado y anotar aquí modelo, región, latencia y
+  las tres respuestas.
 - **La puerta de calibración solo cubre el camino de la app.** `78da540` cerró `Site.now()`, que es
   lo que sirve `serve`/`webapp`. El camino del webhook **no** la tiene: `spatial.py:67` pasa
   `homography_valid=device_id in self.calibrations`, es decir *ajustada*, no *medida*. Es la misma
